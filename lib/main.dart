@@ -1,10 +1,9 @@
 import 'dart:convert';
-
-import 'package:ago_ahome_app/device_card.dart';
-import 'package:ago_ahome_app/device_view.dart';
 import 'package:ago_ahome_app/model/device.dart';
 import 'package:ago_ahome_app/model/room.dart';
-import 'package:ago_ahome_app/room_view.dart';
+import 'package:ago_ahome_app/views/device_card.dart';
+import 'package:ago_ahome_app/views/device_view.dart';
+import 'package:ago_ahome_app/views/room_view.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -36,7 +35,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-    int currentPageIndex = 0;
+   
     List<Room> rooms = [
     ];
   @override
@@ -127,50 +126,20 @@ class _MyHomePageState extends State<MyHomePage> {
             SingleChildScrollView(
               child: Column(
                 children: [
-                  NavigationBar(
-                    backgroundColor: Color.fromRGBO(241,242,244, 1),
-                  labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-                  elevation: 1.0,
-                  //animationDuration: const Duration(seconds: 5),
-                  destinations: const [
-                    NavigationDestination(
-                      icon:  Icon(Icons.minimize,color: Color.fromRGBO(20,115,209,1),),
-                      label: "Salon"
-                    ),
-                    NavigationDestination(
-                      icon:  Icon(Icons.minimize,color: Color.fromRGBO(20,115,209,1),),
-                      label:"Cuisine"
-                    ),
-                    NavigationDestination(
-                      icon:  Icon(Icons.minimize,color: Color.fromRGBO(20,115,209,1),),
-                      label:"Chambre"
-                    ),
-                    NavigationDestination(
-                      icon:  Icon(Icons.minimize,color: Color.fromRGBO(20,115,209,1),),
-                      label: "Garage"
-                    ),
-                  ],
-                  onDestinationSelected: (int index){
-                    setState(() {
-                      currentPageIndex = index;
-                    });
-                  },  
-                  selectedIndex: currentPageIndex,
-                ),
+                  
                 Container(
                   height: MediaQuery.of(context).size.height,
-            
                   child: GridView.count(
                     scrollDirection: Axis.vertical,
                     crossAxisCount: 2,
-                    children:[
-                     DeviceCard(),
-                     DeviceCard(),
-                     DeviceCard(),
-                     DeviceCard()
-                  ],
-              ),
+                    children:const [
+                      DeviceCard(),
+                      DeviceCard(),
+                      DeviceCard(),
+                      DeviceCard()
+                    ],
                 ),
+               ),
                       ],
                     ),
             ),

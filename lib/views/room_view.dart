@@ -12,7 +12,7 @@ class RoomDevice extends StatefulWidget {
 
 class _RoomDeviceState extends State<RoomDevice> {
   final  _formKey = GlobalKey<FormState>();
-  Room room = Room("","",0);
+  Room room = Room("","",0,[]);
   @override
   void initState() {
 
