@@ -83,7 +83,7 @@ class _DeviceCardState extends State<DeviceCard> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
-                children: [
+                children: const [
                   Icon(Icons.lightbulb_outline,
                   color: Colors.white,
                   )
@@ -92,8 +92,8 @@ class _DeviceCardState extends State<DeviceCard> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const Text("Main Light",
+                children: const[
+                  Text("Main Light",
                   style: TextStyle(
                     color: Colors.white,
                     fontFamily: "MontSerrat",

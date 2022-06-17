@@ -1,8 +1,9 @@
+import 'package:ago_ahome_app/services/http_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
-
+import 'package:ago_ahome_app/services/http_service.dart';
 class NavBar extends StatefulWidget {
   const NavBar({Key? key}) : super(key: key);
 
@@ -12,6 +13,8 @@ class NavBar extends StatefulWidget {
 
 class _NavBarState extends State<NavBar> {
   int currentPageIndex = 0;
+  // List<Room>? rooms;
+  var isLoaded = false;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -21,12 +24,16 @@ class _NavBarState extends State<NavBar> {
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         elevation: 1.0,
         //animationDuration: const Duration(seconds: 5),
-        destinations: const [
-          NavigationDestination(
-            icon:  Icon(Icons.minimize,color: Color.fromRGBO(20,115,209,1),),
-            label: "Salon"
+        destinations: [
+          ListView.builder(
+            itemBuilder: (BuildContext context, int index) { 
+              return const NavigationDestination(
+                icon:  Icon(Icons.minimize,color: Color.fromRGBO(20,115,209,1),),
+                label: "Salon"
+              );
+             },
           ),
-          NavigationDestination(
+          /*NavigationDestination(
             icon:  Icon(Icons.minimize,color: Color.fromRGBO(20,115,209,1),),
             label:"Cuisine"
           ),
@@ -37,7 +44,7 @@ class _NavBarState extends State<NavBar> {
           NavigationDestination(
             icon:  Icon(Icons.minimize,color: Color.fromRGBO(20,115,209,1),),
             label: "Garage"
-          ),
+          ),*/
         ],
         onDestinationSelected: (int index){
           setState(() {

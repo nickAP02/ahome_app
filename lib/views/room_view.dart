@@ -1,7 +1,7 @@
 import 'package:ago_ahome_app/main.dart';
 import 'package:ago_ahome_app/model/room.dart';
 import 'package:flutter/material.dart';
-
+import 'package:ago_ahome_app/services/http_service.dart';
 
 class RoomDevice extends StatefulWidget {
   const RoomDevice({Key? key}) : super(key: key);
@@ -12,7 +12,7 @@ class RoomDevice extends StatefulWidget {
 
 class _RoomDeviceState extends State<RoomDevice> {
   final  _formKey = GlobalKey<FormState>();
-  Room room = Room("","",0,[]);
+  Room room = Room(categorie: null, name: null);
   @override
   void initState() {
 
@@ -30,6 +30,21 @@ class _RoomDeviceState extends State<RoomDevice> {
           children: [
             TextFormField(
               decoration: const InputDecoration(
+                hintText: "Nom de la catégorie"
+              ),
+              keyboardType: TextInputType.text,
+              validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Entrez le champ nom';
+              }
+              else{
+                room.name = value.toString();
+              }
+                return null;
+              },
+            ),
+            TextFormField(
+              decoration: const InputDecoration(
                 hintText: "Nom de la pièce"
               ),
               keyboardType: TextInputType.text,
@@ -45,13 +60,10 @@ class _RoomDeviceState extends State<RoomDevice> {
             ),
     
           ElevatedButton(
-          onPressed: () {
+          onPressed: () async {
             
             if (_formKey.currentState!.validate()) {
-             
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Enregistrement en cours')),
-              );
+              await HttpService.addRoom(room);
               Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const MyHomePage()));
             }
         },

@@ -3,13 +3,13 @@ class Device{
   double conso =0.0;
   dynamic state = [];
 
-  Device(this.name, this.conso, this.state);
+  Device({required conso, required name, required state});
 
-  Device.fromJson(Map<String, dynamic> json):
-    name = json['name'] as String,
-    conso = json['conso'] as double,
-    state = json['state'] as List;
-
+  factory Device.fromJson(Map<String, dynamic> json)=>Device(
+    name : json['name'],
+    conso : json['conso'],
+    state : json['state']
+  );
 
   Map<String, dynamic> toJson() => {
     'name': name,
