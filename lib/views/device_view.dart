@@ -11,7 +11,7 @@ class DeviceView extends StatefulWidget {
 
 class _DeviceViewState extends State<DeviceView> {
   final  _formKey = GlobalKey<FormState>();
-  Device newDevice =  Device("",0,"");
+  Device newDevice =  Device(conso: null, name: null, state: null);
   @override
   void initState() {
 
@@ -19,68 +19,67 @@ class _DeviceViewState extends State<DeviceView> {
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Enregistrement d'un appareil"),
-      ),
-      body: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            Container(
-              alignment: Alignment.topCenter,
-              //width: 100,
-              child: TextFormField(
-                decoration: const InputDecoration(
-                  hintText: "Nom de l'appareil"
-                ),
-                keyboardType: TextInputType.text,
-                validator: (value) {
+    return Container(
+      height: 800,
+      constraints: BoxConstraints(maxHeight: 1000,minHeight: 700,maxWidth: 800,minWidth: 500),
+      child: Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          Container(
+            alignment: Alignment.topCenter,
+            //width: 100,
+            child: TextFormField(
+              decoration: const InputDecoration(
+                hintText: "Nom de l'appareil"
+              ),
+              keyboardType: TextInputType.text,
+              validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Entrez le champ nom';
+              }
+              else{
+                newDevice.name = value.toString();
+              }
+                return null;
+              },
+            ),
+          ),
+          Container(
+            alignment: Alignment.topCenter,
+            //width: 100,
+            child: TextFormField(
+              decoration: const InputDecoration(
+                hintText: "Puissance(en W)"
+              ),
+              keyboardType: TextInputType.number,
+              validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Entrez le champ nom';
+                  return 'Entrez la puissance';
                 }
                 else{
-                  newDevice.name = value.toString();
+                  newDevice.conso = value as double;
                 }
-                  return null;
-                },
-              ),
+               return null;
+              },
             ),
-            Container(
-              alignment: Alignment.topCenter,
-              //width: 100,
-              child: TextFormField(
-                decoration: const InputDecoration(
-                  hintText: "Puissance(en W)"
-                ),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Entrez la puissance';
-                  }
-                  else{
-                    newDevice.conso = value as double;
-                  }
-                 return null;
-                },
-              ),
-            ),
-          ElevatedButton(
-          onPressed: () {
-            
-            if (_formKey.currentState!.validate()) {
-             
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Enregistrement en cours')),
-              );
-              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const MyHomePage()));
-            }
-        },
-        child: const Text('Valider'),
-        ),
-          ],
-        ),
+          ),
+        ElevatedButton(
+        onPressed: () {
+          
+          if (_formKey.currentState!.validate()) {
+           
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Enregistrement en cours')),
+            );
+            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const MyHomePage()));
+          }
+      },
+      child: const Text('Valider'),
       ),
+        ],
+      ),
+        ),
     );
   }
   @override

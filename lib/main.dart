@@ -1,30 +1,24 @@
 import 'dart:convert';
 import 'package:ago_ahome_app/model/device.dart';
 import 'package:ago_ahome_app/model/room.dart';
+import 'package:ago_ahome_app/services/http_service.dart';
+import 'package:ago_ahome_app/services/theme_service.dart';
+import 'package:ago_ahome_app/utils/nav_bar.dart';
+import 'package:ago_ahome_app/utils/theme.dart';
 import 'package:ago_ahome_app/views/device_card.dart';
 import 'package:ago_ahome_app/views/device_view.dart';
 import 'package:ago_ahome_app/views/room_view.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.indigo,
-      ),
-      home: const MyHomePage(),
-      debugShowCheckedModeBanner: false,
-    );
-  }
+void main()async {
+  //fonction qui permet de verifier l'utilisation d'un widget
+  WidgetsFlutterBinding.ensureInitialized();
+  //initialisation de get_storage
+  await GetStorage.init();
+  //demarrage de l'application
+  runApp(const MyHomePage());
 }
 
 class MyHomePage extends StatefulWidget {
@@ -35,28 +29,20 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-   
-    List<Room> rooms = [
-    ];
+  //variable pour verifier le chargement des données venant de l'api
+  var isLoaded = false;
+  //fonction d'initialisation du cycle de vie de l'application
+  @override
+  void initState() {
+    super.initState();
+  }  
+  //fonction de traitement du cycle de vie de l'application
   @override
   Widget build(BuildContext context) {
-      return MaterialApp(
-        theme: ThemeData(
-          colorScheme: const ColorScheme(
-          brightness: Brightness.light,
-          primary: Color.fromRGBO(247,248,250,1),
-          onPrimary: Colors.black,
-          secondary: Colors.black,
-          onSecondary: Colors.black,
-          error: Colors.black, 
-          onError: Colors.black,
-          background: Colors.black,
-          onBackground: Colors.black,
-          surface: Colors.black,
-          onSurface: Colors.black
-          ),
-          //primarySwatch: Color.fromRGBO(247, 248, 250, 1),
-        ),
+      return GetMaterialApp(
+        theme:Themes.light,
+        themeMode: ThemeService().theme,
+        darkTheme:Themes.dark, 
         debugShowCheckedModeBanner: false,
         home: Scaffold(
           appBar: AppBar(
@@ -68,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 horizontal: 16),
                 child: CircleAvatar(
                   maxRadius: 15,
-                  backgroundImage: NetworkImage("https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80"),
+                  backgroundImage: AssetImage("assets/lightning.png"),
                 ),),
             ],
           ),
@@ -78,6 +64,14 @@ class _MyHomePageState extends State<MyHomePage> {
             width: 100,
             child: ListView(
               children: [
+                ListTile(
+                  leading:IconButton(
+                    icon:const Icon(Icons.dark_mode),
+                    onPressed: (){
+                      ThemeService().switchTheme();
+                    },
+                  ),
+                ),
                 ListTile(
                   subtitle: const Text("Accueil",
                   style: TextStyle(
@@ -126,7 +120,8 @@ class _MyHomePageState extends State<MyHomePage> {
             SingleChildScrollView(
               child: Column(
                 children: [
-                  
+                  DeviceView()
+                /*NavBar(),
                 Container(
                   height: MediaQuery.of(context).size.height,
                   child: GridView.count(
@@ -139,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       DeviceCard()
                     ],
                 ),
-               ),
+               ),*/
                       ],
                     ),
             ),
@@ -149,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
   //creer container
   //crer une colonne pour le bouton et le text
   //inserer un row dans le container
-  //
+  //fonction de cloture dy cycle de vie de l'application
   @override
   void dispose(){
       super.dispose();
