@@ -1,90 +1,157 @@
+import 'dart:convert';
+import 'package:ago_ahome_app/views/device_list.dart';
+import 'package:http/http.dart' as http;
 import 'package:ago_ahome_app/main.dart';
 import 'package:ago_ahome_app/model/device.dart';
+import 'package:ago_ahome_app/services/http_service.dart';
 import 'package:flutter/material.dart';
-
+import 'package:web_socket_channel/web_socket_channel.dart';
 class DeviceView extends StatefulWidget {
-  const DeviceView({Key? key}) : super(key: key);
+   String id;
+   dynamic state;
+   DeviceView(this.id,this.state);
 
   @override
   State<DeviceView> createState() => _DeviceViewState();
 }
 
 class _DeviceViewState extends State<DeviceView> {
+  static final client = http.Client();
+  static addDevice(Device device) async{
+    var response = await client.put(Uri.parse('http://ahome.ago:5000/api/v1/device/update/${device.idDev}/${device.nameDev}'), body: {
+      "conso":device.conso.toDouble(),
+    });
+    print(response);
+    print(response.body);
+    if (response.statusCode == 200) {
+     return jsonDecode(response.body);
+    }
+    
+    else {
+      print("La requête n'a pas aboutie : ${response.statusCode}");
+    }
+  }
   final  _formKey = GlobalKey<FormState>();
-  Device newDevice =  Device(conso: null, name: null, state: null);
+  Device newDevice =  Device(1, "salon", 10, [1,0,1], DateTime(2022,6,28));
+  final server = WebSocketChannel.connect(Uri.parse("ws://ahome.ago:5000/api/v1/device/allumerEteindre/"));
   @override
   void initState() {
-
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 800,
-      constraints: BoxConstraints(maxHeight: 1000,minHeight: 700,maxWidth: 800,minWidth: 500),
-      child: Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          Container(
-            alignment: Alignment.topCenter,
-            //width: 100,
-            child: TextFormField(
-              decoration: const InputDecoration(
-                hintText: "Nom de l'appareil"
+    return SimpleDialog(
+      title: const Text("Enregistrement de l'appareil"),
+      contentPadding: const EdgeInsets.all(10),
+      children: [
+        Container(
+          height: 200,
+          constraints: const BoxConstraints(maxHeight: 400,minHeight: 200,maxWidth: 800,minWidth: 500),
+          child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Container(
+                alignment: Alignment.topCenter,
+                //width: 100,
+                child: TextFormField(
+                  decoration: const InputDecoration(
+                    hintText: "Nom de l'appareil"
+                  ),
+                  keyboardType: TextInputType.text,
+                  validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Entrez le champ nom';
+                  }
+                  else{
+                    newDevice.nameDev = value.toString();
+                  }
+                    return null;
+                  },
+                ),
               ),
-              keyboardType: TextInputType.text,
-              validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Entrez le champ nom';
-              }
-              else{
-                newDevice.name = value.toString();
-              }
-                return null;
-              },
-            ),
-          ),
-          Container(
-            alignment: Alignment.topCenter,
-            //width: 100,
-            child: TextFormField(
-              decoration: const InputDecoration(
-                hintText: "Puissance(en W)"
+              Container(
+                alignment: Alignment.topCenter,
+                //width: 100,
+                child: TextFormField(
+                  decoration: const InputDecoration(
+                    hintText: "Puissance(en W)"
+                  ),
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Entrez la puissance';
+                    }
+                    else{
+                      newDevice.conso = double.tryParse(value)!;
+                    }
+                  return null;
+                  },
+                ),
               ),
-              keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Entrez la puissance';
-                }
-                else{
-                  newDevice.conso = value as double;
-                }
-               return null;
-              },
-            ),
+              Row(
+                children: [
+                  ElevatedButton(onPressed: (){
+                    Map<String,dynamic> msg = {
+                      "id":"${widget.id}",
+                      "state":widget.state
+                      };
+                    print(msg);
+                    print(jsonEncode(msg));
+                    server.sink.add(jsonEncode(msg));
+                  }, 
+                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
+                    child: const Text("Tester")
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(6.0),
+                    child: ElevatedButton(onPressed: (){
+                      if(_formKey.currentState!.validate()){
+                        addDevice(newDevice);
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const DeviceList()));
+                      }
+                      //server.sink.add(newDevice);
+                    }, 
+                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.green)),
+                    child: const Text("Enregistrer")
+                ),
+                  ),
+                  ElevatedButton(onPressed: (){
+                  Navigator.of(context).pop();
+                  }, 
+                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.white12)),
+                  child: const Text("Annuler")
+                )
+                ],
+              )
+          ],
           ),
-        ElevatedButton(
-        onPressed: () {
-          
-          if (_formKey.currentState!.validate()) {
-           
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Enregistrement en cours')),
-            );
-            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const MyHomePage()));
-          }
-      },
-      child: const Text('Valider'),
-      ),
-        ],
-      ),
         ),
+      )
+      ],
     );
   }
+/*void connect(){
+      StreamBuilder<dynamic>(
+        stream: server.stream,
+        builder: (context, snapshot) {
+            return Text(
+              snapshot.hasData?'${
+                jsonDecode(snapshot.data)["State"]
+              }'
+                :
+              'Pas de réponse du serveur'
+              );
+        }
+      );
+    }
+*/
+void allumerEteindre(){
+  final server = WebSocketChannel.connect(Uri.parse("ws://ahome.ago:5000/api/v1/device/allumerEteindre/"));
+  //server.sink.add(id,state);
+}  
   @override
   void dispose() {
-
     super.dispose();
   }
 }

@@ -2,22 +2,33 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Device{
-  String name = "";
-  double conso =0.0;
-  dynamic state = [];
-  Icon icone = const Icon(Icons.devices);
-  Device({required conso, required name, required state,  icone});
-
-  factory Device.fromJson(Map<String, dynamic> json)=>Device(
-    name : json['name'],
-    conso : json['conso'],
-    state : json['state']
+  int idDev;
+  String nameDev;
+  double conso;
+  dynamic state;
+  DateTime dateConso =  DateTime.now();
+  //Icon icone = const Icon(Icons.devices);
+  Device(
+    this.idDev,
+    this.nameDev,
+    this.conso,
+    this.state,
+    this.dateConso
   );
 
-  Map<String, dynamic> toJson() => {
-    'name': name,
+  Device.fromJson(Map<dynamic, dynamic> json):
+    idDev = int.tryParse(json['id'])!,
+    nameDev = json['name'],
+    conso = double.tryParse(json['conso'])!,
+    state = json['state'],
+    dateConso = json['dateConso'];
+
+  Map<dynamic, dynamic> toJson() => {
+    'id':idDev,
+    'name': nameDev,
     'conso': conso,
-    'state' : state
+    'state' : state,
+    'dateConso':dateConso
   };
   
 }

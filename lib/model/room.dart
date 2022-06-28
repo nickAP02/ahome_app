@@ -1,20 +1,28 @@
-class Room{
-  // String idRoom = "";
-  String name = "";
-  // double conso = 0.0;
-  List categorie = [];
-  // Room(this.idRoom, this.name, this.conso,this.categorie);
-  Room({required categorie, required name});
-  factory Room.fromJson(Map<String, dynamic> json)=>Room(
-    //idRoom = json['id'] as String,
-    name : json["name"],
-    // conso = json['appareils']['conso'] as dynamic,
-    categorie : json['categorie']);
+import 'dart:convert';
+
+class Room {
+  List<Room> roomFromJson(String str) => List<Room>.from(json.decode(str).map((x)=>Room.fromJson(x)));
+  String roomToJson(List<Room> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+  Room( 
+    this.idRoom,
+    this.nameRoom,
+    this.categorie
+  );
+  
+  int idRoom;
+  String nameRoom;
+  String categorie;
+  
+ 
+   Room.fromJson(Map<String, dynamic> json):
+    idRoom = json["idRoom"],
+    nameRoom = json["nameRoom"],
+    categorie = json['categorie'];
 
   Map<String, dynamic> toJson() => {
-    // 'id': idRoom,
-    'name': name,
-    // 'conso' : conso,
+    'idRoom': idRoom,
+    'name': nameRoom,
     'categorie' : categorie
   };
+
 }

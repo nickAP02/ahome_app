@@ -12,7 +12,7 @@ class RoomDevice extends StatefulWidget {
 
 class _RoomDeviceState extends State<RoomDevice> {
   final  _formKey = GlobalKey<FormState>();
-  Room room = Room(categorie: null, name: null);
+  Room room = Room(1, "", "");
   @override
   void initState() {
 
@@ -38,7 +38,7 @@ class _RoomDeviceState extends State<RoomDevice> {
                 return 'Entrez le champ nom';
               }
               else{
-                room.name = value.toString();
+                room.nameRoom = value.toString();
               }
                 return null;
               },
@@ -53,7 +53,7 @@ class _RoomDeviceState extends State<RoomDevice> {
                 return 'Entrez le champ nom';
               }
               else{
-                room.name = value.toString();
+                room.nameRoom = value.toString();
               }
                 return null;
               },
@@ -63,7 +63,7 @@ class _RoomDeviceState extends State<RoomDevice> {
           onPressed: () async {
             
             if (_formKey.currentState!.validate()) {
-              await HttpService.addRoom(room);
+              //await HttpService.addRoom(room);
               Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const MyHomePage()));
             }
         },
