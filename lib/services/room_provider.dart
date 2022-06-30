@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 
 class RoomProvider extends ChangeNotifier{
   List<Room>? room;
+  String name = "";
   bool loading = false;
   final HttpService httpService = HttpService();
   getRoomData() async{
@@ -12,4 +13,16 @@ class RoomProvider extends ChangeNotifier{
     loading = false;
     notifyListeners();
   }
+  Future<Room> addRoom(Room room) async{
+    var res = httpService.addRoom(room);
+    notifyListeners();
+    return res;
+    
+  }
+  Future<Room> getRoom(int id) async{
+    var res = httpService.getRoom(id);
+    notifyListeners();
+    return res;
+  }
+
 }

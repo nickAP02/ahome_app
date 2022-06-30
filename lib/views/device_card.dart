@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:ago_ahome_app/model/device.dart';
 import 'package:flutter/material.dart';
 import 'package:switcher/core/switcher_size.dart';
@@ -113,7 +111,7 @@ class _DeviceCardState extends State<DeviceCard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text("${widget.name}"),
+                        Text(widget.name),
                         const SizedBox(width: 50,height: 20,),
                         Text("${widget.conso}",
                         style: const TextStyle(

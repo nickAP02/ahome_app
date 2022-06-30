@@ -1,16 +1,18 @@
 class Planning{
+  int idPlan;
   DateTime dateDebut;
   DateTime dateFin;
-    Planning(
-      this.dateDebut,
-      this.dateFin
-    );
+  Map<String,dynamic> user;
     Planning.fromJson(Map<String,dynamic> json):
+      idPlan = json["idPlan"],
       dateDebut = json["dateDebut"],
-      dateFin = json["dateFin"];
+      dateFin = json["dateFin"],
+      user =  json["user"];
 
     Map<String,dynamic> toJson()=>{
+      'idPlan':idPlan,
       'dateDebut':dateDebut,
-      'dateFin':dateFin
+      'dateFin':dateFin,
+      'user' : user
     };
 }

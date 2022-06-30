@@ -1,15 +1,11 @@
 import 'dart:convert';
-import 'package:ago_ahome_app/views/device_list.dart';
 import 'package:http/http.dart' as http;
-import 'package:ago_ahome_app/main.dart';
 import 'package:ago_ahome_app/model/device.dart';
-import 'package:ago_ahome_app/services/http_service.dart';
 import 'package:flutter/material.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
 class DeviceView extends StatefulWidget {
    String id;
    dynamic state;
-   DeviceView(this.id,this.state);
+   DeviceView(this.id,this.state, {Key? key}) : super(key: key);
 
   @override
   State<DeviceView> createState() => _DeviceViewState();
@@ -21,19 +17,19 @@ class _DeviceViewState extends State<DeviceView> {
     var response = await client.put(Uri.parse('http://ahome.ago:5000/api/v1/device/update/${device.idDev}/${device.nameDev}'), body: {
       "conso":device.conso.toDouble(),
     });
-    print(response);
-    print(response.body);
+    //print(response);
+    // print(response.body);
     if (response.statusCode == 200) {
      return jsonDecode(response.body);
     }
     
     else {
-      print("La requête n'a pas aboutie : ${response.statusCode}");
+      Exception("La requête n'a pas aboutie : ${response.statusCode}");
     }
   }
   final  _formKey = GlobalKey<FormState>();
-  Device newDevice =  Device(1, "salon", 10, [1,0,1], DateTime(2022,6,28));
-  final server = WebSocketChannel.connect(Uri.parse("ws://ahome.ago:5000/api/v1/device/allumerEteindre/"));
+  late Device newDevice;
+  //final server = WebSocketChannel.connect(Uri.parse("ws://ahome.ago:5000/api/v1/device/allumerEteindre/"));
   @override
   void initState() {
     super.initState();
@@ -96,9 +92,9 @@ class _DeviceViewState extends State<DeviceView> {
                       "id":"${widget.id}",
                       "state":widget.state
                       };
-                    print(msg);
-                    print(jsonEncode(msg));
-                    server.sink.add(jsonEncode(msg));
+                    // print(msg);
+                    // print(jsonEncode(msg));
+                    //server.sink.add(jsonEncode(msg));
                   }, 
                     style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
                     child: const Text("Tester")
@@ -108,7 +104,7 @@ class _DeviceViewState extends State<DeviceView> {
                     child: ElevatedButton(onPressed: (){
                       if(_formKey.currentState!.validate()){
                         addDevice(newDevice);
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const DeviceList()));
+                        //Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const DeviceList()));
                       }
                       //server.sink.add(newDevice);
                     }, 
@@ -147,7 +143,7 @@ class _DeviceViewState extends State<DeviceView> {
     }
 */
 void allumerEteindre(){
-  final server = WebSocketChannel.connect(Uri.parse("ws://ahome.ago:5000/api/v1/device/allumerEteindre/"));
+  //final server = WebSocketChannel.connect(Uri.parse("ws://ahome.ago:5000/api/v1/device/allumerEteindre/"));
   //server.sink.add(id,state);
 }  
   @override
