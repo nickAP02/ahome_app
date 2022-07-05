@@ -1,18 +1,17 @@
+import 'dart:convert';
+
 class Device{
-  int idDev;
+  late String idDev;
   String nameDev;
   double conso;
   dynamic state;
-  DateTime dateConso =  DateTime.now();
-  List<String> categorie = [
-    'Eclairage',
-    'Appareil informatique',
-    'Chauffage et climatisation'
-  ];
-
+  DateTime dateConso;
+  String categorie;
+  List<Device> deviceFromJson(String str) => List<Device>.from(json.decode(str).map((x)=>Device.fromJson(x)));
+  String deviceToJson(List<Device> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
   Device.fromJson(Map<dynamic, dynamic> json):
-    idDev = int.tryParse(json['id'])!,
     nameDev = json['name'],
+    categorie = json['categorie'],
     conso = double.tryParse(json['conso'])!,
     state = json['state'],
     dateConso = json['dateConso'];
@@ -20,6 +19,7 @@ class Device{
   Map<dynamic, dynamic> toJson() => {
     'id':idDev,
     'name': nameDev,
+    'categorie':categorie,
     'conso': conso,
     'state' : state,
     'dateConso':dateConso

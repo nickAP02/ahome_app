@@ -1,22 +1,34 @@
-  import 'package:flutter/material.dart';
-  List<Icon> icones = const[
-    Icon(Icons.lightbulb),
-    Icon(Icons.microwave),
-    Icon(Icons.kitchen),
-    Icon(Icons.heat_pump),
-    Icon(Icons.light),
-    Icon(Icons.router),
-    Icon(Icons.tv),
-    Icon(Icons.tv),
-    Icon(Icons.tv),
-    Icon(Icons.tv),
-    Icon(Icons.tv),
-    Icon(Icons.tv),
-    Icon(Icons.tv),
+  List<Map> categorieDevice =[
+    {
+      'id':1,
+      'categorie':'Eclairage',
+      'icone':'assets/images/icons/light-control.png'
+    },
+    {
+      'id':2,
+      'categorie':'Appareil informatique',
+      'icone':'assets/images/icons/peripherals.png'
+    },
+    {
+      'id':3,
+      'categorie':'Chauffage et climatisation',
+      'icone':'assets/images/icons/air-conditioner.png'
+    },
+    {
+      'id':4,
+      'categorie':'Electromenager',
+      'icone':'assets/images/icons/freezer.png'
+    }
   ];
-   List categorieDevice = [
-    'Eclairage',
-    'Appareil informatique',
-    'Chauffage et climatisation',
-    'Electromenagers'
+  List<Map> capteurs =[
+    {
+      'id':1,
+      'categorie':'Présence',
+      'icone':'assets/images/icons/motion-sensor.png'
+    },
+    {
+      'id':2,
+      'categorie':'Température',
+      'icone':'assets/images/icons/thermostat.png'
+    }
   ];

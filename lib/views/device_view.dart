@@ -1,4 +1,7 @@
 import 'dart:convert';
+import 'package:ago_ahome_app/utils/colors.dart';
+import 'package:ago_ahome_app/utils/constant.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:ago_ahome_app/model/device.dart';
 import 'package:flutter/material.dart';
@@ -36,13 +39,15 @@ class _DeviceViewState extends State<DeviceView> {
   }
   @override
   Widget build(BuildContext context) {
+    String ?valSelectionne;
+    int index =0;
     return SimpleDialog(
       title: const Text("Enregistrement de l'appareil"),
       contentPadding: const EdgeInsets.all(10),
       children: [
         Container(
-          height: 200,
-          constraints: const BoxConstraints(maxHeight: 400,minHeight: 200,maxWidth: 800,minWidth: 500),
+          height: MediaQuery.of(context).size.height*0.4,
+          constraints: const BoxConstraints(maxHeight: 500,minHeight: 250,maxWidth: 800,minWidth: 500),
           child: Form(
           key: _formKey,
           child: Column(
@@ -85,14 +90,43 @@ class _DeviceViewState extends State<DeviceView> {
                   },
                 ),
               ),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: DropdownButton<String>(
+                      hint: const Text("Categorie"),
+                      value: valSelectionne,
+                      items: categorieDevice.
+                      map((e) => 
+                        DropdownMenuItem<String>(
+                          value:e['categorie'],
+                          child: Row(
+                            children: [
+                              Text(e['icone']),
+                              Text(e['categorie']),
+                            ],
+                          ))
+                        ).toList(),
+                        onChanged: (value){
+                        setState(() {
+                          valSelectionne = value;
+                          // print(value);
+                          // print(valSelectionne);
+                          // newDevice.categorie =  valSelectionne!;
+                          // newDevice.dateConso =  DateTime.now();
+                        });
+                      }
+                     ),
+              ),
               Row(
                 children: [
                   ElevatedButton(onPressed: (){
                     Map<String,dynamic> msg = {
-                      "id":"${widget.id}",
+                      "id":widget.id,
                       "state":widget.state
                       };
-                    // print(msg);
+                    if (kDebugMode) {
+                      print(msg);
+                    }
                     // print(jsonEncode(msg));
                     //server.sink.add(jsonEncode(msg));
                   }, 
@@ -100,7 +134,7 @@ class _DeviceViewState extends State<DeviceView> {
                     child: const Text("Tester")
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(6.0),
+                    padding: const EdgeInsets.all(2.0),
                     child: ElevatedButton(onPressed: (){
                       if(_formKey.currentState!.validate()){
                         addDevice(newDevice);
@@ -108,10 +142,10 @@ class _DeviceViewState extends State<DeviceView> {
                       }
                       //server.sink.add(newDevice);
                     }, 
-                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.green)),
+                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(kPrimaryColor)),
                     child: const Text("Enregistrer")
                 ),
-                  ),
+                ),
                   ElevatedButton(onPressed: (){
                   Navigator.of(context).pop();
                   }, 

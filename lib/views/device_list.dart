@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:ago_ahome_app/model/device.dart';
 import 'package:ago_ahome_app/utils/colors.dart';
-import 'package:ago_ahome_app/views/device_view.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -30,63 +29,40 @@ class DeviceList extends StatelessWidget {
   int selected = 0;
   Color buttonColor = Colors.red;
 
-  DeviceList();
+  DeviceList({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     //return a list of devicecard
     //ElevatedButton tester(on/off)
     //device add form
     //final rooms  = roomDevices.device;
-    return Container(
-        height: 100,
-        //width: 400,
-        padding: const EdgeInsets.symmetric(vertical: 25),
-        child: FutureBuilder<List<Device>>(
-          future: getDevices(),
-          builder: (context,snapshot){
-            // print(snapshot.connectionState);
-            // print(snapshot.hasData);
-            if(snapshot.connectionState == ConnectionState.none || snapshot.hasData==false){
-            return const Center(child: Text("Pas d'appareils disponibles"));
-            }
-            else if(snapshot.hasData == true && snapshot.connectionState== ConnectionState.done){
-              name = snapshot.data![index].nameDev.toString();
-              // print(name);
-              
-              return SizedBox(
-                height: 100,
-                child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (context, index)=>GestureDetector(
-                      onTap: (){
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> DeviceView("${snapshot.data![index].idDev}",snapshot.data![index].state)));
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 15),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: selected==index?kPrimaryColor:  Colors.white,
-                        ),
-                        child:const Text(
-                          "name",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold
-                          ),
-                        ),
-                      ),
-                    ),
-                    scrollDirection: Axis.horizontal,
-                    //separatorBuilder: (_,index)=>SizedBox(width: 20)
-                  ),
-              );
-            }
-            else if(snapshot.connectionState == ConnectionState.waiting){
-              return const Center(child: CircularProgressIndicator(color: Colors.blue,));
-            }
-            return const Center(child: Text("Il n'y a rien qui se passe"));
-          }
+    return Scaffold(
+      appBar: AppBar(title: Text("Liste des apareils"),),
+      body: ListView.builder(
+        //padding: const EdgeInsets.only(top: 200),
+        itemCount: 10,
+        itemBuilder: (context, index)=>GestureDetector(
+            onTap: (){
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Vous avez cliqué cliqué sur cet appareil")));
+              // Navigator.of(context).push(MaterialPageRoute(builder: (context)=> DeviceView("","")));
+            },
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                //borderRadius: BorderRadius.all(Radius.elliptical(10, 10)),
+                color: selected==index?kPrimaryColor:  Colors.white,
+              ),
+              child:const Text(
+                "Ampoule",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold
+                ),
+              ),
+            ),
+          ),
+          scrollDirection: Axis.vertical,
+          //separatorBuilder: (_,index)=>SizedBox(width: 20)
         ),
-      );
+    );
   }
 }

@@ -34,6 +34,8 @@ dependencies:
   date_time_picker: ^2.1.0
   table_calendar: ^3.0.6
   intl: ^0.17.0
+  flutter_speed_dial: ^6.0.0
+  flutter_bloc: ^8.0.1
 
 dev_dependencies:
   flutter_test:
@@ -62,6 +64,7 @@ flutter:
   assets:
      - assets/lightning.png
      - assets/images/
+     #- assets/images/icons
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

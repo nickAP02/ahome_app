@@ -1,24 +1,22 @@
 import 'package:ago_ahome_app/model/planning.dart';
 
 class User{
-  String idUser;
+  late String idUser;
   String firstName;
   String lastName;
   String username;
   String password;
   String email;
   int phoneNumber;
-  Map<String,List<Planning>> plannings;
+  late Map<String,List<Planning>> plannings;
 
   User(
-    this.idUser,
     this.firstName,
     this.lastName,
     this.username,
     this.password,
     this.email,
-    this.phoneNumber,
-    this.plannings
+    this.phoneNumber
     );
 
   User.fromJson(Map<String,dynamic> json):
@@ -32,7 +30,6 @@ class User{
     plannings = json["plannings"] as dynamic;
 
   Map<String, dynamic> toJson() => {
-    'idUser': idUser,
     'firstName':firstName,
     'lastName':lastName,
     'username': username,

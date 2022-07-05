@@ -94,6 +94,7 @@ class HttpService{
     var response = await client.get(Uri.http(url,"users"));
     if(response.statusCode == 200){
       var data = jsonDecode(response.body);
+      return data;
     }
     else{
       Exception("La requête n'a pas aboutie : ${response.statusCode}");
@@ -128,7 +129,7 @@ class HttpService{
     }
   }
   Future<Room> getRoom(int id) async{
-    var response = await client.get(Uri.parse('http://ahome.ago:5000/api/v1/device/read/${id}'));
+    var response = await client.get(Uri.parse('http://ahome.ago:5000/api/v1/device/read/',id));
     // print(response);
     // print(response.body);
       if (response.statusCode == 200) {
@@ -140,7 +141,7 @@ class HttpService{
       }
   }
   Future<Device> getDevice(int id) async{
-    var response = await client.get(Uri.parse('http://ahome.ago:5000/api/v1/device/read/${id}'));
+    var response = await client.get(Uri.parse('http://ahome.ago:5000/api/v1/device/read/',id));
     // print(response);
     // print(response.body);
     try {
