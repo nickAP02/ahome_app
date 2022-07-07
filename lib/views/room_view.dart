@@ -1,7 +1,9 @@
 import 'package:ago_ahome_app/main.dart';
 import 'package:ago_ahome_app/model/room.dart';
+import 'package:ago_ahome_app/services/room_provider.dart';
 import 'package:ago_ahome_app/utils/colors.dart';
 import 'package:ago_ahome_app/utils/constant.dart';
+import 'package:ago_ahome_app/views/screen/home.dart';
 import 'package:flutter/material.dart';
 
 class RoomDevice extends StatefulWidget {
@@ -59,7 +61,8 @@ class _RoomDeviceState extends State<RoomDevice> {
                               value: e['categorie'],
                               child: Row(
                                 children: [
-                                  Text(e['icone']),
+                                  Image.asset(e['icone'],height: 10,width: 10,),
+                                  // Text(e['icone']),
                                   Text(e['categorie']),
                                 ],
                               ))
@@ -84,8 +87,11 @@ class _RoomDeviceState extends State<RoomDevice> {
                         style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(kPrimaryColor)),
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            // await RoomProvider.addRoom(room);
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const MyHomePage()));
+                            await RoomProvider().addRoom(room);
+                            setState(() {
+                               Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const Home()));
+                            });
+                           
                           }
                         },
                         child: const Text('Valider'),

@@ -1,5 +1,7 @@
 import 'dart:convert';
-
+// import 'package:json_serializable/json_serializable.dart';
+// import 'package:json_annotation/json_annotation.dart';
+// @JsonSerializable()
 class Device{
   late String idDev;
   String nameDev;
@@ -7,6 +9,13 @@ class Device{
   dynamic state;
   DateTime dateConso;
   String categorie;
+  Device(
+    this.nameDev,
+    this.conso,
+    this.state,
+    this.dateConso,
+    this.categorie
+  );
   List<Device> deviceFromJson(String str) => List<Device>.from(json.decode(str).map((x)=>Device.fromJson(x)));
   String deviceToJson(List<Device> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
   Device.fromJson(Map<dynamic, dynamic> json):
@@ -17,12 +26,11 @@ class Device{
     dateConso = json['dateConso'];
 
   Map<dynamic, dynamic> toJson() => {
-    'id':idDev,
     'name': nameDev,
     'categorie':categorie,
     'conso': conso,
     'state' : state,
-    'dateConso':dateConso
+    'dateConso':dateConso.toIso8601String()
   };
   
 }

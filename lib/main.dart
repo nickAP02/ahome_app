@@ -1,3 +1,4 @@
+import 'package:ago_ahome_app/services/device_provider.dart';
 import 'package:ago_ahome_app/services/room_provider.dart';
 import 'package:ago_ahome_app/services/theme_service.dart';
 import 'package:ago_ahome_app/utils/theme.dart';
@@ -13,8 +14,7 @@ void main()async {
   //initialisation de get_storage
   await GetStorage.init();
   //demarrage de l'application
-  runApp(const MyHomePage()
-    );
+  runApp(const MyHomePage());
 }
 
 class MyHomePage extends StatefulWidget {
@@ -35,18 +35,21 @@ class _MyHomePageState extends State<MyHomePage> {
   //fonction de traitement du cycle de vie de l'application
   @override
   Widget build(BuildContext context) {
-      return ChangeNotifierProvider(
-        create: (context)=>RoomProvider(),
-        child: GetMaterialApp(
-          theme:Themes.light,
-          themeMode: ThemeService().theme,
-          darkTheme:Themes.dark, 
-          debugShowCheckedModeBanner: false,
-          home: const Scaffold(
-            body: Space(),
-          ),
-          ),
-      );
+    return MultiProvider(providers: [
+ChangeNotifierProvider<DeviceProvider>(create:(context)=>DeviceProvider()),
+ChangeNotifierProvider<RoomProvider>(create:(context)=>RoomProvider()),
+    ],
+    child: GetMaterialApp(
+        theme:Themes.light,
+        themeMode: ThemeService().theme,
+        darkTheme:Themes.dark, 
+        debugShowCheckedModeBanner: false,
+        home: const Scaffold(
+          body: Space(),
+        ),
+      )
+    );
+    
   }
   //creer container
   //crer une colonne pour le bouton et le text

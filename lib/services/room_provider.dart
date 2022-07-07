@@ -4,25 +4,24 @@ import 'package:flutter/cupertino.dart';
 
 class RoomProvider extends ChangeNotifier{
   List<Room>? room;
-  String name = "";
   bool loading = false;
   final HttpService httpService = HttpService();
-  getRoomData() async{
+  Future getRoomData() async{
     loading = true;
     room = await httpService.getRooms();
     loading = false;
     notifyListeners();
+    print(room);
+    return room;
   }
-  Future<Room> addRoom(Room room) async{
-    var res = httpService.addRoom(room);
+  addRoom(Room room) async{
+    httpService.addRoom(room);
     notifyListeners();
-    return res;
-    
   }
-  Future<Room> getRoom(int id) async{
-    var res = httpService.getRoom(id);
-    notifyListeners();
-    return res;
-  }
+  // Future<Room> getRoom(int id) async{
+  //   var res = httpService.getRoom(id);
+  //   notifyListeners();
+  //   return res;
+  // }
 
 }

@@ -69,7 +69,7 @@ class _PlanningViewState extends State<PlanningView> {
                 },
                   onChanged: (val) => print(val),
                   validator: (val) {
-                  print(val);
+                  // print(val);
                   return null;
                 },
                 onSaved: (val) => print(val),
@@ -93,7 +93,7 @@ class _PlanningViewState extends State<PlanningView> {
                  },
                    onChanged: (val) => print(val),
                    validator: (val) {
-                   print(val);
+                  //  print(val);
                    return null;
                  },
                  onSaved: (val) => print(val),

@@ -1,4 +1,5 @@
 import 'package:ago_ahome_app/model/room.dart';
+import 'package:ago_ahome_app/services/room_provider.dart';
 import 'package:ago_ahome_app/services/theme_service.dart';
 import 'package:ago_ahome_app/utils/colors.dart';
 import 'package:ago_ahome_app/utils/constant.dart';
@@ -11,9 +12,11 @@ import 'package:ago_ahome_app/views/screen/planning_view.dart';
 import 'package:ago_ahome_app/views/screen/stats.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:provider/provider.dart';
 import 'package:switcher/core/switcher_size.dart';
 import 'package:switcher/switcher.dart';
 
@@ -32,15 +35,26 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   var tapColor = const Color.fromRGBO(20,115,209,1);
   var textColor =  Colors.white;
   final  _formKey = GlobalKey<FormState>();
-  late Room room;
+  Room room = Room("","");
+  var myroom;
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-    
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<RoomProvider>(context,listen: false).getRoomData().then((value){
+      myroom = value;
+    _tabController = TabController(length: Provider.of<RoomProvider>(context,listen: false).room!.length, vsync: this);
+
+    }
+    );
+    });
+  
   }
+
   @override
   Widget build(BuildContext context) {
+    var deviceProvider= Provider.of<RoomProvider>(context,listen: false);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kBackground,
@@ -199,140 +213,145 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               ),
       ),
       backgroundColor: kBackground,
-      body: ListView(
-        children: [
-          Container(
-            child: CircularPercentIndicator(
-              circularStrokeCap: CircularStrokeCap.round,
-              arcType: ArcType.FULL,
-              percent: 1,
-              backgroundWidth: 100,
-              startAngle: 45,
-              rotateLinearGradient: true,
-              arcBackgroundColor: Colors.indigo,
-              //animation: true,
-              //animationDuration: 1,
-              curve: Curves.bounceInOut,
-              restartAnimation: true,
-              progressColor: kPrimaryColor,
-              fillColor: kBackground,
-              lineWidth: 30,
-              radius: 120,
-              center: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom:10.0, left:50),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Center(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const[
-                              Align(
-                                alignment: Alignment.center,
-                                child: Text("20",
-                                //textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 50,
-                                  fontWeight: FontWeight.bold
+      body: FutureBuilder(
+        future:deviceProvider.getRoomData(),
+        builder: (context,snapshot) {
+
+          if(snapshot.data == null){
+            return Center(child: Text("Rien a afficher"),);
+          }
+          if(snapshot.hasError){
+             return Center(child: Text('${snapshot.data}'));
+          }
+          return ListView(
+            children: [
+              Container(
+                child: CircularPercentIndicator(
+                  circularStrokeCap: CircularStrokeCap.round,
+                  arcType: ArcType.FULL,
+                  percent: 1,
+                  backgroundWidth: 100,
+                  startAngle: 45,
+                  rotateLinearGradient: true,
+                  arcBackgroundColor: Colors.indigo,
+                  //animation: true,
+                  //animationDuration: 1,
+                  curve: Curves.bounceInOut,
+                  restartAnimation: true,
+                  progressColor: kPrimaryColor,
+                  fillColor: kBackground,
+                  lineWidth: 30,
+                  radius: 120,
+                  center: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom:10.0, left:50),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Center(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const[
+                                  Align(
+                                    alignment: Alignment.center,
+                                    child: Text("20",
+                                    //textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 50,
+                                      fontWeight: FontWeight.bold
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  Text("KWh",
+                                  //textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.normal
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Text("KWh",
-                              //textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.normal
-                                ),
+                            ),
+                            const Padding(padding:  EdgeInsets.only(top: 8)),
+                            Padding(
+                              padding:  const EdgeInsets.only(right: 35),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                    Text(
+                                        DateFormat('kk:mm').format(DateTime.now()),
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.bold
+                                      ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            )
+                          ],
                         ),
-                        const Padding(padding:  EdgeInsets.only(top: 8)),
-                        Padding(
-                          padding:  const EdgeInsets.only(right: 35),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                                Text(
-                                    DateFormat('kk:mm').format(DateTime.now()),
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold
-                                  ),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
-          
-          Padding(padding: const EdgeInsets.only(left: 15,top: 5),
-            child: TabBar(
-              indicatorPadding: const EdgeInsets.only(bottom: 10,top: 25),
-              indicatorWeight: 25,
-              indicatorSize: TabBarIndicatorSize.tab,
-              indicator: BoxDecoration(
-                //shape: BoxShape.circle,
-                borderRadius: BorderRadius.circular(40),
-                color: kPrimaryColor
+              // myroom == null?Center(child: Text("Pas de données"),):
+              Padding(padding: const EdgeInsets.only(left: 15,top: 5),
+                child: TabBar(
+                  indicatorPadding: const EdgeInsets.only(bottom: 10,top: 25),
+                  indicatorWeight: 25,
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  indicator: BoxDecoration(
+                    //shape: BoxShape.circle,
+                    borderRadius: BorderRadius.circular(40),
+                    color: kPrimaryColor
+                  ),
+                  dragStartBehavior: DragStartBehavior.start,
+                  controller: _tabController,
+                   tabs: List.generate(deviceProvider.room!.length, (index) => Align(
+                        alignment: Alignment.center,
+                        child: Text(deviceProvider.room![index].nameRoom,
+                        //textAlign: TextAlign.center,
+                        style:const TextStyle(
+                          color: Colors.black
+                        ),
+                      ),
+                    ),)
+                   
+                  
+                   //[
+                //     if(deviceProvider.room!=null)...[
+                //       // ignore: avoid_function_literals_in_foreach_calls
+                //       deviceProvider.room.forEach((element)=>{
+
+                //       })
+                //     ]
+                   
+                // ],
               ),
-              dragStartBehavior: DragStartBehavior.start,
-              controller: _tabController,
-              tabs: const[
-              Align(
-                alignment: Alignment.center,
-                child: Text("Cuisine",
-                //textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.black
-                ),),
               ),
-              Align(
-                alignment: Alignment.center,
-                child: Text("Salon",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.black
-                ),),
-              ),
-              Align(
-                alignment: Alignment.center,
-                child: Text("Chambre",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.black
-                ),),
-              ),
-              
+              Container(
+                height: MediaQuery.of(context).size.height,
+                padding: const EdgeInsets.only(left: 15,right: 15),
+                child: TabBarView(
+                  dragStartBehavior: DragStartBehavior.start,
+                  controller: _tabController,
+                   children: List.generate(deviceProvider.room!.length, (index) => categoryDevice())
+                   //[
+                  //  categoryDevice(),
+                   
+                  // ]
+                ),
+              )
             ],
-          ),
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height,
-            padding: const EdgeInsets.only(left: 15,right: 15),
-            child: TabBarView(
-              dragStartBehavior: DragStartBehavior.start,
-              controller: _tabController,
-              children: [
-               categoryDevice(),
-               categoryDevice(),
-               categoryDevice(),
-              ]
-            ),
-          )
-        ],
+          );
+        }
       ),
       floatingActionButton: 
       SpeedDial(
@@ -395,6 +414,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           headerBuilder: (context,isExpanded)=>
           ListTile(
             title: Text(e['categorie']),
+            subtitle: Text(isExpanded.toString()),
           ), 
           body:gridDiviceCard()
           )
@@ -407,7 +427,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     return GridView.builder(
       shrinkWrap: true,
       padding: const EdgeInsets.only(bottom: 150),
-      itemCount: 200,
+      itemCount: Provider.of<RoomProvider>(context,listen: false).room!.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
       ),
@@ -422,7 +442,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                   textColor = textColor;
                 });
               },
-              onTapCancel: (){
+            onTapCancel: (){
                 setState(() {
                   _isSelected = !_isSelected;
                   colorOn =  false;
@@ -450,7 +470,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                             ),
                             
                             RotatedBox(
-                            quarterTurns:180,
+                            quarterTurns:135,
                             child:Switcher(
                               switcherButtonBoxShape: BoxShape.circle,
                               enabledSwitcherButtonRotate: true,
@@ -472,7 +492,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                         
                         Icon(Icons.lightbulb_outline,color:_isSelected?textColor:Colors.black),
                         
-                        Text("Main light", 
+                        Text(Provider.of<RoomProvider>(context,listen: false).room![index].nameRoom, 
                           style: TextStyle(
                             color:_isSelected?textColor:Colors.black,
                             fontWeight: FontWeight.bold

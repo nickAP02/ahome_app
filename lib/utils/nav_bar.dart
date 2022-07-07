@@ -24,12 +24,6 @@ import 'package:http/http.dart' as http;
   }
 class NavBar extends StatelessWidget{
   NavBar({Key? key}) : super(key: key);
-  List<String> rooms = [
-    "salon",
-    "chambre",
-    "toilette",
-    "cuisine"
-  ];
   var isLoaded = false;
   final int selected = 0;
   late final Function callback;
