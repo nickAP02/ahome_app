@@ -65,23 +65,23 @@ class HttpService{
   Future addRoom(Room room) async{
    
     try {
-      // final request = http.MultipartRequest("POST",fullUri("room/add"));
-      // request.fields["name"] = room.nameRoom;
-      // request.fields["capteur"] = room.capteur;
-      // request.headers.addAll(headers);
-      // var response = await request.send();
-      // var responseData = await response.stream.toBytes();
-      // var responseString = String.fromCharCodes(responseData);
-      // debugPrint("bam"+responseString);
-      final response = await http.post( 
-        fullUri("room/add"),
-     headers: headers,
-        body: json.encode({
-          "name": room.nameRoom,
-          "capteur":room.capteur
-        }));
-      debugPrint("bam"+json.decode(response.body.toString()));
-    return Room.fromJson(json.decode(response.body) as Map<String,dynamic>);
+      final request = http.MultipartRequest("POST",Uri.parse("http://192.168.1.69:5000/api/v1/room/add/"),);
+      request.fields["name"] = room.nameRoom;
+      request.fields["capteur"] = room.capteur;
+      request.headers.addAll( {'Content-Type':'application/json','Accept':"application/json"});
+      var response = await request.send();
+      var responseData = await response.stream.toBytes();
+      var responseString = String.fromCharCodes(responseData);
+      debugPrint("bam"+responseString);
+    //   final response = await http.post( 
+    //     fullUri("room/add"),
+    //  headers: headers,
+    //     body: json.encode({
+    //       "name": room.nameRoom,
+    //       "capteur":room.capteur
+    //     }));
+    //   debugPrint("bam"+json.decode(response.body.toString()));
+    //return Room.fromJson(json.decode(response.body) as Map<String,dynamic>);
     }  catch (err) {
       print(err.toString());
       throw err;

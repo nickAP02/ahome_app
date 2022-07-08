@@ -80,6 +80,7 @@ class _DeviceViewState extends State<DeviceView> {
                   },
                 ),
               ),
+              //modifier pour afficher la liste des pieces
               Container(
                 alignment: Alignment.centerLeft,
                 child: DropdownButton<String>(
