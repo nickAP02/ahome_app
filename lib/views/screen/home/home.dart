@@ -16,10 +16,10 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with TickerProviderStateMixin {
-  late TabController _tabController;
+  //late TabController _tabController;
   PageController? pageController;
-  late final Function callback;
-  final int selected=0;
+  Function ?callback;
+  int selected=0;
   bool _isSelected = false;
   bool isExpanded = false;
   var colorOn = false;
@@ -35,7 +35,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Provider.of<RoomProvider>(context,listen: false).getRoomData().then((value){
-      _tabController = TabController(length: Provider.of<RoomProvider>(context,listen: false).room!.length, vsync: this);
+     // _tabController = TabController(length: Provider.of<RoomProvider>(context,listen: false).room!.length, vsync: this);
       //pageController= PageController(length: Provider.of<RoomProvider>(context,listen: false).room!.length, vsync: this);
       });
     });
@@ -93,7 +93,11 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                     shrinkWrap: true,
                     padding: const EdgeInsets.symmetric(horizontal: 25),
                     itemBuilder: (context, index)=>GestureDetector(
-                      onTap: ()=>callback(index),
+                      onTap: (){
+                       setState(() {
+                         selected = index;
+                       });
+                      },
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 15),
                         decoration: BoxDecoration(
@@ -114,9 +118,10 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                   ),
                 )
               ),
+              CategoryDevice()
               // Container(
-              //   height: 100,
-              //   width: 500,
+              //   height: 50,
+              //   width: 100,
               //   child: ListView.separated(
               //     shrinkWrap: true,
               //     scrollDirection: Axis.horizontal,
@@ -126,7 +131,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               //     itemCount: 5
               //     ),
               // ),
-              CategoryDevice()
+              
             ],
           );
         }

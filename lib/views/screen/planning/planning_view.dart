@@ -109,10 +109,10 @@ class _PlanningViewState extends State<PlanningView> {
                     hint: const Text("Appareils"),
                     value: valSelectionne,
                     items: List.generate(deviceProvider.device!.length, (index) => DropdownMenuItem<String>(
-                        value:deviceProvider.device![index].nameDev,
+                        value:deviceProvider.device![index].idDev,
                         child: Row(
                           children: [
-                            Text(deviceProvider.device![index].nameDev),
+                            Text(deviceProvider.device![index].idDev),
                           ],
                         ))
                       ).toList(),

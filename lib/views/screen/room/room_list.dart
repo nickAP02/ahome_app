@@ -1,11 +1,18 @@
 import 'package:ago_ahome_app/services/providers/room_provider.dart';
 import 'package:ago_ahome_app/utils/colors.dart';
-import 'package:ago_ahome_app/utils/nav_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/src/foundation/key.dart';
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:provider/provider.dart';
 
-class Rooms extends StatelessWidget{
-  Rooms();
+class Rooms extends StatefulWidget {
+  const Rooms({Key? key}) : super(key: key);
+
+  @override
+  State<Rooms> createState() => _RoomsState();
+}
+
+class _RoomsState extends State<Rooms> {
   int index = 0;
   String name="";
   int selected = 0;
@@ -23,6 +30,9 @@ class Rooms extends StatelessWidget{
               itemCount: value.room!.length,
               itemBuilder: (context, index)=>GestureDetector(
                   onTap: (){
+                     setState(() {
+                         selected = index;
+                       });
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Vous avez cliqué sur ${Provider.of<RoomProvider>(context).room![index].nameRoom}")));
                   },
                   child: Container(
@@ -47,5 +57,4 @@ class Rooms extends StatelessWidget{
       ),
     );
   }
-
 }

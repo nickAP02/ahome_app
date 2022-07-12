@@ -66,17 +66,14 @@ class HttpService{
         var response = await client.put(
           fullUri('device/update'), 
           headers: headers,
-          body:json.encode({
-            "name":device.nameDev,
-            "conso":device.conso
-            //"categorie":device.categorie,
-            //"puissance":device.puissance
-          }));
+          body:json.encode(device.toJson()));
           if (response.statusCode == 200) {
-            return Device.fromJson(jsonDecode(response.body));
+            // debugPrint("device enregistre");
+            debugPrint("body "+json.decode(response.body));
+            return json.decode(response.body);
           }
           else {
-            throw Exception("La requête n'a pas aboutie : ${response.statusCode}");
+            throw json.decode(response.body);
           }
         } on Exception catch (e) {
           debugPrint("add device");
@@ -125,17 +122,31 @@ class HttpService{
   Future<List<Device>?>getDevices() async{
     List<Device> devices = [];
     try {
+      debugPrint('premier');
       var response = await http.get(
         fullUri("devices"),
          headers: headers
         );
+        debugPrint(response.body);
      // debugPrint("yes "+response.body.toString());
+     if(response.statusCode==200){
         var data= json.decode(response.body);
-        //debugPrint(data);
-        data.forEach((element)=>{
-         // debugPrint(element),
-        devices.add(Device.fromJson(element))
-      });
+        // debugPrint(response);
+          data.forEach((element)=>{
+          // debugPrint(element),
+            devices.add(Device.fromJson(element))
+          }
+        );
+     }
+      else{
+        throw Exception("");
+      }
+      debugPrint("liste "+devices[0].idDev);
+      debugPrint("cat"+devices[0].categorie!);
+      debugPrint("puissance"+devices[0].puissance.toString());
+      debugPrint("conso"+devices[0].conso.toString());
+      debugPrint("state"+devices[0].state.toString());
+      debugPrint("room"+devices[0].room.toString());
       return devices;
     }  catch (err) {
       debugPrint("devices ici");

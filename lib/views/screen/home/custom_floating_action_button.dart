@@ -25,7 +25,7 @@ class CustomFloatingActionBtn extends StatelessWidget {
           child: const Icon(Icons.devices,color: Colors.white,),
           label: "Ajouter un appareil",
           onTap: ()=>showDialog(context: context, builder: (BuildContext builder){
-            return DeviceView("C5:94:4C@acdb",[0,0,0]);
+            return DeviceList();
           })
         ),
         SpeedDialChild(

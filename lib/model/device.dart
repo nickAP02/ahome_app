@@ -5,44 +5,47 @@ import 'package:intl/intl.dart';
 // import 'package:json_annotation/json_annotation.dart';
 // @JsonSerializable()
 class Device{
-  late String idDev;
-  String nameDev;
-  late double puissance;
+  String idDev;
+  String? nameDev;
+  String? categorie;
+  double puissance;
   double conso;
-  dynamic state;
-  DateTime dateConso;
-  String categorie;
-  Room room;
+  List state;
+  // DateTime dateConso;
+  String? room;
   Device({
+    required this.idDev,
     required this.nameDev,
-    required this.state,
+    required this.categorie,
     required this.puissance,
     required this.conso,
-    required this.dateConso,
-    required this.categorie,
+    required this.state,
+    // required this.dateConso,
     required this.room
 });
   List<Device> deviceFromJson(String str) => List<Device>.from(json.decode(str).map((x)=>Device.fromJson(x)));
   String deviceToJson(List<Device> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
   factory Device.fromJson(Map<dynamic, dynamic> json){
     return Device(
-      nameDev : json['name']??"",
-      categorie : json['categorie']??"",
-      puissance: json['puissance']??"",
-      conso : double.tryParse(json['conso'])!,
-      state : json['state']??"",
-      room : json['nameRoom']??"",
-      dateConso : DateFormat("yyyy-MM-dd hh:mm:ss").parse(json['dateConso'])
+      idDev : json['id'],
+      nameDev : json['name'],
+      categorie : json['categorie'],
+      puissance: json['puissance'].toDouble(),
+      conso : json['conso'].toDouble(),
+      state : List.from(json['state']),
+      // dateConso : DateFormat("yyyy-MM-dd hh:mm:ss").parse(json['dateConso'])
+      room : json['nameRoom'],
       );
   }
   Map<dynamic, dynamic> toJson() => {
+    'id':idDev,
     'name': nameDev,
-    // 'conso':conso,
     'categorie':categorie,
     'puissance': puissance,
-    'state' : state,
-    'dateConso':dateConso.toIso8601String(),
-    'nameRoom':room.nameRoom
+    'conso':conso,
+    'state' : List.from(state.map((e) => e)),
+    // 'dateConso':dateConso.toIso8601String(),
+    'nameRoom':room
   };
   
 }

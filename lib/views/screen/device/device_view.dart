@@ -21,10 +21,12 @@ class DeviceView extends StatefulWidget {
 
 class _DeviceViewState extends State<DeviceView> {
   final  _formKey = GlobalKey<FormState>();
-  Device newDevice =  Device(nameDev:"",state:[],categorie: "",puissance: 0, conso:0,dateConso:DateTime.now(),room: Room(idRoom: "", nameRoom: ""));
+  Device newDevice =  Device(idDev: "",nameDev: "",categorie: "",puissance: 0,conso: 0,state: [],room: "");
+  // Device newDevice =  Device(idDev: "",nameDev:"",state:[],categorie: "",puissance: 0, conso:0,dateConso:DateTime.now(),room:"");
   bool selected=true;
-  final server = WebSocketChannel.connect(Uri.parse("ws://10.20.1.1:7000/api/v1/device/allumerEteindre/"));
-  String ?valSelectionne;
+  final server = WebSocketChannel.connect(Uri.parse("ws://10.20.1.1:5000/api/v1/device/allumerEteindre/"));
+  String ?valSelectionneCat;
+  String ?valSelectionneP;
   @override
   void initState() {
     // int index = 0;
@@ -36,7 +38,6 @@ class _DeviceViewState extends State<DeviceView> {
     var deviceProvider=Provider.of<DeviceProvider>(context,listen:false);
     var roomProvider = Provider.of<RoomProvider>(context,listen: false);
     int index =0;
-   
     return SimpleDialog(
       title: const Text("Enregistrement de l'appareil"),
       contentPadding: const EdgeInsets.all(10),
@@ -88,14 +89,15 @@ class _DeviceViewState extends State<DeviceView> {
               ),
               //liste des categories fixes
              categorieDevice.isEmpty?Text("Les catégories ne sont pas disponibles"):Container(
+              height: 50,
                 alignment: Alignment.centerLeft,
                 child: DropdownButton<String>(
-                      hint: Text("Catégories"),
-                      value: valSelectionne,
+                      hint: Text("Catégorie"),
+                      value: valSelectionneCat,
                       items: categorieDevice.
                       map((e) => 
                         DropdownMenuItem<String>(
-                          value:valSelectionne!,
+                          value:e['categorie'],
                           child: Row(
                             children: [
                               //Text(e['icone']),
@@ -105,19 +107,20 @@ class _DeviceViewState extends State<DeviceView> {
                         ).toList(),
                         onChanged: (value){
                         setState(() {
-                          valSelectionne = value;
-                          newDevice.categorie =  valSelectionne!;
-                          newDevice.dateConso = DateTime.now();
+                          valSelectionneCat = value;
+                          newDevice.categorie =  valSelectionneCat!;
+                          newDevice.conso = 0.0;
                         });
                       }
                      ),
               ),
               // modifier pour afficher la liste des pieces
               roomProvider.room!.isEmpty?Text("Les pièces ne sont pas disponibles"):Container(
+              height: 50,
               alignment: Alignment.centerLeft,
               child: DropdownButton<String>(
-                    hint:  const Text("Pièces"),
-                    value: valSelectionne,
+                    hint: Text("Pièce"),
+                    value: valSelectionneP,
                     items: List.generate(roomProvider.room!.length, (index) => DropdownMenuItem<String>(
                         value:roomProvider.room![index].nameRoom,
                         child: Row(
@@ -128,9 +131,9 @@ class _DeviceViewState extends State<DeviceView> {
                       ).toList(),
                       onChanged: (value){
                       setState(() {
-                        valSelectionne = value;
-                        debugPrint(valSelectionne);
-                        newDevice.room.nameRoom =  valSelectionne!;
+                        valSelectionneP = value;
+                        debugPrint(valSelectionneP);
+                        newDevice.room =  valSelectionneP!;
                       });
                     }),
                 ),
@@ -140,8 +143,8 @@ class _DeviceViewState extends State<DeviceView> {
                     onLongPress: (){
                       setState(() {
                           Map<String,dynamic> msg = {
-                        "id":"C5:94:4C@acdb",
-                        "state":[0,0,0]
+                        "id":"${widget.id}",
+                        "state":"${widget.state}"
                         };
                       allumerEteindre(jsonEncode(msg));
                       //  msg = jsonEncode(id,state)
@@ -151,7 +154,7 @@ class _DeviceViewState extends State<DeviceView> {
                     onPressed: (){
                      setState(() {
                         Map<String,dynamic> msg = {
-                        "id":"C5:94:4C@acdb",
+                        "id":"${widget.id}",
                         "state":[1,0,0]
                       };
                       allumerEteindre(jsonEncode(msg));
@@ -164,7 +167,8 @@ class _DeviceViewState extends State<DeviceView> {
                     padding: const EdgeInsets.all(2.0),
                     child: ElevatedButton(onPressed: (){
                       if(_formKey.currentState!.validate()){
-                        newDevice.idDev = widget.id;
+                        debugPrint("widget id "+widget.id.toString());
+                        newDevice.idDev = widget.id.toString();
                         newDevice.state = widget.state;
                         deviceProvider.addDevice(newDevice);
                         Navigator.of(context).push(MaterialPageRoute(builder: (context)=> DeviceList()));

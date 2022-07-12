@@ -23,7 +23,6 @@ class _CategoryDeviceState extends State<CategoryDevice> {
       map((e) => ExpansionPanel(
         isExpanded: isExpanded,
         headerBuilder: (context,isExpanded){
-          isExpanded = ! isExpanded;
         return ListTile(
           title: Text(e['categorie']),
           //subtitle: Text(isExpanded.toString()),

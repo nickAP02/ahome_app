@@ -4,14 +4,18 @@ import 'package:ago_ahome_app/views/screen/device/device_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class DeviceList extends StatelessWidget {
-  
-  int index = 0;
+class DeviceList extends StatefulWidget {
+  const DeviceList({Key? key}) : super(key: key);
+
+  @override
+  State<DeviceList> createState() => _DeviceListState();
+}
+
+class _DeviceListState extends State<DeviceList> {
+   int index = 0;
   String name="";
   int selected = 0;
   Color buttonColor = Colors.red;
-
-  DeviceList({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     
@@ -33,6 +37,9 @@ class DeviceList extends StatelessWidget {
             itemCount: deviceProvider.device!.length,
             itemBuilder: (context, index)=>GestureDetector(
                 onTap: (){
+                  setState(() {
+                  selected = index;
+                  });
                   //ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Vous avez cliqué cliqué sur cet appareil")));
                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=> DeviceView(deviceProvider.device![index].idDev,deviceProvider.device![index].state)));
                 },
@@ -43,7 +50,7 @@ class DeviceList extends StatelessWidget {
                     color: selected==index?kPrimaryColor:  Colors.white,
                   ),
                   child:Text(
-                    "Appareil "'${deviceProvider.device![index]}',
+                    "Appareil "'${deviceProvider.device![index].idDev}',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold
                     ),
