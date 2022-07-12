@@ -1,4 +1,4 @@
-import 'package:ago_ahome_app/views/screen/home.dart';
+import 'package:ago_ahome_app/views/screen/home/home.dart';
 import 'package:flutter/material.dart';
 
 class Space extends StatelessWidget {

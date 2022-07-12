@@ -1,12 +1,13 @@
-import 'package:ago_ahome_app/services/device_provider.dart';
-import 'package:ago_ahome_app/services/room_provider.dart';
+import 'package:ago_ahome_app/services/providers/device_provider.dart';
+import 'package:ago_ahome_app/services/providers/room_provider.dart';
+import 'package:ago_ahome_app/services/providers/user_provider.dart';
 import 'package:ago_ahome_app/services/theme_service.dart';
 import 'package:ago_ahome_app/utils/theme.dart';
-import 'package:ago_ahome_app/views/screen/space.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
+
+import 'views/screen/space/space.dart';
 
 void main()async {
   //fonction qui permet de verifier l'utilisation d'un widget
@@ -25,8 +26,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  //variable pour verifier le chargement des données venant de l'api
-  var isLoaded = false;
   //fonction d'initialisation du cycle de vie de l'application
   @override
   void initState() {
@@ -35,25 +34,25 @@ class _MyHomePageState extends State<MyHomePage> {
   //fonction de traitement du cycle de vie de l'application
   @override
   Widget build(BuildContext context) {
+    //appel des providers du projet
     return MultiProvider(providers: [
-ChangeNotifierProvider<DeviceProvider>(create:(context)=>DeviceProvider()),
-ChangeNotifierProvider<RoomProvider>(create:(context)=>RoomProvider()),
+      ChangeNotifierProvider<DeviceProvider>(create:(context)=>DeviceProvider()),
+      ChangeNotifierProvider<RoomProvider>(create:(context)=>RoomProvider()),
+      ChangeNotifierProvider<UserProvider>(create: (context)=>UserProvider())
     ],
-    child: GetMaterialApp(
+    child: MaterialApp(
         theme:Themes.light,
         themeMode: ThemeService().theme,
         darkTheme:Themes.dark, 
         debugShowCheckedModeBanner: false,
         home: const Scaffold(
           body: Space(),
+          // Register(),
         ),
       )
     );
     
   }
-  //creer container
-  //crer une colonne pour le bouton et le text
-  //inserer un row dans le container
   //fonction de cloture du cycle de vie de l'application
   @override
   void dispose(){

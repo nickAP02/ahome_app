@@ -7,24 +7,20 @@ class Room {
   String roomToJson(List<Room> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
   late String idRoom;
   String nameRoom;
-  late Map<String,dynamic> device;
-  String capteur;
-  Room(
-    this.nameRoom,
-    this.capteur
-  );
+  Room({
+    required this.idRoom,
+    required this.nameRoom
+    });
   
    factory Room.fromJson(Map<String, dynamic> json){
-    return Room(json["name"], json["capteur"]);
+    return Room(
+      idRoom: json["idRoom"]??"",
+      nameRoom: json["name"]??""
+    );
    }
-    // idRoom = json["idRoom"].toString(),
-    // nameRoom = json["nameRoom"]??"",
-    // capteur = json["capteur"]?? "",
-    // device =  json["appareils"]?? "";
 
   Map<String, dynamic> toJson() => {
-    'name': nameRoom,
-    'capteur':capteur
+    'name': nameRoom
   };
 
 }

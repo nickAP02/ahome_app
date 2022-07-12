@@ -1,10 +1,14 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:ago_ahome_app/main.dart';
 import 'package:ago_ahome_app/model/room.dart';
-import 'package:ago_ahome_app/services/room_provider.dart';
+import 'package:ago_ahome_app/services/providers/room_provider.dart';
 import 'package:ago_ahome_app/utils/colors.dart';
 import 'package:ago_ahome_app/utils/constant.dart';
-import 'package:ago_ahome_app/views/screen/home.dart';
+import 'package:ago_ahome_app/views/screen/home/home.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
+import 'package:provider/provider.dart';
 
 class RoomDevice extends StatefulWidget {
   const RoomDevice({Key? key}) : super(key: key);
@@ -17,7 +21,7 @@ class _RoomDeviceState extends State<RoomDevice> {
   final  _formKey = GlobalKey<FormState>();
   int index = 0;
   String? valSelectionne;
-  Room room= Room("","");
+  Room room= Room(idRoom: "",nameRoom: "");
 
   @override
   void initState() {
@@ -25,6 +29,7 @@ class _RoomDeviceState extends State<RoomDevice> {
   }
   @override
   Widget build(BuildContext context) {
+    var roomProvider = Provider.of<RoomProvider>(context,listen:false);
     return 
       SimpleDialog(
         title: const Text("Enregistrement d'une pièce"),
@@ -51,33 +56,6 @@ class _RoomDeviceState extends State<RoomDevice> {
                         return null;
                       },
                     ),
-                    Row(children: [
-                       DropdownButton<String>(
-                          hint: const Text("Capteurs"),
-                          value: valSelectionne,
-                          items: capteurs.
-                          map((e) => 
-                            DropdownMenuItem<String>(
-                              value: e['categorie'],
-                              child: Row(
-                                children: [
-                                  Image.asset(e['icone'],height: 10,width: 10,),
-                                  // Text(e['icone']),
-                                  Text(e['categorie']),
-                                ],
-                              ))
-                          ).toList(), 
-                          onChanged: (value) {
-                            setState(() {
-                              valSelectionne =  value;
-                              // print(value);
-                              // print(valSelectionne);
-                              room.capteur = valSelectionne!;
-                            });
-                            },
-                        )
-                    ],
-                    ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -87,7 +65,7 @@ class _RoomDeviceState extends State<RoomDevice> {
                         style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(kPrimaryColor)),
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            await RoomProvider().addRoom(room);
+                            roomProvider.addRoom(room);
                             setState(() {
                                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const Home()));
                             });
@@ -114,7 +92,6 @@ class _RoomDeviceState extends State<RoomDevice> {
   }
   @override
   void dispose() {
-
     super.dispose();
   }
 }

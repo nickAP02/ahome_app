@@ -3,24 +3,23 @@ import 'package:ago_ahome_app/services/http_service.dart';
 import 'package:flutter/material.dart';
 
 class DeviceProvider extends ChangeNotifier{
-  List<Device>? device;
-   bool loading = false;
+  List<Device>? device = [];
+  bool loading = false;
   final HttpService httpService = HttpService();
-  getRoomData() async{
+  Future getDeviceData() async{
     loading = true;
     device = await httpService.getDevices();
     loading = false;
     notifyListeners();
+    return device;
   }
-  Future<Device> addDevice(Device device) async{
-    var res = httpService.addDevice(device);
+  Future addDevice(Device device) async{
+    httpService.addDevice(device);
     notifyListeners();
-    return res;
+  }
+  Future getRoomDevice() async{
     
-  }
-  Future<Device> getDevice(String id) async{
-    var res = httpService.getDevice(id);
     notifyListeners();
-    return res;
+   
   }
 }

@@ -1,4 +1,4 @@
-import 'package:ago_ahome_app/services/room_provider.dart';
+import 'package:ago_ahome_app/services/providers/room_provider.dart';
 import 'package:ago_ahome_app/utils/colors.dart';
 import 'package:ago_ahome_app/utils/nav_bar.dart';
 import 'package:flutter/material.dart';

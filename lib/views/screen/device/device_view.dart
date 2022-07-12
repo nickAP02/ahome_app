@@ -1,16 +1,17 @@
 import 'dart:convert';
-import 'package:ago_ahome_app/services/device_provider.dart';
+
+import 'package:ago_ahome_app/model/room.dart';
+import 'package:ago_ahome_app/services/providers/device_provider.dart';
+import 'package:ago_ahome_app/services/providers/room_provider.dart';
 import 'package:ago_ahome_app/utils/colors.dart';
-import 'package:ago_ahome_app/utils/constant.dart';
-import 'package:ago_ahome_app/views/device_list.dart';
-import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
 import 'package:ago_ahome_app/model/device.dart';
+import 'package:ago_ahome_app/views/screen/device/device_list.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:ago_ahome_app/utils/constant.dart';
 class DeviceView extends StatefulWidget {
-   String id;
+   dynamic id;
    dynamic state;
    DeviceView(this.id,this.state, {Key? key}) : super(key: key);
 
@@ -20,17 +21,22 @@ class DeviceView extends StatefulWidget {
 
 class _DeviceViewState extends State<DeviceView> {
   final  _formKey = GlobalKey<FormState>();
-  Device newDevice =  Device("",0,"",DateTime.now(),"");
-  // final server = WebSocketChannel.connect(Uri.parse("ws://ahome.ago:5000/api/v1/device/allumerEteindre/"));
+  Device newDevice =  Device(nameDev:"",state:[],categorie: "",puissance: 0, conso:0,dateConso:DateTime.now(),room: Room(idRoom: "", nameRoom: ""));
+  bool selected=true;
+  final server = WebSocketChannel.connect(Uri.parse("ws://10.20.1.1:7000/api/v1/device/allumerEteindre/"));
+  String ?valSelectionne;
   @override
   void initState() {
+    // int index = 0;
+    //  valSelectionne =RoomProvider().room![index].nameRoom;
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
     var deviceProvider=Provider.of<DeviceProvider>(context,listen:false);
-    String ?valSelectionne;
+    var roomProvider = Provider.of<RoomProvider>(context,listen: false);
     int index =0;
+   
     return SimpleDialog(
       title: const Text("Enregistrement de l'appareil"),
       contentPadding: const EdgeInsets.all(10),
@@ -74,22 +80,22 @@ class _DeviceViewState extends State<DeviceView> {
                       return 'Entrez la puissance';
                     }
                     else{
-                      newDevice.conso = double.tryParse(value)!;
+                      newDevice.puissance = double.tryParse(value)!;
                     }
                   return null;
                   },
                 ),
               ),
-              //modifier pour afficher la liste des pieces
-              Container(
+              //liste des categories fixes
+             categorieDevice.isEmpty?Text("Les catégories ne sont pas disponibles"):Container(
                 alignment: Alignment.centerLeft,
                 child: DropdownButton<String>(
-                      hint: const Text("Categorie"),
+                      hint: Text("Catégories"),
                       value: valSelectionne,
                       items: categorieDevice.
                       map((e) => 
                         DropdownMenuItem<String>(
-                          value:e['categorie'],
+                          value:valSelectionne!,
                           child: Row(
                             children: [
                               //Text(e['icone']),
@@ -100,35 +106,67 @@ class _DeviceViewState extends State<DeviceView> {
                         onChanged: (value){
                         setState(() {
                           valSelectionne = value;
-                          // print(value);
-                          // print(valSelectionne);
                           newDevice.categorie =  valSelectionne!;
-                          newDevice.dateConso = newDevice.dateConso;
+                          newDevice.dateConso = DateTime.now();
                         });
                       }
                      ),
               ),
-              Row(
+              // modifier pour afficher la liste des pieces
+              roomProvider.room!.isEmpty?Text("Les pièces ne sont pas disponibles"):Container(
+              alignment: Alignment.centerLeft,
+              child: DropdownButton<String>(
+                    hint:  const Text("Pièces"),
+                    value: valSelectionne,
+                    items: List.generate(roomProvider.room!.length, (index) => DropdownMenuItem<String>(
+                        value:roomProvider.room![index].nameRoom,
+                        child: Row(
+                          children: [
+                            Text(roomProvider.room![index].nameRoom),
+                          ],
+                        ))
+                      ).toList(),
+                      onChanged: (value){
+                      setState(() {
+                        valSelectionne = value;
+                        debugPrint(valSelectionne);
+                        newDevice.room.nameRoom =  valSelectionne!;
+                      });
+                    }),
+                ),
+                Row(
                 children: [
-                  ElevatedButton(onPressed: (){
-                    Map<String,dynamic> msg = {
-                      "id":widget.id,
-                      "state":widget.state
+                  ElevatedButton(
+                    onLongPress: (){
+                      setState(() {
+                          Map<String,dynamic> msg = {
+                        "id":"C5:94:4C@acdb",
+                        "state":[0,0,0]
+                        };
+                      allumerEteindre(jsonEncode(msg));
+                      //  msg = jsonEncode(id,state)
+                      // allumerEteindre();
+                      });
+                    },
+                    onPressed: (){
+                     setState(() {
+                        Map<String,dynamic> msg = {
+                        "id":"C5:94:4C@acdb",
+                        "state":[1,0,0]
                       };
-                    if (kDebugMode) {
-                      print(msg);
-                    }
-                    // print(jsonEncode(msg));
-                    // server.sink.add(jsonEncode(msg));
+                      allumerEteindre(jsonEncode(msg));
+                     });
                   }, 
-                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
+                    style: selected ?ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.red)):ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.green)),
                     child: const Text("Tester")
                   ),
                   Padding(
                     padding: const EdgeInsets.all(2.0),
                     child: ElevatedButton(onPressed: (){
                       if(_formKey.currentState!.validate()){
-                        DeviceProvider().addDevice(newDevice);
+                        newDevice.idDev = widget.id;
+                        newDevice.state = widget.state;
+                        deviceProvider.addDevice(newDevice);
                         Navigator.of(context).push(MaterialPageRoute(builder: (context)=> DeviceList()));
                       }
                       // server.sink.add(newDevice);
@@ -152,25 +190,10 @@ class _DeviceViewState extends State<DeviceView> {
       ],
     );
   }
-/*void connect(){
-      StreamBuilder<dynamic>(
-        stream: server.stream,
-        builder: (context, snapshot) {
-            return Text(
-              snapshot.hasData?'${
-                jsonDecode(snapshot.data)["State"]
-              }'
-                :
-              'Pas de réponse du serveur'
-              );
-        }
-      );
-    }
-*/
-void allumerEteindre(){
-  // final server = WebSocketChannel.connect(Uri.parse("ws://ahome.ago:5000/api/v1/device/allumerEteindre/"));
-  //server.sink.add(id,state);
-}  
+  void allumerEteindre(msg){
+    debugPrint(msg);
+    server.sink.add(msg);
+  }
   @override
   void dispose() {
     super.dispose();
