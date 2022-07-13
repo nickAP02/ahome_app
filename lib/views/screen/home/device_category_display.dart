@@ -12,7 +12,7 @@ class CategoryDevice extends StatefulWidget {
 class _CategoryDeviceState extends State<CategoryDevice> {
   @override
   Widget build(BuildContext context) {
-    final bool isExpanded = false;
+    bool isExpanded = false;
     return ExpansionPanelList(
       expansionCallback: ((panelIndex, isExpanded) {
         setState(() {
@@ -23,10 +23,13 @@ class _CategoryDeviceState extends State<CategoryDevice> {
       map((e) => ExpansionPanel(
         isExpanded: isExpanded,
         headerBuilder: (context,isExpanded){
-        return ListTile(
-          title: Text(e['categorie']),
-          //subtitle: Text(isExpanded.toString()),
-        );}, 
+        return Row(
+          children: [
+              Image.asset(e['icone']),
+              Text(e['categorie']),
+            ],
+          );
+        }, 
         body:DeviceCard()
         )
       ).toList()

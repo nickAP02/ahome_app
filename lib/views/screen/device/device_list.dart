@@ -34,30 +34,35 @@ class _DeviceListState extends State<DeviceList> {
              return Center(child: Text('${snapshot.data}'));
           }
           return ListView.builder(
-            itemCount: deviceProvider.device!.length,
-            itemBuilder: (context, index)=>GestureDetector(
-                onTap: (){
-                  setState(() {
-                  selected = index;
-                  });
-                  //ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Vous avez cliqué cliqué sur cet appareil")));
-                 Navigator.of(context).push(MaterialPageRoute(builder: (context)=> DeviceView(deviceProvider.device![index].idDev,deviceProvider.device![index].state)));
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    //borderRadius: BorderRadius.all(Radius.elliptical(10, 10)),
-                    color: selected==index?kPrimaryColor:  Colors.white,
-                  ),
-                  child:Text(
-                    "Appareil "'${deviceProvider.device![index].idDev}',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold
-                    ),
-                  ),
-                ),
-              ),
               scrollDirection: Axis.vertical,
+              itemCount: deviceProvider.device!.length,
+              itemBuilder: (context, index)=>
+                GestureDetector(
+                  onTap: (){
+                    setState(() {
+                    selected = index;
+                    });
+                    //ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Vous avez cliqué cliqué sur cet appareil")));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=> DeviceView(deviceProvider.device![index].idDev,deviceProvider.device![index].state)));
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      //borderRadius: BorderRadius.all(Radius.elliptical(10, 10)),
+                      color: selected==index?kPrimaryColor:  Colors.white,
+                    ),
+                    child:deviceProvider.device![index].nameDev!.isEmpty?Text(
+                      "Appareil "'${deviceProvider.device![index].idDev}',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold
+                      )):Text(
+                        '${deviceProvider.device![index].nameDev}',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ),
+                )
               //separatorBuilder: (_,index)=>SizedBox(width: 20)
             );
         }

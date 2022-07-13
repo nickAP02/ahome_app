@@ -97,18 +97,18 @@ class _DeviceCardState extends State<DeviceCard> {
                         
                 Icon(Icons.lightbulb_outline,color:_isSelected?textColor:Colors.black),
                 
-                // Text(deviceProvider.device![index].nameDev!, 
-                //   style: TextStyle(
-                //     color:_isSelected?textColor:Colors.black,
-                //     fontWeight: FontWeight.bold
-                //   )
-                // ),
-                // Text('${deviceProvider.device![index].puissance}', 
-                //   style: TextStyle(
-                //     color:_isSelected?textColor:Colors.black,
-                //     fontWeight: FontWeight.bold
-                //   )
-                // ),
+                Text(deviceProvider.device![index].nameDev!, 
+                  style: TextStyle(
+                    color:_isSelected?textColor:Colors.black,
+                    fontWeight: FontWeight.bold
+                  )
+                ),
+                Text('${deviceProvider.device![index].puissance}', 
+                  style: TextStyle(
+                    color:_isSelected?textColor:Colors.black,
+                    fontWeight: FontWeight.bold
+                  )
+                ),
               ],
               )
             ),
