@@ -7,36 +7,28 @@ import 'package:provider/provider.dart';
 import 'package:switcher/core/switcher_size.dart';
 import 'package:switcher/switcher.dart';
 class DeviceCard extends StatefulWidget {
+  //  late Device device;
+  // late  String name;
+  // late double conso;
+  // DeviceCard(this.name,this.conso);
   @override
   State<DeviceCard> createState() => _DeviceCardState();
 }
 
 class _DeviceCardState extends State<DeviceCard> {
-  late Future<List<Device>> devices;
   int index=0;
   bool _isSelected = false;
   bool switchVal = false;
   var tapColor = const Color.fromRGBO(20,115,209,1);
   var colorOn = false;
   var textColor = Colors.white;
-  
-  //String name ="";
-  //double conso = 0.0;
   @override
   void initState(){
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
-    var deviceProvider = Provider.of<DeviceProvider>(context,listen: false);
-    return GridView.builder(
-      shrinkWrap: true,
-      padding: const EdgeInsets.only(bottom: 150),
-      itemCount: deviceProvider.device!.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-      ),
-       itemBuilder: (context,index){
+     var roomProvider=Provider.of<RoomProvider>(context,listen:false);
         return Padding(
           padding: const EdgeInsets.all(8.0),
           child: GestureDetector(
@@ -97,13 +89,13 @@ class _DeviceCardState extends State<DeviceCard> {
                         
                 Icon(Icons.lightbulb_outline,color:_isSelected?textColor:Colors.black),
                 
-                Text(deviceProvider.device![index].nameDev!, 
+                Text('${roomProvider.devices[index].nameDev}', 
                   style: TextStyle(
                     color:_isSelected?textColor:Colors.black,
                     fontWeight: FontWeight.bold
                   )
                 ),
-                Text('${deviceProvider.device![index].puissance}', 
+                Text('${roomProvider.devices[index].puissance}', 
                   style: TextStyle(
                     color:_isSelected?textColor:Colors.black,
                     fontWeight: FontWeight.bold
@@ -114,7 +106,6 @@ class _DeviceCardState extends State<DeviceCard> {
             ),
           ),
         );
-      });
    }
   //   return FutureBuilder<List<Device>>(
   //     future: devices,

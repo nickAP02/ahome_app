@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:ago_ahome_app/model/capteur.dart';
 import 'package:ago_ahome_app/model/room.dart';
 import 'package:ago_ahome_app/model/user.dart';
 import 'package:flutter/cupertino.dart';
@@ -32,7 +33,8 @@ class HttpService{
         return User.fromJson(json.decode(response.body)); 
       } 
       else {
-        return response.statusCode.toString();
+        var result=json.decode(response.body);
+        return result["result"];
       }
     } on Exception catch (e) {
       throw e.toString();
@@ -54,7 +56,9 @@ class HttpService{
       return User.fromJson(json.decode(response.body));
       }
       else {
-        Exception("La requête n'a pas aboutie : ${response.statusCode}");
+        var result=json.decode(response.body);
+        return result["result"];
+        // Exception("La requête n'a pas aboutie : ${response.statusCode}");
       }
     } on Exception catch (e) {
       throw e.toString();
@@ -69,8 +73,10 @@ class HttpService{
           body:json.encode(device.toJson()));
           if (response.statusCode == 200) {
             // debugPrint("device enregistre");
-            debugPrint("body "+json.decode(response.body));
-            return json.decode(response.body);
+            // debugPrint("body "+json.decode(response.body.toString()));
+            var result=json.decode(response.body);
+            debugPrint(result["result"]);
+            return result["result"];
           }
           else {
             throw json.decode(response.body);
@@ -90,8 +96,8 @@ class HttpService{
           "name": room.nameRoom,
         })
       );
-      debugPrint("bam"+json.decode(response.body.toString()));
-      //return Room.fromJson(json.decode(response.body));
+      var result=json.decode(response.body);
+      return result["result"];
     }  catch (err) {
       debugPrint("add room");
       debugPrint(err.toString());
@@ -141,12 +147,12 @@ class HttpService{
       else{
         throw Exception("");
       }
-      debugPrint("liste "+devices[0].idDev);
-      debugPrint("cat"+devices[0].categorie!);
-      debugPrint("puissance"+devices[0].puissance.toString());
-      debugPrint("conso"+devices[0].conso.toString());
-      debugPrint("state"+devices[0].state.toString());
-      debugPrint("room"+devices[0].room.toString());
+      // debugPrint("liste "+devices[0].idDev);
+      // debugPrint("cat"+devices[0].categorie!);
+      // debugPrint("puissance"+devices[0].puissance.toString());
+      // debugPrint("conso"+devices[0].conso.toString());
+      // debugPrint("state"+devices[0].state.toString());
+      // debugPrint("room"+devices[0].room.toString());
       return devices;
     }  catch (err) {
       debugPrint("devices ici");
@@ -161,7 +167,7 @@ class HttpService{
         fullUri("rooms"),
         headers:headers
       );
-      var data= json.decode(response.body) ;
+      var data= json.decode(response.body);
       data.forEach((element)=>{
         rooms.add(Room.fromJson(element))
       });
@@ -171,6 +177,49 @@ class HttpService{
       throw err.toString();
     }
   }
+  Future getCapteurs() async{
+    List<Capteur> capteurs = [];
+      try {
+        var response = await http.get(
+          fullUri("capteurs"),
+          headers: headers
+        );
+        var data = json.decode(response.body);
+        print(data);
+        data.forEach((element)=>{
+          capteurs.add(Capteur.fromJson(element))
+        });
+        return capteurs;
+      } on Exception catch (e) {
+        debugPrint("capteurs ici");
+        throw e.toString();
+      }
+    }
+    Future addCapteur(Capteur capteur) async{
+    // List<Capteur> capteurs = [];
+      try {
+        var response = await http.put(
+          fullUri("capteur/update"),
+          headers: headers,
+          body: json.encode({
+          "id":capteur.id,
+          "nameRoom":capteur.nameRoom,
+      })
+        );
+        if (response.statusCode == 200) {
+          // debugPrint("body "+json.decode(response.body.toString()));
+          var result=json.decode(response.body);
+          debugPrint(result["result"]);
+          return result["result"];
+        }
+        else {
+          throw json.decode(response.body);
+        }
+      } on Exception catch (e) {
+        debugPrint("capteurs ici");
+        throw e.toString();
+      }
+    }
   //   Future<Room> getRoom(String id) async{
   //     try {
   //         var response = await http.get(Uri.parse('http://ahome.ago:5000/api/v1/device/read/${id}'));
@@ -188,46 +237,44 @@ class HttpService{
   //       }
   //   }
   
-  //   Future<Room> updateRoom(Room room) async{
-  //     try {
-  //       var response= await http.put(Uri.parse('http://ahome.ago:5000/api/v1/device/update/'),
-  //         headers: <String, String>{
-  //           'Content-Type': 'application/json; charset=UTF-8',
-  //         },
-  //         body: {
-  //           jsonEncode(room.toJson())
-  //         });
-  //         if (response.statusCode == 200) {
-  //         return Room.fromJson(jsonDecode(response.body));
-  //       }
-  //       else {
-  //         throw Exception("La requête n'a pas aboutie : ${response.statusCode}");
-  //       }
-  //     } on Exception catch (e) {
-  //             debugPrint("update room");
-  //       throw e;
-  //     }
-  //   }
-  //   Future<Room> deleteRoom(Room room) async{
-  //       try {
-  //         var response= await http.put(Uri.parse('http://ahome.ago:5000/api/v1/device/delete/${room.idRoom}'),
-  //         headers: <String, String>{
-  //           'Content-Type': 'application/json; charset=UTF-8',
-  //         },
-  //         body: {
-  //           jsonEncode(room.toJson())
-  //         });
-  //         if (response.statusCode == 200) {
-  //         return Room.fromJson(jsonDecode(response.body));
-  //               }
-  //               else {
-  //         throw Exception("La requête n'a pas aboutie : ${response.statusCode}");
-  //               }
-  //       } on Exception catch (e) {
-  //         debugPrint("delete room");
-  //         throw e;
-  //       }
-  //   }
+    Future<Room> updateRoom(Room room) async{
+      try {
+        var response= await http.put(
+          fullUri("room/update"),
+          headers: headers,
+          body: {
+            jsonEncode(room.toJson())
+          });
+          if (response.statusCode == 200) {
+          return Room.fromJson(jsonDecode(response.body));
+        }
+        else {
+          throw Exception("La requête n'a pas aboutie : ${response.statusCode}");
+        }
+      } on Exception catch (e) {
+        debugPrint("update room");
+        throw e.toString();
+      }
+    }
+    Future<Room> deleteRoom(Room room) async{
+        try {
+          var response= await http.delete(
+          fullUri("room/delete"),
+          headers: headers,
+          body: {
+            jsonEncode(room.toJson())
+          });
+          if (response.statusCode == 200) {
+            return Room.fromJson(jsonDecode(response.body));
+          }
+          else {
+            throw Exception("La requête n'a pas aboutie : ${response.statusCode}");
+          }
+        }catch (e) {
+          debugPrint("delete room");
+          throw e.toString();
+        }
+    }
   // Future<Device> getDevice(String id) async{
   //     var response = await http.get(Uri.parse('http://ahome.ago:5000/api/v1/device/read/${id}'));
   //     // print(response);
@@ -244,20 +291,102 @@ class HttpService{
   //       throw Exception(e.toString());
   //     }
   //   }
-  //   Future<Device> updateDevice(Device device) async{
-  //   var response = await http.put(Uri.parse('http://ahome.ago:5000/api/v1/device/update/'),
-  //   headers: <String, String>{
-  //       'Content-Type': 'application/json; charset=UTF-8',
-  //     },
-  //     body: {
-  //       jsonEncode(device.toJson())
-  //     });
-  //     if (response.statusCode == 200) {
-  //     return Device.fromJson(jsonDecode(response.body));
-  //     }
-  //     else {
-  //     throw Exception("La requête n'a pas aboutie : ${response.statusCode}");
-  //   }
-  // }
-  
+    Future<Device> updateDevice(Device device) async{
+      try{
+          var response = await http.put(
+          fullUri('device/update'), 
+          headers: headers,
+          body:json.encode({
+          "id":device.idDev,
+          "name":device.nameDev,
+          "categorie":device.categorie,
+          "puissance":device.puissance,
+          "state":device.state,
+          "nameRoom":device.room,
+      })
+        );
+          if (response.statusCode == 200) {
+            // debugPrint("device enregistre");
+            debugPrint("body "+json.decode(response.body));
+            var result=json.decode(response.body);
+            return result["result"];
+          }
+          else {
+            throw json.decode(response.body);
+          }
+        }catch (e) {
+          debugPrint("add device");
+          throw e.toString();
+        }
+     }
+     Future<Device> deleteDevice(Device device) async{
+      try{
+          var response = await client.delete(
+          fullUri('device/delete'), 
+          headers: headers,
+          body:json.encode(device.toJson()));
+          if (response.statusCode == 200) {
+            // debugPrint("device enregistre");
+            debugPrint("body "+json.decode(response.body));
+            var result=json.decode(response.body);
+            return result["result"];
+          }
+          else {
+            throw json.decode(response.body);
+          }
+        }catch (e) {
+          debugPrint("add device");
+          throw e.toString();
+        }
+     }
+    //  Future<Device> deleteDevice(Device device) async{
+    //   try{
+    //       var response = await client.delete(
+    //       fullUri('device/delete'), 
+    //       headers: headers,
+    //       body:json.encode(device.toJson()));
+    //       if (response.statusCode == 200) {
+    //         // debugPrint("device enregistre");
+    //         debugPrint("body "+json.decode(response.body));
+    //         var result=json.decode(response.body);
+    //         return result["result"];
+    //       }
+    //       else {
+    //         throw json.decode(response.body);
+    //       }
+    //     }catch (e) {
+    //       debugPrint("add device");
+    //       throw e.toString();
+    //     }
+    //  }
+    Future getTemperature(String name) async{
+      try{
+        var response = await http.get(
+          fullUri("temperature/${name}"),
+          headers: headers
+        );
+        var data =json.decode(response.body);
+        debugPrint("temp"+data.toString());
+        return data;
+        
+      }catch(e){
+        throw e.toString();
+      }
+    }
+    Future getRoomDevice(String name) async{
+      List<Device> devices = [];
+      try{
+        var response = await http.get(
+          fullUri("device/room/${name}"),
+          headers: headers
+        );
+        var data = json.decode(response.body);
+        data.forEach((element)=>{
+          devices.add(Device.fromJson(element))
+        });
+        return devices;
+      }catch(e){
+        throw e.toString();
+      }
+    }
 }

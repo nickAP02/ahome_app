@@ -1,5 +1,6 @@
 import 'package:ago_ahome_app/services/theme_service.dart';
 import 'package:ago_ahome_app/views/screen/device/device_list.dart';
+import 'package:ago_ahome_app/views/screen/device/updated_devices.dart';
 import 'package:ago_ahome_app/views/screen/planning/planning_list.dart';
 import 'package:ago_ahome_app/views/screen/room/room_list.dart';
 import 'package:ago_ahome_app/views/screen/home/home.dart';

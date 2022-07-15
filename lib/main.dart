@@ -1,3 +1,4 @@
+import 'package:ago_ahome_app/services/providers/capteur_provider.dart';
 import 'package:ago_ahome_app/services/providers/device_provider.dart';
 import 'package:ago_ahome_app/services/providers/room_provider.dart';
 import 'package:ago_ahome_app/services/providers/user_provider.dart';
@@ -38,6 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return MultiProvider(providers: [
       ChangeNotifierProvider<DeviceProvider>(create:(context)=>DeviceProvider()),
       ChangeNotifierProvider<RoomProvider>(create:(context)=>RoomProvider()),
+       ChangeNotifierProvider<CapteurProvider>(create: (context)=>CapteurProvider()),
       ChangeNotifierProvider<UserProvider>(create: (context)=>UserProvider())
     ],
     child: MaterialApp(

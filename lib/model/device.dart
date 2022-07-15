@@ -42,7 +42,6 @@ class Device{
     'name': nameDev,
     'categorie':categorie,
     'puissance': puissance,
-    'conso':conso,
     'state' : List.from(state.map((e) => e)),
     // 'dateConso':dateConso.toIso8601String(),
     'nameRoom':room

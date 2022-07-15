@@ -18,7 +18,7 @@
       'id':4,
       'categorie':'Electromenager',
       'icone':'assets/images/icons/freezer.png'
-    }
+    },
   ];
   List<Map> capteurs =[
     {
@@ -28,6 +28,11 @@
     },
     {
       'id':2,
+      'categorie':'Température',
+      'icone':'assets/images/icons/thermostat.png'
+    },
+    {
+      'id':3,
       'categorie':'Température',
       'icone':'assets/images/icons/thermostat.png'
     }

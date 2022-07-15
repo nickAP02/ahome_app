@@ -74,7 +74,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         builder: (context,snapshot) {
           if(snapshot.data == null){
             debugPrint(snapshot.data.toString());
-            return const Center(child: Text("Rien a afficher"),);
+            return const Center(child: CircularProgressIndicator(),);
           }
           if(snapshot.hasError){
              return Center(child: Text('${snapshot.data}'));

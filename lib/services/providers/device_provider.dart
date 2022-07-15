@@ -17,9 +17,5 @@ class DeviceProvider extends ChangeNotifier{
     httpService.addDevice(device);
     notifyListeners();
   }
-  Future getRoomDevice() async{
-    
-    notifyListeners();
-   
-  }
+  
 }
