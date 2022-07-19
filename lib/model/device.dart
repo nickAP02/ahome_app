@@ -1,9 +1,4 @@
 import 'dart:convert';
-import 'package:ago_ahome_app/model/room.dart';
-import 'package:intl/intl.dart';
-// import 'package:json_serializable/json_serializable.dart';
-// import 'package:json_annotation/json_annotation.dart';
-// @JsonSerializable()
 class Device{
   String idDev;
   String? nameDev;

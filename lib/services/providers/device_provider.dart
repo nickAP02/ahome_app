@@ -4,8 +4,24 @@ import 'package:flutter/material.dart';
 
 class DeviceProvider extends ChangeNotifier{
   List<Device>? device = [];
+  List<Device> noNamedDevices = [];
+  List<Device> namedDevices = [];
   bool loading = false;
   final HttpService httpService = HttpService();
+  List<Device>getNoNamedDevices(){
+    return noNamedDevices;
+  }
+  setNoNamedDevice(){
+    noNamedDevices = device!.where((element) => element.nameDev!.isEmpty).toList();
+    notifyListeners();
+  }
+   List<Device>getNamedDevices(){
+    return namedDevices;
+  }
+  setNamedDevice(){
+    namedDevices = device!.where((element) => element.nameDev!.isNotEmpty).toList();
+    notifyListeners();
+  }
   Future getDeviceData() async{
     loading = true;
     device = await httpService.getDevices();

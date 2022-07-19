@@ -33,17 +33,23 @@ class _DeviceListState extends State<DeviceList> {
             FutureBuilder(
               future: deviceProvider.getDeviceData(),
               builder: (context,snapshot) {
+                Future.delayed(Duration.zero,(){
+                  deviceProvider.setNoNamedDevice();
+                  deviceProvider.setNamedDevice();
+                });
                 if(snapshot.data == null){
                   debugPrint("snapshot "+snapshot.data.toString());
-                  return const Center(child: CircularProgressIndicator(),);
+                  return const Center(child: CircularProgressIndicator(color: kPrimaryColor,),);
                 }
                 if(snapshot.hasError){
-                   return Center(child: Text('${snapshot.data}'));
+                   return Center(child: Text('${snapshot.hasError}'));
                 }
-                return ListView.builder(
+                else{
+                  return ListView.builder(
+                    padding: EdgeInsets.all(5),
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
-                    itemCount: deviceProvider.device!.length,
+                    itemCount: Provider.of<DeviceProvider>(context,listen:true).getNoNamedDevices().length,
                     itemBuilder: (context, index)=>
                       GestureDetector(
                         onTap: (){
@@ -51,29 +57,17 @@ class _DeviceListState extends State<DeviceList> {
                           selected = index;
                           });
                           //ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Vous avez cliqué cliqué sur cet appareil")));
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> DeviceView(deviceProvider.device![index].idDev,deviceProvider.device![index].state)));
+                          showDialog(context: context, builder: (BuildContext build){
+                            return  DeviceView(Provider.of<DeviceProvider>(context,listen:true).getNoNamedDevices()[index].idDev,Provider.of<DeviceProvider>(context,listen:true).getNoNamedDevices()[index].state);
+                          });
                         },
-                        child: Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          //borderRadius: BorderRadius.all(Radius.elliptical(10, 10)),
-                          color: selected==index?kPrimaryColor:  Colors.white,
-                        ),
-                        child:deviceProvider.device![index].nameDev==""?Text(
-                          'Appareil'+' '+'${index}',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold
-                          )
-                        ):Text(
-                          'Appareil'+' '+'${deviceProvider.device![index].nameDev}',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold
-                          )
-                        )
-                        ),
+                        child: deviceTypeCheck(deviceProvider.noNamedDevices, index),
                       )
                     //separatorBuilder: (_,index)=>SizedBox(width: 20)
                   );
+                }
+                
+                
               }
             ),
             FutureBuilder(
@@ -86,42 +80,65 @@ class _DeviceListState extends State<DeviceList> {
                 if(snapshot.hasError){
                    return Center(child: Text('${snapshot.data}'));
                 }
-                return ListView.builder(
+                else{
+                   return ListView.builder(
+                    padding: EdgeInsets.all(5),
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
-                    itemCount: capteurProvider.capteur!.length,
+                    itemCount: capteurProvider.noNamedCapteurs.length,
                     itemBuilder: (context,index)=>GestureDetector(
-                        onTap: (){
-                          setState(() {
-                            selected = index;
-                          });
-                         Navigator.of(context).push(MaterialPageRoute(builder: (context)=> CapteurView(capteurProvider.capteur![index].id,capteurProvider.capteur![index].state)));
-                        },
-                        child: Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          //borderRadius: BorderRadius.all(Radius.elliptical(10, 10)),
-                          color: selected==index?kPrimaryColor:  Colors.white,
-                        ),
-                          child: capteurProvider.capteur![index].nameRoom==""?Text(
-                            "Capteur"+' '+'${index}',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold
-                            ),
-                          ):Text(
-                            "Capteur"+' '+'${capteurProvider.capteur![index].nameRoom}',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold
-                            ),
-                          ),
-                        ),
+                      onTap: (){
+                        setState(() {
+                          selected = index;
+                        });
+                        showDialog(context: context, builder: (BuildContext build){
+                          return  CapteurView(Provider.of<CapteurProvider>(context,listen:true).getNoNamedCapteurs()[index].id,Provider.of<CapteurProvider>(context,listen:true).getNoNamedCapteurs()[index].state);
+                        });
+                      
+                      },
+                      child:deviceTypeCheck(capteurProvider.noNamedCapteurs, index)
                       ), 
                   );
+                }
+               
               },
             )
           ],
         ),
       ),
+    );
+  }
+
+    Widget deviceTypeCheck(dynamic valeur, int index) {
+      var value; 
+    if(valeur[index].state[2]==1){
+        value = deviceContainer("ampoule",index);
+      }
+    else if(valeur[index].state[2]==2){
+      value = deviceContainer("prise",index);
+    }
+    else if(valeur[index].state[2]==3){
+      value = deviceContainer("capteur",index);
+    }
+    return value;
+  }
+  Widget deviceContainer(String name, int index){
+    
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        //borderRadius: BorderRadius.all(Radius.elliptical(10, 10)),
+        color: selected==index?kPrimaryColor:  Colors.white,
+      ),
+      child:ListTile(
+        title: Text("Appareil"),
+        subtitle: Text(
+        name,
+        style: const TextStyle(
+          fontWeight: FontWeight.bold
+        )
+      ),
+      )
     );
   }
 }

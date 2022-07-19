@@ -79,12 +79,13 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           if(snapshot.hasError){
              return Center(child: Text('${snapshot.data}'));
           }
-          return Column(
+          else{
+            return Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              ConsoDisplay(),
-              SizedBox(height: 110,),
+            ConsoDisplay(),
+             const SizedBox(height: 110,),
               Container(
                 height: 100,
                 padding: const EdgeInsets.symmetric(vertical: 30),
@@ -114,11 +115,11 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                     ),
                     scrollDirection: Axis.horizontal,
                     itemCount: roomProvider.room!.length,
-                    separatorBuilder: (_,index)=>SizedBox(width: 20)
+                    separatorBuilder: (_,index)=>const SizedBox(width: 20)
                   ),
                 )
               ),
-              CategoryDevice()
+              const CategoryDevice()
               // Container(
               //   height: 50,
               //   width: 100,
@@ -134,6 +135,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               
             ],
           );
+          }
+          
         }
       ),
       floatingActionButton: const CustomFloatingActionBtn(),

@@ -2,14 +2,15 @@ import 'dart:convert';
 import 'package:ago_ahome_app/model/capteur.dart';
 import 'package:ago_ahome_app/model/room.dart';
 import 'package:ago_ahome_app/model/user.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:ago_ahome_app/model/device.dart';
+import 'package:flutter/material.dart';
 //connection avec l'api 
 class HttpService{
   //initialisation du client http
   static final client = http.Client();
   static const url = "http://10.20.1.1:5000/api/v1";
+  //  static const url = "http://127.0.0.1:5000/api/v1";
   Map<String,String> headers = 
   {
     'Content-Type':'application/json',
@@ -128,12 +129,12 @@ class HttpService{
   Future<List<Device>?>getDevices() async{
     List<Device> devices = [];
     try {
-      debugPrint('premier');
+      debugPrint('devices');
       var response = await http.get(
         fullUri("devices"),
          headers: headers
-        );
-        debugPrint(response.body);
+      );
+      debugPrint(response.body);
      // debugPrint("yes "+response.body.toString());
      if(response.statusCode==200){
         var data= json.decode(response.body);
@@ -161,6 +162,7 @@ class HttpService{
   }
  //implementation de la route /rooms
   Future getRooms() async{
+    debugPrint("rooms");
     List<Room>rooms=[];
     try {
       var response = await http.get(
@@ -173,7 +175,7 @@ class HttpService{
       });
       return rooms;
     }  catch (err) {
-      debugPrint("rooms ici");
+      debugPrint("rooms erreur");
       throw err.toString();
     }
   }
@@ -185,7 +187,7 @@ class HttpService{
           headers: headers
         );
         var data = json.decode(response.body);
-        print(data);
+        debugPrint(data);
         data.forEach((element)=>{
           capteurs.add(Capteur.fromJson(element))
         });

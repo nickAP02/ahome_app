@@ -9,21 +9,20 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:ago_ahome_app/utils/constant.dart';
-class DeviceView extends StatefulWidget {
+class DeleteDevice extends StatefulWidget {
    dynamic id;
    dynamic state;
-   DeviceView(this.id,this.state, {Key? key}) : super(key: key);
+   DeleteDevice(this.id,this.state, {Key? key}) : super(key: key);
 
   @override
-  State<DeviceView> createState() => _DeviceViewState();
+  State<DeleteDevice> createState() => _DeleteDeviceState();
 }
 
-class _DeviceViewState extends State<DeviceView> {
+class _DeleteDeviceState extends State<DeleteDevice> {
   final  _formKey = GlobalKey<FormState>();
   Device newDevice =  Device(idDev: "",nameDev: "",categorie: "",puissance: 0,conso: 0,state: [],room: "");
   // Device newDevice =  Device(idDev: "",nameDev:"",state:[],categorie: "",puissance: 0, conso:0,dateConso:DateTime.now(),room:"");
   bool selected=true;
-  final server = WebSocketChannel.connect(Uri.parse("ws://10.20.1.1:5000/api/v1/device/allumerEteindre/"));
   String ?valSelectionneCat;
   String ?valSelectionneP;
   @override
@@ -38,7 +37,7 @@ class _DeviceViewState extends State<DeviceView> {
     var roomProvider = Provider.of<RoomProvider>(context,listen: false);
     int index =0;
     return SimpleDialog(
-      title: const Text("Enregistrement de l'appareil"),
+      title: const Text("Suppression de l'appareil"),
       contentPadding: const EdgeInsets.all(10),
       children: [
         Container(
@@ -138,39 +137,6 @@ class _DeviceViewState extends State<DeviceView> {
                 ),
                 Row(
                 children: [
-                  ElevatedButton(
-                    onLongPress: (){
-                      setState(() {
-                        debugPrint("state "+widget.state);
-                          Map<String,dynamic> msg = {
-                        "id":"${widget.id}",
-                        "state":"${widget.state}"
-                        };
-                      allumerEteindre(jsonEncode(msg));
-                      //  msg = jsonEncode(id,state)
-                      // allumerEteindre();
-                      });
-                    },
-                    onPressed: (){
-                     setState(() {
-                        if(widget.state[0]==0){
-                          widget.state[0]=1;
-                        }
-                        else{
-                          Text("L'appareil est déjà allumé");
-                        }
-                        debugPrint("element 1 state "+widget.state[0].toString()+" element 2 state "+widget.state[1].toString()+" element 3 state "+widget.state[2].toString());
-                        Map<String,dynamic> msg = {
-                        "id":"${widget.id}",
-                        "state":"${widget.state}"
-                      };
-                      debugPrint("element 1 state "+widget.state[0].toString());
-                      allumerEteindre(jsonEncode(msg));
-                     });
-                  }, 
-                    style: selected ?ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.red)):ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.green)),
-                    child: const Text("Tester")
-                  ),
                   Padding(
                     padding: const EdgeInsets.all(2.0),
                     child: ElevatedButton(onPressed: (){
@@ -183,8 +149,8 @@ class _DeviceViewState extends State<DeviceView> {
                       }
                       // server.sink.add(newDevice);
                     }, 
-                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(kPrimaryColor)),
-                    child: const Text("Enregistrer")
+                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
+                    child: const Text("Supprimer")
                 ),
                 ),
                   ElevatedButton(onPressed: (){
@@ -201,10 +167,6 @@ class _DeviceViewState extends State<DeviceView> {
       )
       ],
     );
-  }
-  void allumerEteindre(msg){
-    debugPrint(msg);
-    server.sink.add(msg);
   }
   @override
   void dispose() {

@@ -1,6 +1,5 @@
 import 'package:ago_ahome_app/utils/colors.dart';
 import 'package:ago_ahome_app/views/screen/device/device_list.dart';
-import 'package:ago_ahome_app/views/screen/device/device_view.dart';
 import 'package:ago_ahome_app/views/screen/room/room_view.dart';
 import 'package:ago_ahome_app/views/screen/planning/planning_view.dart';
 import 'package:flutter/material.dart';

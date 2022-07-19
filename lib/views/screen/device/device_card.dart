@@ -1,5 +1,3 @@
-import 'package:ago_ahome_app/model/device.dart';
-import 'package:ago_ahome_app/services/providers/device_provider.dart';
 import 'package:ago_ahome_app/services/providers/room_provider.dart';
 import 'package:ago_ahome_app/utils/colors.dart';
 import 'package:flutter/material.dart';

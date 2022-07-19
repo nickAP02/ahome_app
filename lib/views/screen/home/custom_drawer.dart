@@ -67,7 +67,7 @@ class CustomDrawer extends StatelessWidget {
                 ),
               onPressed: (){
                 Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => Rooms()));
+                builder: (BuildContext context) => const Rooms()));
               },)
             ),
         ),
@@ -86,7 +86,7 @@ class CustomDrawer extends StatelessWidget {
             size: 40,),
             onPressed: (){
             Navigator.of(context).push(MaterialPageRoute(
-              builder: (BuildContext context) =>  DeviceList()));
+              builder: (BuildContext context) =>  DevicesUpdated()));
             }
           )
         ),

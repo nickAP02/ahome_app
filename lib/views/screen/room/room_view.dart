@@ -1,13 +1,8 @@
-// ignore_for_file: unused_local_variable
-
-import 'package:ago_ahome_app/main.dart';
 import 'package:ago_ahome_app/model/room.dart';
 import 'package:ago_ahome_app/services/providers/room_provider.dart';
 import 'package:ago_ahome_app/utils/colors.dart';
-import 'package:ago_ahome_app/utils/constant.dart';
 import 'package:ago_ahome_app/views/screen/home/home.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class RoomDevice extends StatefulWidget {

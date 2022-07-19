@@ -1,18 +1,10 @@
-import 'dart:convert';
-
 import 'package:ago_ahome_app/model/capteur.dart';
-import 'package:ago_ahome_app/model/room.dart';
 import 'package:ago_ahome_app/services/providers/capteur_provider.dart';
-import 'package:ago_ahome_app/services/providers/device_provider.dart';
 import 'package:ago_ahome_app/services/providers/room_provider.dart';
 import 'package:ago_ahome_app/utils/colors.dart';
-import 'package:ago_ahome_app/model/device.dart';
 import 'package:ago_ahome_app/views/screen/device/device_list.dart';
-import 'package:ago_ahome_app/views/screen/device/updated_devices.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:ago_ahome_app/utils/constant.dart';
 class CapteurView extends StatefulWidget {
    dynamic id;
    dynamic state;

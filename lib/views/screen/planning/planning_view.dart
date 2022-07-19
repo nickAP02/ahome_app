@@ -1,6 +1,5 @@
 import 'package:ago_ahome_app/services/providers/device_provider.dart';
 import 'package:ago_ahome_app/utils/colors.dart';
-import 'package:ago_ahome_app/views/screen/device/device_list.dart';
 import 'package:ago_ahome_app/views/screen/home/home.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +32,7 @@ class _PlanningViewState extends State<PlanningView> {
       backgroundColor: kBackground,
       
       appBar: AppBar(
-        title: Text("Ajout d'un planning"),
+        title: const Text("Ajout d'un planning"),
       ),
       body: Container(
        height: MediaQuery.of(context).size.height,
@@ -42,7 +41,7 @@ class _PlanningViewState extends State<PlanningView> {
         key: _formKey,
         child: Column(
             children: [
-              Padding(padding: EdgeInsets.only(bottom: 20)),
+              const Padding(padding: EdgeInsets.only(bottom: 20)),
               TextFormField(
                   decoration: const InputDecoration(
                     hintText: "Ajouter un titre"
@@ -58,7 +57,7 @@ class _PlanningViewState extends State<PlanningView> {
                     return null;
                   },
                 ),
-                Padding(padding: EdgeInsets.only(bottom: 20)),
+                const Padding(padding: EdgeInsets.only(bottom: 20)),
                 DateTimePicker(
                   cursorColor: kPrimaryColor,
                   type: DateTimePickerType.dateTimeSeparate,
@@ -66,19 +65,19 @@ class _PlanningViewState extends State<PlanningView> {
                   initialValue: DateTime.now().toString(),
                   firstDate: DateTime(2000),
                   lastDate: DateTime(2100),
-                  icon: Icon(Icons.event,color: kPrimaryColor,),
+                  icon: const Icon(Icons.event,color: kPrimaryColor,),
                   dateLabelText: 'Date de début',
                   timeLabelText: "Heure de début",
                   selectableDayPredicate: (date) {
                   // Disable weekend days to select from the calendar
                   return true;
                   },
-                    onChanged: (val) => print(val),
+                    onChanged: (val) => debugPrint(val),
                     validator: (val) {
                     getDate = val;
                     return null;
                   },
-                  onSaved: (val) => print(val),
+                  onSaved: (val) => debugPrint(val),
                 ),
                 DateTimePicker(
                  cursorColor: kPrimaryColor,
@@ -87,7 +86,7 @@ class _PlanningViewState extends State<PlanningView> {
                  initialValue: DateTime.now().toString(),
                  firstDate: DateTime(2000),
                  lastDate: DateTime(2100),
-                 icon: Icon(Icons.event,color: kPrimaryColor,),
+                 icon: const Icon(Icons.event,color: kPrimaryColor,),
                  dateLabelText: 'Date de fin',
                  timeLabelText: "Heure de fin",
                  selectableDayPredicate: (date) {
@@ -95,14 +94,14 @@ class _PlanningViewState extends State<PlanningView> {
                  
                    return true;
                  },
-                   onChanged: (val) => print(val),
+                   onChanged: (val) => debugPrint(val),
                    validator: (val) {
                   //  print(val);
                    return null;
                  },
-                 onSaved: (val) => print(val),
+                 onSaved: (val) => debugPrint(val),
                 ),
-                Padding(padding: EdgeInsets.only(bottom: 20)),
+                const Padding(padding: EdgeInsets.only(bottom: 20)),
                 Container(
               alignment: Alignment.centerLeft,
               child: DropdownButton<String>(

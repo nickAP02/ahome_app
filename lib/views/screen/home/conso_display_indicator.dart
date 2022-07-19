@@ -1,12 +1,7 @@
-import 'package:ago_ahome_app/services/providers/capteur_provider.dart';
-import 'package:ago_ahome_app/services/providers/device_provider.dart';
-import 'package:ago_ahome_app/services/providers/room_provider.dart';
 import 'package:ago_ahome_app/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'package:provider/provider.dart';
-
 class ConsoDisplay extends StatefulWidget {
   const ConsoDisplay({Key? key}) : super(key: key);
 
@@ -46,21 +41,21 @@ class _ConsoDisplayState extends State<ConsoDisplay> {
         mainAxisAlignment: MainAxisAlignment.center,
         // crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Stack(
-            children:[
-              Row(
-                children: [
-                  Text('29',style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold
-                      ),),
-                  Text("°C",style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold
-                      ),),
-                ],
-              )
-            ]
+          Row(
+            children: const[
+              Text('29',
+                style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold
+                ),
+              ),
+              Text("°C",
+                style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold
+                ),
+              ),
+            ],
           ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,

@@ -1,8 +1,6 @@
 import 'package:ago_ahome_app/services/providers/room_provider.dart';
 import 'package:ago_ahome_app/utils/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:provider/provider.dart';
 
 class Rooms extends StatefulWidget {
@@ -20,11 +18,11 @@ class _RoomsState extends State<Rooms> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Liste des pièces"),),
+      appBar: AppBar(title: const Text("Liste des pièces"),),
       body: Center(
         child: Consumer<RoomProvider>(
           builder: (context,value,child) {
-            return value.loading?CircularProgressIndicator():
+            return value.loading?const CircularProgressIndicator():
             ListView.builder(
               //padding: const EdgeInsets.only(top: 200),
               itemCount: value.room!.length,

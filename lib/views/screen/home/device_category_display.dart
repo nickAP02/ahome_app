@@ -16,13 +16,16 @@ class _CategoryDeviceState extends State<CategoryDevice> {
     return ExpansionPanelList(
       expansionCallback: ((panelIndex, isExpanded) {
         setState(() {
-          isExpanded = !isExpanded;
+          isExpanded = isExpanded;
+          debugPrint(isExpanded.toString());
         });
       }),
       children: categorieDevice.
       map((e) => ExpansionPanel(
-        isExpanded: isExpanded,
+        
+        isExpanded: isExpanded==isExpanded?false:true,
         headerBuilder: (context,isExpanded){
+          debugPrint(isExpanded.toString());
         return Row(
           children: [
               Image.asset(e['icone']),
@@ -30,7 +33,21 @@ class _CategoryDeviceState extends State<CategoryDevice> {
             ],
           );
         }, 
-        body:DeviceCard()
+        body:Container(
+          height: 800,
+          width: 500,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: ListView.builder(
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              itemBuilder: (context, index) {
+                return DeviceCard();
+              },
+              itemCount: 5,
+            ),
+          ),
+        )
         )
       ).toList()
     );
