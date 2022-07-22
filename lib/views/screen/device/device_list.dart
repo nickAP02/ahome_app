@@ -45,7 +45,7 @@ class _DeviceListState extends State<DeviceList> {
                    return Center(child: Text('${snapshot.hasError}'));
                 }
                 else{
-                  return ListView.builder(
+                  return deviceProvider.namedDevices.isEmpty?Center(child: CircularProgressIndicator(color: kPrimaryColor,),):ListView.builder(
                     padding: EdgeInsets.all(5),
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
@@ -75,13 +75,13 @@ class _DeviceListState extends State<DeviceList> {
               builder: (context,snapshot){
                 if(snapshot.data == null){
                   debugPrint("snapshot "+snapshot.data.toString());
-                  return const Center(child: CircularProgressIndicator(),);
+                  return const Center(child: CircularProgressIndicator(color: kPrimaryColor,),);
                 }
                 if(snapshot.hasError){
                    return Center(child: Text('${snapshot.data}'));
                 }
                 else{
-                   return ListView.builder(
+                   return capteurProvider.namedCapteurs.isEmpty?Center(child: CircularProgressIndicator(color: kPrimaryColor,),):ListView.builder(
                     padding: EdgeInsets.all(5),
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,

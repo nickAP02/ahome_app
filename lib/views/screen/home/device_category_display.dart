@@ -1,6 +1,11 @@
+// ignore_for_file: sized_box_for_whitespace
+
+import 'package:ago_ahome_app/services/providers/device_provider.dart';
+import 'package:ago_ahome_app/services/providers/room_provider.dart';
 import 'package:ago_ahome_app/utils/constant.dart';
 import 'package:ago_ahome_app/views/screen/device/device_card.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CategoryDevice extends StatefulWidget {
   const CategoryDevice({Key? key}) : super(key: key);
@@ -10,8 +15,10 @@ class CategoryDevice extends StatefulWidget {
 }
 
 class _CategoryDeviceState extends State<CategoryDevice> {
+  
   @override
   Widget build(BuildContext context) {
+    var roomProvider= Provider.of<RoomProvider>(context,listen: false);
     bool isExpanded = false;
     return ExpansionPanelList(
       expansionCallback: ((panelIndex, isExpanded) {
@@ -23,7 +30,7 @@ class _CategoryDeviceState extends State<CategoryDevice> {
       children: categorieDevice.
       map((e) => ExpansionPanel(
         
-        isExpanded: isExpanded==isExpanded?false:true,
+        isExpanded: isExpanded==isExpanded?true:false,
         headerBuilder: (context,isExpanded){
           debugPrint(isExpanded.toString());
         return Row(
@@ -33,19 +40,20 @@ class _CategoryDeviceState extends State<CategoryDevice> {
             ],
           );
         }, 
-        body:Container(
-          height: 800,
-          width: 500,
-          child: SingleChildScrollView(
+        body:SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: GridView.count(
+            padding: const EdgeInsets.all(20),
+            crossAxisCount: 2,
+            shrinkWrap: true,
             scrollDirection: Axis.vertical,
-            child: ListView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.vertical,
-              itemBuilder: (context, index) {
-                return DeviceCard();
-              },
-              itemCount: 5,
-            ),
+            children:[
+              DeviceCard(),
+              DeviceCard(),
+              DeviceCard(),
+              DeviceCard(),
+              DeviceCard()
+            ],
           ),
         )
         )

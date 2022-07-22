@@ -1,36 +1,34 @@
-import 'package:ago_ahome_app/model/planning.dart';
-
 class User{
-  late String idUser;
+  // late String idUser;
   // String firstName;
   // String lastName;
   String username;
   String password;
   String email;
   // int phoneNumber;
-  late Map<String,List<Planning>> plannings;
+  // late Map<String,List<Planning>> plannings;
 
   User({
     // this.firstName,
     // this.lastName,
-    required this.idUser,
+    // required this.idUser,
     required this.username,
     required this.password,
     required this.email,
-    required this.plannings
+    // required this.plannings
     // this.phoneNumber
   });
 
   factory User.fromJson(Map<String,dynamic> json){
     return User(
-      idUser : json["idUser"] ?? "",
+      // idUser : json["idUser"] ?? "",
     // firstName = json["firstName"] as String,
     // lastName = json["lastName"] as String,
       username : json["username"]??"" ,
       password : json["password"]??"",
       email : json["email"] ??"",
       // phoneNumber = json["phoneNumber"] as int,
-      plannings : json["plannings"] ??""
+      // plannings : json["plannings"] ??""
     );
   }
 
@@ -41,7 +39,7 @@ class User{
     'password' : password,
     'email' : email,
     // 'phoneNumber':phoneNumber,
-    'plannings':plannings
+    // 'plannings':plannings
   };
 
 }

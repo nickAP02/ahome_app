@@ -19,7 +19,7 @@ class _ConsoDisplayState extends State<ConsoDisplay> {
     // var capteurProvider=Provider.of<CapteurProvider>(context,listen:false);
     // var rooms = Provider.of<RoomProvider>(context,listen: false);
     return  Container(
-    height: 100,
+    height: 80,
     width: 90,
     child: CircularPercentIndicator(
       circularStrokeCap: CircularStrokeCap.round,
@@ -41,61 +41,54 @@ class _ConsoDisplayState extends State<ConsoDisplay> {
         mainAxisAlignment: MainAxisAlignment.center,
         // crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            children: const[
-              Text('29',
-                style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold
-                ),
-              ),
-              Text("°C",
-                style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold
-                ),
-              ),
-            ],
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            // mainAxisAlignment: MainAxisAlignment.center,
-            children: const[
-              //roomprovider value
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text("20",
-                //textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold
-                  ),
-                ),
-              ),
-              Text("KWh",
-              //textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.normal
-                ),
-              ),
-            ],
-          ),
-          // const Padding(padding:  EdgeInsets.only(top: 8)),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-                Text(
-                    DateFormat('kk:mm').format(DateTime.now()),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
+            Row(
+              children: const[
+                Text('29',
+                  style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold
                   ),
+                ),
+                Text("°C",
+                  style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold
+                  ),
+                ),
+              ],
+            ),
+            Row(
+                // crossAxisAlignment: CrossAxisAlignment.center,
+              // mainAxisAlignment: MainAxisAlignment.center,
+                children: const[
+                //roomprovider value
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text("20",
+                  //textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold
+                    ),
+                  ),
+                ),
+                Text("KWh",
+                //textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.normal
+                  ),
+                ),
+              ],
+            ),
+            Text(
+              DateFormat('kk:mm').format(DateTime.now()),
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold
               ),
-            ],
-          )
+          ),
         ],
       ),
     ),

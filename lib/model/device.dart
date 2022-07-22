@@ -29,7 +29,7 @@ class Device{
       conso : json['conso'].toDouble(),
       state : List.from(json['state']),
       // dateConso : DateFormat("yyyy-MM-dd hh:mm:ss").parse(json['dateConso'])
-      room : json['nameRoom'],
+      room : json['piece'],
       );
   }
   Map<dynamic, dynamic> toJson() => {

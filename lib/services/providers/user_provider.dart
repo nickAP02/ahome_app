@@ -3,6 +3,7 @@ import 'package:ago_ahome_app/services/http_service.dart';
 import 'package:flutter/cupertino.dart';
 
 class UserProvider extends ChangeNotifier{
+  var result;
   List<User>? users = [];
   bool loading = false;
   final HttpService httpService = HttpService();
@@ -13,9 +14,11 @@ class UserProvider extends ChangeNotifier{
     notifyListeners();
     return users;
   }
-  Future register(User user) async{
-    httpService.register(user);
+  Future<dynamic> register(User user) async{
+    result = httpService.register(user);
+    // print(result.toString());
     notifyListeners();
+    return result;
   }
   Future login(User user) async{
     httpService.login(user);

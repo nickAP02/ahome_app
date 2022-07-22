@@ -43,6 +43,14 @@ class Space extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _cardMenu(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Home(),
+                      ),
+                    );
+                  },
                   icon: 'assets/images/energy.png',
                   title: 'DOMICILE',
                 ),

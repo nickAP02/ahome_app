@@ -14,8 +14,16 @@ class HttpService{
   Map<String,String> headers = 
   {
     'Content-Type':'application/json',
-    'Accept':"application/json"
+    'Accept':'application/json'
   };
+  Map<String,String> headersBearer(String token)
+  {
+    return {
+      'Content-Type':'application/json',
+      'Accept':'application/json',
+      'Authorization':"Bearer $token"
+    };
+  }
   Uri fullUri(String uri){
     return Uri.parse('$url/$uri');
   }
@@ -26,16 +34,22 @@ class HttpService{
       fullUri("login"),
       headers:headers,
       body: json.encode({
-            "username":user.username,
+            "username":user.email,
             "password":user.password,
       }));
+      debugPrint("api response"+response.toString());
+      debugPrint("api response"+response.body);
+      debugPrint("api status"+response.statusCode.toString());
       //print(jsonDecode(response.body));
       if (response.statusCode == 200) {
-        return User.fromJson(json.decode(response.body)); 
+       
+        var result=json.decode(response.body);
+        return result;
       } 
       else {
+        debugPrint(response.toString());
         var result=json.decode(response.body);
-        return result["result"];
+        return result;
       }
     } on Exception catch (e) {
       throw e.toString();
@@ -43,8 +57,10 @@ class HttpService{
   }
 
 //implementation de la route /register
-  Future register(User user) async{
+  Future<dynamic>  register(User user) async{
+    var result;
     try {
+      print("ok");
       var response = await client.post(
       fullUri("register"), 
       headers: headers,
@@ -53,12 +69,20 @@ class HttpService{
           "password":user.password,
           "email":user.email,
       }));
+      var result=json.decode(response.body);
+      debugPrint("api status "+result.toString());
+      // debugPrint("api response "+result["result"]);
+
       if (response.statusCode == 200) {
-      return User.fromJson(json.decode(response.body));
+        result=json.decode(response.body);
+        debugPrint("response result "+result.toString());
+        return result;
       }
+      
       else {
-        var result=json.decode(response.body);
-        return result["result"];
+        result=json.decode(response.body);
+        // debugPrint("response result "+result["result"]);
+        return result;
         // Exception("La requête n'a pas aboutie : ${response.statusCode}");
       }
     } on Exception catch (e) {

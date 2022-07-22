@@ -59,11 +59,6 @@ class _DeviceCardState extends State<DeviceCard> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Interrupteur",
-                    style:TextStyle(
-                        color:_isSelected?textColor:Colors.black)
-                    ),
-                    
                     RotatedBox(
                     quarterTurns:135,
                     child:Switcher(
@@ -87,13 +82,23 @@ class _DeviceCardState extends State<DeviceCard> {
                         
                 Icon(Icons.lightbulb_outline,color:_isSelected?textColor:Colors.black),
                 
-                Text('${roomProvider.devices[index].nameDev}', 
+                roomProvider.devices.isEmpty? Text('Appareil', 
+                  style: TextStyle(
+                    color:_isSelected?textColor:Colors.black,
+                    fontWeight: FontWeight.bold
+                  )
+                ):Text('${roomProvider.devices[index].nameDev}', 
                   style: TextStyle(
                     color:_isSelected?textColor:Colors.black,
                     fontWeight: FontWeight.bold
                   )
                 ),
-                Text('${roomProvider.devices[index].puissance}', 
+                roomProvider.devices.isEmpty? Text('0 kwh', 
+                  style: TextStyle(
+                    color:_isSelected?textColor:Colors.black,
+                    fontWeight: FontWeight.bold
+                  )
+                ):Text('${roomProvider.devices[index].puissance} kwh', 
                   style: TextStyle(
                     color:_isSelected?textColor:Colors.black,
                     fontWeight: FontWeight.bold

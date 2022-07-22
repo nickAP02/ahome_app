@@ -72,71 +72,68 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       body: FutureBuilder(
         future:roomProvider.getRoomData(),
         builder: (context,snapshot) {
-          if(snapshot.data == null){
-            debugPrint(snapshot.data.toString());
-            return const Center(child: CircularProgressIndicator(),);
-          }
-          if(snapshot.hasError){
-             return Center(child: Text('${snapshot.data}'));
-          }
-          else{
-            return Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-            ConsoDisplay(),
-             const SizedBox(height: 110,),
-              Container(
-                height: 100,
-                padding: const EdgeInsets.symmetric(vertical: 30),
-                child: Expanded(
-                  child: ListView.separated(
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.symmetric(horizontal: 25),
-                    itemBuilder: (context, index)=>GestureDetector(
-                      onTap: (){
-                       setState(() {
-                         selected = index;
-                       });
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 15),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: selected==index?kPrimaryColor:  Colors.white,
-                        ),
-                        child: Text(
-                          roomProvider.room![index].nameRoom,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold
+          // if(snapshot.data == null){
+          //   debugPrint(snapshot.data.toString());
+          //   return const Center(child: CircularProgressIndicator(color: kPrimaryColor, semanticsLabel: "Données non chargées",),);
+          // }
+          // if(snapshot.hasError){
+          //    return Center(child: Text('Une erreur s"est produite',style: TextStyle(color: Colors.red),));
+          // }
+          // if(snapshot.connectionState==ConnectionState.waiting){
+          //    return const Center(child: CircularProgressIndicator(color: kPrimaryColor,semanticsLabel: "En attente des données",));
+          // }
+          // if(snapshot.connectionState==ConnectionState.none){
+          //    return const Center(child: Text("Nous n'avons pas pu connecter au serveur"));
+          // }
+            return SingleChildScrollView(
+              child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+              const ConsoDisplay(),
+              const SizedBox(height: 110,),
+                Container(
+                  height: 100,
+                  padding: const EdgeInsets.symmetric(vertical: 30),
+                  child: Expanded(
+                    child: ListView.separated(
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.symmetric(horizontal: 25),
+                      itemBuilder: (context, index)=>GestureDetector(
+                        onTap: (){
+                          setState(() {
+                            selected = index;
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 15),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: selected==index?kPrimaryColor:  Colors.white,
+                          ),
+                          child: roomProvider.room!.isEmpty?Text(
+                           "Salon",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold
+                            ),
+                          ):Text(
+                            roomProvider.room![index].nameRoom,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold
+                            ),
                           ),
                         ),
                       ),
+                      scrollDirection: Axis.horizontal,
+                      itemCount: roomProvider.room!.length,
+                      separatorBuilder: (_,index)=>const SizedBox(width: 20)
                     ),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: roomProvider.room!.length,
-                    separatorBuilder: (_,index)=>const SizedBox(width: 20)
-                  ),
-                )
-              ),
-              const CategoryDevice()
-              // Container(
-              //   height: 50,
-              //   width: 100,
-              //   child: ListView.separated(
-              //     shrinkWrap: true,
-              //     scrollDirection: Axis.horizontal,
-              //     padding: EdgeInsets.zero,
-              //     itemBuilder: (context, index) =>CategoryDevice(),
-              //     separatorBuilder: (_,index)=>SizedBox(height: 50), 
-              //     itemCount: 5
-              //     ),
-              // ),
-              
-            ],
+                  )
+                ),
+                const CategoryDevice()
+              ],
+            ),
           );
-          }
-          
         }
       ),
       floatingActionButton: const CustomFloatingActionBtn(),

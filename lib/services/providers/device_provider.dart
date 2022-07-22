@@ -9,6 +9,9 @@ class DeviceProvider extends ChangeNotifier{
   bool loading = false;
   final HttpService httpService = HttpService();
   List<Device>getNoNamedDevices(){
+    loading = true;
+    notifyListeners();
+    loading = false;
     return noNamedDevices;
   }
   setNoNamedDevice(){
@@ -16,7 +19,11 @@ class DeviceProvider extends ChangeNotifier{
     notifyListeners();
   }
    List<Device>getNamedDevices(){
+    loading = true;
+    notifyListeners();
+    loading = false;
     return namedDevices;
+    
   }
   setNamedDevice(){
     namedDevices = device!.where((element) => element.nameDev!.isNotEmpty).toList();
