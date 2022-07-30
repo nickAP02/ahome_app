@@ -35,8 +35,8 @@ dependencies:
   table_calendar: ^3.0.6
   intl: ^0.17.0
   flutter_speed_dial: ^6.0.0
-  flutter_bloc: ^8.0.1
   json_serializable: ^6.2.0
+  email_validator: ^2.1.2
 
 dev_dependencies:
   flutter_test:

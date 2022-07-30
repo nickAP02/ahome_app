@@ -3,33 +3,36 @@ class Device{
   String idDev;
   String? nameDev;
   String? categorie;
-  double puissance;
-  double conso;
-  List state;
+  double? puissance;
+  double? conso;
+  List<dynamic> state;
+  // List state;
   // DateTime dateConso;
   String? room;
   Device({
-    required this.idDev,
-    required this.nameDev,
-    required this.categorie,
-    required this.puissance,
-    required this.conso,
-    required this.state,
+     required this.idDev,
+     this.nameDev,
+     this.categorie,
+     this.puissance,
+     this.conso,
+     required this.state,
     // required this.dateConso,
-    required this.room
+     this.room
 });
   List<Device> deviceFromJson(String str) => List<Device>.from(json.decode(str).map((x)=>Device.fromJson(x)));
   String deviceToJson(List<Device> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
-  factory Device.fromJson(Map<dynamic, dynamic> json){
+  factory Device.fromJson(Map<String, dynamic> json){
+    
     return Device(
       idDev : json['id'],
       nameDev : json['name'],
       categorie : json['categorie'],
       puissance: json['puissance'].toDouble(),
       conso : json['conso'].toDouble(),
-      state : List.from(json['state']),
+      state : json['state'],
+      // state : List.from(json['state']),
       // dateConso : DateFormat("yyyy-MM-dd hh:mm:ss").parse(json['dateConso'])
-      room : json['piece'],
+      room : json['nameRoom'],
       );
   }
   Map<dynamic, dynamic> toJson() => {
@@ -37,7 +40,8 @@ class Device{
     'name': nameDev,
     'categorie':categorie,
     'puissance': puissance,
-    'state' : List.from(state.map((e) => e)),
+     'state' : state,
+    // 'state' : List.from(state.map((e) => e)),
     // 'dateConso':dateConso.toIso8601String(),
     'nameRoom':room
   };

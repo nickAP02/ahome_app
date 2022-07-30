@@ -1,10 +1,13 @@
+import 'package:ago_ahome_app/model/role.dart';
+
 class User{
   // late String idUser;
   // String firstName;
   // String lastName;
-  String username;
-  String password;
-  String email;
+    String? username;
+    String? password;
+    String? email;
+   Role? roles;
   // int phoneNumber;
   // late Map<String,List<Planning>> plannings;
 
@@ -12,9 +15,10 @@ class User{
     // this.firstName,
     // this.lastName,
     // required this.idUser,
-    required this.username,
-    required this.password,
-    required this.email,
+    this.username,
+    this.password,
+    this.email,
+    this.roles
     // required this.plannings
     // this.phoneNumber
   });
@@ -27,6 +31,7 @@ class User{
       username : json["username"]??"" ,
       password : json["password"]??"",
       email : json["email"] ??"",
+      roles: Role.fromJson(json["role"])
       // phoneNumber = json["phoneNumber"] as int,
       // plannings : json["plannings"] ??""
     );

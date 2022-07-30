@@ -20,7 +20,7 @@ class UpdateDevice extends StatefulWidget {
 
 class _UpdateDeviceState extends State<UpdateDevice> {
   final  _formKey = GlobalKey<FormState>();
-  Device newDevice =  Device(idDev: "",nameDev: "",categorie: "",puissance: 0,conso: 0,state: [],room: "");
+  Device newDevice =  Device(idDev: "",nameDev: "",categorie: "",puissance: 0,conso: 0,state:[0],room: "");
   // Device newDevice =  Device(idDev: "",nameDev:"",state:[],categorie: "",puissance: 0, conso:0,dateConso:DateTime.now(),room:"");
   bool selected=true;
   final server = WebSocketChannel.connect(Uri.parse("ws://10.20.1.1:5000/api/v1/device/allumerEteindre/"));
@@ -52,6 +52,7 @@ class _UpdateDeviceState extends State<UpdateDevice> {
                 alignment: Alignment.topCenter,
                 //width: 100,
                 child: TextFormField(
+                  cursorColor: kPrimaryColor,
                   decoration: const InputDecoration(
                     hintText: "Nom de l'appareil"
                   ),
@@ -71,6 +72,7 @@ class _UpdateDeviceState extends State<UpdateDevice> {
                 alignment: Alignment.topCenter,
                 //width: 100,
                 child: TextFormField(
+                  cursorColor: kPrimaryColor,
                   decoration: const InputDecoration(
                     hintText: "Puissance(en W)"
                   ),
@@ -114,17 +116,17 @@ class _UpdateDeviceState extends State<UpdateDevice> {
                      ),
               ),
               // modifier pour afficher la liste des pieces
-              roomProvider.room!.isEmpty?Text("Les pièces ne sont pas disponibles"):Container(
+              roomProvider.room.isEmpty?Text("Les pièces ne sont pas disponibles"):Container(
               height: 50,
               alignment: Alignment.centerLeft,
               child: DropdownButton<String>(
                     hint: Text("Pièce"),
                     value: valSelectionneP,
-                    items: List.generate(roomProvider.room!.length, (index) => DropdownMenuItem<String>(
-                        value:roomProvider.room![index].nameRoom,
+                    items: List.generate(roomProvider.room.length, (index) => DropdownMenuItem<String>(
+                        value:roomProvider.room[index].nameRoom,
                         child: Row(
                           children: [
-                            Text(roomProvider.room![index].nameRoom),
+                            Text(roomProvider.room[index].nameRoom),
                           ],
                         ))
                       ).toList(),

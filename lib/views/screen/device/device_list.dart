@@ -41,15 +41,24 @@ class _DeviceListState extends State<DeviceList> {
                   debugPrint("snapshot "+snapshot.data.toString());
                   return const Center(child: CircularProgressIndicator(color: kPrimaryColor,),);
                 }
+                if(snapshot.data == []){
+                  debugPrint("snapshot "+snapshot.data.toString());
+                  return const Text("Pas d'appareils détectés");
+                }
                 if(snapshot.hasError){
                    return Center(child: Text('${snapshot.hasError}'));
                 }
                 else{
-                  return deviceProvider.namedDevices.isEmpty?Center(child: CircularProgressIndicator(color: kPrimaryColor,),):ListView.builder(
+                  return deviceProvider.noNamedDevices.isEmpty?Center(child: Column(
+                    children: [
+                      Image.asset('assets/images/icons/peripherals.png',height: 500,width: 500,),
+                      Text("Pas de nouvel appareils détectés"),
+                    ],
+                  )):ListView.builder(
                     padding: EdgeInsets.all(5),
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
-                    itemCount: Provider.of<DeviceProvider>(context,listen:true).getNoNamedDevices().length,
+                    itemCount: Provider.of<DeviceProvider>(context,listen:false).getNoNamedDevices().length,
                     itemBuilder: (context, index)=>
                       GestureDetector(
                         onTap: (){
@@ -58,7 +67,7 @@ class _DeviceListState extends State<DeviceList> {
                           });
                           //ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Vous avez cliqué cliqué sur cet appareil")));
                           showDialog(context: context, builder: (BuildContext build){
-                            return  DeviceView(Provider.of<DeviceProvider>(context,listen:true).getNoNamedDevices()[index].idDev,Provider.of<DeviceProvider>(context,listen:true).getNoNamedDevices()[index].state);
+                            return  DeviceView(Provider.of<DeviceProvider>(context,listen:false).getNoNamedDevices()[index].idDev,Provider.of<DeviceProvider>(context,listen:true).getNoNamedDevices()[index].state);
                           });
                         },
                         child: deviceTypeCheck(deviceProvider.noNamedDevices, index),
@@ -75,13 +84,13 @@ class _DeviceListState extends State<DeviceList> {
               builder: (context,snapshot){
                 if(snapshot.data == null){
                   debugPrint("snapshot "+snapshot.data.toString());
-                  return const Center(child: CircularProgressIndicator(color: kPrimaryColor,),);
+                  return const Text("Pas de capteurs détectés");
                 }
                 if(snapshot.hasError){
-                   return Center(child: Text('${snapshot.data}'));
+                   return Center(child: Text('${snapshot.hasError}'));
                 }
                 else{
-                   return capteurProvider.namedCapteurs.isEmpty?Center(child: CircularProgressIndicator(color: kPrimaryColor,),):ListView.builder(
+                   return capteurProvider.noNamedCapteurs.isEmpty?Text("Pas de nouveaux capteurs détectés"):ListView.builder(
                     padding: EdgeInsets.all(5),
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
@@ -92,7 +101,7 @@ class _DeviceListState extends State<DeviceList> {
                           selected = index;
                         });
                         showDialog(context: context, builder: (BuildContext build){
-                          return  CapteurView(Provider.of<CapteurProvider>(context,listen:true).getNoNamedCapteurs()[index].id,Provider.of<CapteurProvider>(context,listen:true).getNoNamedCapteurs()[index].state);
+                          return  CapteurView(Provider.of<CapteurProvider>(context,listen:false).getNoNamedCapteurs()[index].id,Provider.of<CapteurProvider>(context,listen:true).getNoNamedCapteurs()[index].state);
                         });
                       
                       },
@@ -123,7 +132,6 @@ class _DeviceListState extends State<DeviceList> {
     return value;
   }
   Widget deviceContainer(String name, int index){
-    
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(

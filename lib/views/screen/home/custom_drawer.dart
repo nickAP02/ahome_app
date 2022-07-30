@@ -1,4 +1,6 @@
+import 'package:ago_ahome_app/services/local_storage.dart';
 import 'package:ago_ahome_app/services/theme_service.dart';
+import 'package:ago_ahome_app/views/screen/auth/login.dart';
 import 'package:ago_ahome_app/views/screen/device/device_list.dart';
 import 'package:ago_ahome_app/views/screen/device/updated_devices.dart';
 import 'package:ago_ahome_app/views/screen/planning/planning_list.dart';
@@ -140,7 +142,10 @@ class CustomDrawer extends StatelessWidget {
         const SizedBox(height: 50,),
         ListTile(
           leading:IconButton(onPressed: (){
-            Navigator.of(context).pop();
+            LocalStorage().logout();
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (BuildContext context) =>  const Login()));
+
           }, icon: const Icon(Icons.logout,
           color: Colors.white,
           size: 40,

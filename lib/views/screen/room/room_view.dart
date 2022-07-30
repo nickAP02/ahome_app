@@ -15,8 +15,9 @@ class RoomDevice extends StatefulWidget {
 class _RoomDeviceState extends State<RoomDevice> {
   final  _formKey = GlobalKey<FormState>();
   int index = 0;
+  TextEditingController _nameController = TextEditingController();
   String? valSelectionne;
-  Room room= Room(idRoom: "",nameRoom: "");
+  Room room= Room(idRoom: "",nameRoom: "",appareils:[]);
 
   @override
   void initState() {
@@ -37,6 +38,8 @@ class _RoomDeviceState extends State<RoomDevice> {
               child: Column(
                   children: [
                     TextFormField(
+                      cursorColor: kPrimaryColor,
+                      controller: _nameController,
                       decoration: const InputDecoration(
                         hintText: "Nom de la pièce"
                       ),
@@ -46,6 +49,7 @@ class _RoomDeviceState extends State<RoomDevice> {
                         return 'Entrez le champ nom';
                       }
                       else{
+                        value = _nameController.text;
                         room.nameRoom = value.toString();
                       }
                         return null;
@@ -60,11 +64,25 @@ class _RoomDeviceState extends State<RoomDevice> {
                         style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(kPrimaryColor)),
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            roomProvider.addRoom(room);
-                            setState(() {
-                               Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const Home()));
-                            });
+                            try{
+                              var request =await roomProvider.addRoom(room);
+                              debugPrint("result "+request.toString());
+                             
+                              setState(() {
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Nouvelle pièce enregistrée",style: TextStyle(color: Colors.white),)));
+                                 Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const Home()));
+                              });
+                              // else{
+                              //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Verifiez les champs renseignes",style: TextStyle(color: Colors.red),)));
+                              // }
+                            }catch(e){
+                              throw e.toString();
+                            }
+                            
                            
+                          }
+                          else{
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Une erreur s'est produite, reprendre la saisie",style: TextStyle(color: Colors.red),)));
                           }
                         },
                         child: const Text('Valider'),

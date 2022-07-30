@@ -1,4 +1,6 @@
-  List<Map> categorieDevice =[
+ const url = "assets/images/";
+const String logo = url + "logo.png";
+  List<Map<String,dynamic>> categorieDevice =[
     {
       'id':1,
       'categorie':'Eclairage',
@@ -31,9 +33,9 @@
       'categorie':'Température',
       'icone':'assets/images/icons/thermostat.png'
     },
-    {
-      'id':3,
-      'categorie':'Température',
-      'icone':'assets/images/icons/thermostat.png'
-    }
+    // {
+    //   'id':3,
+    //   'categorie':'Température',
+    //   'icone':'assets/images/icons/thermostat.png'
+    // }
   ];

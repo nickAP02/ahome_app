@@ -1,7 +1,11 @@
+import 'package:ago_ahome_app/model/role.dart';
+import 'package:ago_ahome_app/services/local_storage.dart';
 import 'package:ago_ahome_app/services/providers/user_provider.dart';
 import 'package:ago_ahome_app/utils/colors.dart';
 import 'package:ago_ahome_app/views/screen/auth/login.dart';
 import 'package:ago_ahome_app/views/screen/auth/text_field_container.dart';
+import 'package:ago_ahome_app/views/screen/home/home.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ago_ahome_app/model/user.dart';
@@ -22,12 +26,9 @@ class _RegisterFormState extends State<RegisterForm> {
     var pwdController = TextEditingController();
     final  _formKey = GlobalKey<FormState>();
     Size size = MediaQuery.of(context).size;
-    User user = User(username: "",password: "",email: "");
+    User user = User(username: "",password: "",email: "",roles: Role(roleName: 'guest'));
     final userProvider = Provider.of<UserProvider>(context,listen: false);
-    bool isValidEmail(String email){
-      RegExp invalidEmail= RegExp(r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$");
-      return invalidEmail.hasMatch(email);
-    }
+
     return  SingleChildScrollView(
       child: Form(
       key: _formKey,
@@ -50,6 +51,7 @@ class _RegisterFormState extends State<RegisterForm> {
             TextFieldContainer(
             child: TextFormField(
               controller: emailController,
+              enableSuggestions: true,
               keyboardType: TextInputType.emailAddress,
               obscureText: false,
               decoration: const InputDecoration(
@@ -64,21 +66,31 @@ class _RegisterFormState extends State<RegisterForm> {
                 border: InputBorder.none
               ),
               validator: (value){
-                 if (value == null || value.isEmpty) {
-                  return 'Entrez l\'email';
-                }
-                else{
-                 isValidEmail(value)?null:"Email invalide reprendre la saisie";
-                }
-                setState(() {
-                  user.email=value.toString();
-                });
+                value = emailController.text;
+                  debugPrint("email value"+value.toString());
+                 bool _isValid = EmailValidator.validate(value);
+                  debugPrint("emailvalidator "+_isValid.toString());
+                  if (_isValid==false){
+                    return 'Email invalide';
+                  }
+                  if(value.length<16){
+                    return 'Email invalide';
+                  }
+                  else{
+                    setState(() {
+                     
+                      user.email=value.toString();
+                      debugPrint("email "+user.email.toString());
+                    });
+                  }
+                return null;
               },
             )
           ),
             TextFieldContainer(
             child: TextFormField(
               controller: usernameController,
+              enableSuggestions: true,
               keyboardType: TextInputType.text,
               obscureText: false,
               decoration:const InputDecoration(
@@ -93,22 +105,31 @@ class _RegisterFormState extends State<RegisterForm> {
                 border: InputBorder.none
               ),
               validator: (value){
+                value = usernameController.text;
+                debugPrint("usernme value"+value.toString());
                 if (value == null || value.isEmpty) {
                   return 'Entrez le nom d\'utilisateur';
                 }
+                if(value.length<8){
+                  return 'Nom d\'utilisateur doit etre minimum 8 caracteres';
+                }
                 else{
                     setState(() {
+                     
                     user.username = value.toString();
+                     debugPrint("username "+user.username.toString());
                   });
                  
                 }
                 return null;
               },
+             
             )
           ),
            TextFieldContainer(
             child: TextFormField(
               controller: pwdController,
+              enableSuggestions: true,
               keyboardType: TextInputType.text,
               obscureText: true,
               decoration: const InputDecoration(
@@ -127,61 +148,74 @@ class _RegisterFormState extends State<RegisterForm> {
                 border: InputBorder.none
               ),
               validator: (value){
+                value = pwdController.text;
+                debugPrint("pwd value "+value.toString());
                 if (value == null || value.isEmpty) {
                   return 'Entrez le mot de passe';
                 }
+                if(value.length<8){
+                  return 'Mot de passe doit etre minimum 8 caracteres';
+                }
                 else{
                   setState(() {
+                   
                     user.password = value.toString();
+                     debugPrint("pwd "+user.password.toString());
                   });
                  
                 }
               },
             )
           ),
-          GestureDetector(
-            onTap: () async{
-              user.email=emailController.text;
-              user.password = pwdController.text;
-              user.username = usernameController.text;
-
-              try {
-                    // debugPrint("user "+user.toJson().toString());
-                    var response = await userProvider.register(user);
-                    if(response["statut"]==200){
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const Login()));
+          Column(
+            children: [
+              ElevatedButton(
+                onPressed: ()async{
+                  debugPrint("current state"+_formKey.currentState!.validate().toString());
+                  if(_formKey.currentState!.validate()){
+                    
+                    debugPrint("ici");
+                    var req = await userProvider.register(user);
+                    if(req["statut"]==200){
+                      debugPrint(user.roles!.roleName.toString());
+                      setState(() {
+                        user.roles!.roleName =="guest";
+                        LocalStorage().setUser(user.email.toString());
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> Home()));
+                      });
+                      debugPrint(user.roles!.roleName.toString());
                     }
                     else{
-                       Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const Login()));
-                      print("erreur");
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Verifiez les champs renseignes",style: TextStyle(color: Colors.red),)));
                     }
-                    //  debugPrint(userProvider.toString());
-                    // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const Login()));
-                } on Exception catch (e) {
-                  debugPrint("Register ici");
-                 throw e.toString();
-                }
-              
-            },
-            child: Container(
-            height: 45,
-            //margin: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
-            padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 15),
-            decoration:BoxDecoration(
-              color: kPrimaryColor.withOpacity(1),
-              borderRadius: BorderRadius.circular(29)
-            ),
-            child: const Text(
-              "INSCRIPTION",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: kBackground
-              ),
-            ),
+                    
+                    // Navigator.of(context).push(MaterialPageRoute(builder: (context)=> Home()));
+                  }else{
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Une erreur s'est produite, reprendre la saisie",style: TextStyle(color: Colors.red),)));
+                  }
+                },
+                child: const Text(
+                  "INSCRIPTION",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: kPrimaryColor
+                  ),
                 ),
+              ),
+            ],
           ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GestureDetector(
+              onTap: (){
+                Navigator.of(context).push(MaterialPageRoute(builder: (context)=> Login()));
+              },
+              child: Text("Déjà inscrit ?Connectez-vous",style: TextStyle(color: kPrimaryColor),)
+            ),
+          )
         ],
-      )),
+      )
+      ),
     );
   } 
 }

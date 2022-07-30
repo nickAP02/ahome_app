@@ -7,9 +7,7 @@ import 'package:ago_ahome_app/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
-
-import 'views/screen/space/space.dart';
-
+import 'package:ago_ahome_app/utils/splash_screen.dart';
 void main()async {
   //fonction qui permet de verifier l'utilisation d'un widget
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,8 +37,8 @@ class _MyHomePageState extends State<MyHomePage> {
     return MultiProvider(providers: [
       ChangeNotifierProvider<DeviceProvider>(create:(context)=>DeviceProvider()),
       ChangeNotifierProvider<RoomProvider>(create:(context)=>RoomProvider()),
-       ChangeNotifierProvider<CapteurProvider>(create: (context)=>CapteurProvider()),
-      ChangeNotifierProvider<UserProvider>(create: (context)=>UserProvider())
+      ChangeNotifierProvider<CapteurProvider>(create: (context)=>CapteurProvider()),
+      ChangeNotifierProvider<UserProvider>(create: (context)=>UserProvider()),
     ],
     child: MaterialApp(
         theme:Themes.light,
@@ -48,9 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
         darkTheme:Themes.dark, 
         debugShowCheckedModeBanner: false,
         home: const Scaffold(
-          body: 
-           Space(),
-          // Register(),
+        body: SplashScreen()
         ),
       )
     );

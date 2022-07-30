@@ -5,6 +5,7 @@ import 'package:ago_ahome_app/services/providers/device_provider.dart';
 import 'package:ago_ahome_app/utils/colors.dart';
 import 'package:ago_ahome_app/views/screen/capteur/capteur_view.dart';
 import 'package:ago_ahome_app/views/screen/device/delete_device.dart';
+import 'package:ago_ahome_app/views/screen/device/device_card.dart';
 import 'package:ago_ahome_app/views/screen/device/device_view.dart';
 import 'package:ago_ahome_app/views/screen/device/update_device.dart';
 import 'package:flutter/material.dart';
@@ -27,46 +28,26 @@ class _DevicesUpdatedState extends State<DevicesUpdated> {
     return Scaffold(
       appBar: AppBar(title: const Text("Liste des appareils"),),
       body:Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        // mainAxisAlignment: MainAxisAlignment.center,
         children: [
            deviceProvider.namedDevices.isEmpty?
            Center(
             child: CircularProgressIndicator(color: kPrimaryColor,semanticsLabel: "Chargement des données",),
             )
            :ListView.builder(
-            padding: EdgeInsets.all(5),
+            // padding: EdgeInsets.all(5),
             shrinkWrap: true,
             scrollDirection: Axis.vertical,
             itemCount: Provider.of<DeviceProvider>(context,listen:true).getNamedDevices().length,
             itemBuilder: (context, index)=>
-              GestureDetector(
-                onLongPress: (){
-                   setState(() {
-                    selected = index;
-                  });
-                  // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Vous avez cliqué sur cet appareil")));
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=> DeleteDevice(deviceProvider.device![index].idDev,deviceProvider.device![index].state)));
-                },
-                onTap: (){
-                  setState(() {
-                    selected = index;
-                  });
-                  // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Vous avez cliqué sur cet appareil")));
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=> UpdateDevice(deviceProvider.device![index].idDev,deviceProvider.device![index].state)));
-                },
-                child: Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  //borderRadius: BorderRadius.all(Radius.elliptical(10, 10)),
-                  color: selected==index?kPrimaryColor:  Colors.white,
-                ),
-                child:Text(
-                   '${Provider.of<DeviceProvider>(context,listen:true).namedDevices[index].nameDev}',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold
-                  )
-                )
-                ),
+              Container(
+                height: MediaQuery.of(context).size.height/5,
+                width:  MediaQuery.of(context).size.width/8,
+                child: DeviceCard(
+                     '${Provider.of<DeviceProvider>(context,listen:true).namedDevices[index].nameDev}',
+                     Provider.of<DeviceProvider>(context,listen:true).namedDevices[index].conso!.toDouble() 
+                  ),
               )
             //separatorBuilder: (_,index)=>SizedBox(width: 20)
           ),
@@ -91,7 +72,7 @@ class _DevicesUpdatedState extends State<DevicesUpdated> {
                   color: selected==index?kPrimaryColor:  Colors.white,
                 ),
                 child:Text(
-                  'Capteur '+'${Provider.of<CapteurProvider>(context,listen:true).capteur![index].id}',
+                  'Capteur '+'${Provider.of<CapteurProvider>(context,listen:false).capteur![index].id}',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold
                   ),

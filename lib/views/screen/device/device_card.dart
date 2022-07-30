@@ -1,14 +1,12 @@
-import 'package:ago_ahome_app/services/providers/room_provider.dart';
 import 'package:ago_ahome_app/utils/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:switcher/core/switcher_size.dart';
 import 'package:switcher/switcher.dart';
 class DeviceCard extends StatefulWidget {
-  //  late Device device;
-  // late  String name;
-  // late double conso;
-  // DeviceCard(this.name,this.conso);
+  String name;
+  double conso;
+  DeviceCard(this.name,this.conso);
   @override
   State<DeviceCard> createState() => _DeviceCardState();
 }
@@ -20,96 +18,99 @@ class _DeviceCardState extends State<DeviceCard> {
   var tapColor = const Color.fromRGBO(20,115,209,1);
   var colorOn = false;
   var textColor = Colors.white;
+  final server = WebSocketChannel.connect(Uri.parse("ws://10.20.1.1:5000/api/v1/device/allumerEteindre/"));
   @override
   void initState(){
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
-     var roomProvider=Provider.of<RoomProvider>(context,listen:false);
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: GestureDetector(
-          onTap: (){
-            setState(() {
-              _isSelected = !_isSelected;
-              colorOn = true;
-              textColor = textColor;
-            });
-          },
-          onTapCancel: (){
-            setState(() {
-              _isSelected = !_isSelected;
-              colorOn =  false;
-              textColor = Colors.black;
-            });
-          },
-          child: Container(
-            height:50,
-            width: 100,
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: _isSelected?kPrimaryColor:Colors.white,
-              borderRadius: BorderRadius.circular(20)),
-                //color: Colors.blue,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    // var roomProvider = Provider.of<RoomProvider>(context,listen: true);
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: GestureDetector(
+        onTap: (){
+          setState(() {
+            _isSelected = !_isSelected;
+            colorOn = true;
+            textColor = textColor;
+            void allumerEteindre(msg){
+              debugPrint(msg);
+              server.sink.add(msg);
+            }
+            
+          });
+        },
+        onTapCancel: (){
+          setState(() {
+            _isSelected = !_isSelected;
+            colorOn =  false;
+            textColor = Colors.black;
+            void allumerEteindre(msg){
+              debugPrint(msg);
+              server.sink.add(msg);
+            }
+          });
+        },
+        child: Container(
+          height:50,
+          width: 100,
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: _isSelected?kPrimaryColor:Colors.white,
+            borderRadius: BorderRadius.circular(20)),
+              //color: Colors.blue,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    RotatedBox(
-                    quarterTurns:135,
-                    child:Switcher(
-                      switcherButtonBoxShape: BoxShape.circle,
-                      enabledSwitcherButtonRotate: true,
-                      switcherButtonAngleTransform: 90,
-                      value: false,
-                      colorOff: colorOn?const Color.fromRGBO(255, 255, 255, 0.5):tapColor,
-                      iconOn: Icons.circle_outlined,
-                      iconOff: Icons.circle_outlined,
-                      colorOn: colorOn?tapColor:const Color.fromRGBO(255, 255, 255, 0.5),
-                      size: SwitcherSize.small,
-                      onChanged: (switchVal){
-                        switchVal = !switchVal;
-                        colorOn = !colorOn;
-                      }
-                    ),
-                    ),
-                  ],
-                ),
-                        
-                Icon(Icons.lightbulb_outline,color:_isSelected?textColor:Colors.black),
-                
-                roomProvider.devices.isEmpty? Text('Appareil', 
-                  style: TextStyle(
-                    color:_isSelected?textColor:Colors.black,
-                    fontWeight: FontWeight.bold
-                  )
-                ):Text('${roomProvider.devices[index].nameDev}', 
-                  style: TextStyle(
-                    color:_isSelected?textColor:Colors.black,
-                    fontWeight: FontWeight.bold
-                  )
-                ),
-                roomProvider.devices.isEmpty? Text('0 kwh', 
-                  style: TextStyle(
-                    color:_isSelected?textColor:Colors.black,
-                    fontWeight: FontWeight.bold
-                  )
-                ):Text('${roomProvider.devices[index].puissance} kwh', 
-                  style: TextStyle(
-                    color:_isSelected?textColor:Colors.black,
-                    fontWeight: FontWeight.bold
-                  )
-                ),
-              ],
+                  RotatedBox(
+                  quarterTurns:135,
+                  child:Switcher(
+                    switcherButtonBoxShape: BoxShape.circle,
+                    enabledSwitcherButtonRotate: true,
+                    switcherButtonAngleTransform: 90,
+                    value: false,
+                    colorOff: colorOn?const Color.fromRGBO(255, 255, 255, 0.5):tapColor,
+                    iconOn: Icons.circle_outlined,
+                    iconOff: Icons.circle_outlined,
+                    colorOn: colorOn?tapColor:const Color.fromRGBO(255, 255, 255, 0.5),
+                    size: SwitcherSize.small,
+                    onChanged: (switchVal){
+                      switchVal = !switchVal;
+                      colorOn = !colorOn;
+                    }
+                  ),
+                  ),
+                ],
+              ),
+              Icon(Icons.lightbulb_outline,color:_isSelected?textColor:Colors.black),
+              
+             Text(widget.name, 
+                style: TextStyle(
+                  color:_isSelected?textColor:Colors.black,
+                  fontWeight: FontWeight.bold
+                )
+              ),
+              Text('${widget.conso}'+' kwh', 
+                style: TextStyle(
+                  color:_isSelected?textColor:Colors.black,
+                  fontWeight: FontWeight.bold
+                )
               )
-            ),
+            ],
+            )
           ),
-        );
+        ),
+      );
    }
+   void allumerEteindre(msg){
+    debugPrint(msg);
+    server.sink.add(msg);
+  }
   //   return FutureBuilder<List<Device>>(
   //     future: devices,
   //     builder: (context,snapshot){
