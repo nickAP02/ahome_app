@@ -23,7 +23,7 @@ class _PlanningViewState extends State<PlanningView> {
   var getDate;
   late Planning _planning;
   String ?valSelectionne;
-  final channel = WebSocketChannel.connect(Uri.parse("ws://10.20.1.1:7000"));
+  final channel = WebSocketChannel.connect(Uri.parse("ws://127.0.0.1:5000/api/v1/device/allumerEteindre/"));
   final _formKey = GlobalKey<FormState>();
   @override
   void initState() {
@@ -31,7 +31,7 @@ class _PlanningViewState extends State<PlanningView> {
   }
   @override
   Widget build(BuildContext context) {
-    var deviceProvider=Provider.of<DeviceProvider>(context,listen:true);
+    var roomProvider=Provider.of<RoomProvider>(context,listen:true);
     TextEditingController _heureDebut = TextEditingController();
     TextEditingController _heureFin = TextEditingController();
     return Scaffold(
@@ -65,7 +65,7 @@ class _PlanningViewState extends State<PlanningView> {
                 ),
                 const Padding(padding: EdgeInsets.only(bottom: 20)),
                 DateTimePicker(
-                  controller: _heureDebut,
+                  // controller: _heureDebut,
                   cursorColor: kPrimaryColor,
                   type: DateTimePickerType.dateTimeSeparate,
                   dateMask: 'd MMM, yyyy',
@@ -73,7 +73,7 @@ class _PlanningViewState extends State<PlanningView> {
                   firstDate: DateTime(2000),
                   lastDate: DateTime(2100),
                   icon: const Icon(Icons.event,color: kPrimaryColor,),
-                  dateLabelText: 'Date de début',
+                  // dateLabelText: 'Date de début',
                   timeLabelText: "Heure de début",
                   selectableDayPredicate: (date) {
                   // Disable weekend days to select from the calendar
@@ -87,15 +87,16 @@ class _PlanningViewState extends State<PlanningView> {
                   onSaved: (val) => debugPrint(val),
                 ),
                 DateTimePicker(
-                controller: _heureFin,
+                // controller: _heureFin,
                  cursorColor: kPrimaryColor,
                  type: DateTimePickerType.dateTimeSeparate,
                  dateMask: 'd MMM, yyyy',
                  initialValue: DateTime.now().toString(),
+                 initialTime: TimeOfDay.now(),
                  firstDate: DateTime(2000),
                  lastDate: DateTime(2100),
                  icon: const Icon(Icons.event,color: kPrimaryColor,),
-                 dateLabelText: 'Date de fin',
+                //  dateLabelText: 'Date de fin',
                  timeLabelText: "Heure de fin",
                  selectableDayPredicate: (date) {
                  // Disable weekend days to select from the calendar
@@ -120,49 +121,35 @@ class _PlanningViewState extends State<PlanningView> {
                   child: ListView.builder(
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
-                    itemCount: 5,
+                    itemCount: 10,
                     itemBuilder: (context, index) {
-                      return ListTile(
-                        title: deviceProvider.device!.isEmpty?Text('Appareil'):Text('${deviceProvider.device![index].nameDev}'),
-                        subtitle: deviceProvider.device!.isEmpty?Text('0'):Text('${deviceProvider.device![index].conso}'),
-                        // leading: Text('Allumé'),
-                        trailing:  ElevatedButton
-                          (
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(color),
+                      return Column(
+                        children: [
+                          // Tab(child: Text('${roomProvider.room[index].nameRoom}')),
+                          ListTile(
+                            title:Text("appareil 1"),
+                            subtitle: Text("0 kwH"),
+                            // leading: Text('Allumé'),
+                            trailing:  ElevatedButton
+                              (
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all<Color>(color),
+                              ),
+                              child: 
+                              const Text
+                              (
+                                "Plannifier",
+                                style: TextStyle(color: Colors.white)
+                              ) ,
+                              onPressed: () {
+                                _sendAction();
+                              },     
+                            ),
                           ),
-                          child: 
-                          const Text
-                          (
-                            "Plannifier",
-                            style: TextStyle(color: Colors.white)
-                          ) ,
-                          onPressed: () {
-                            _sendAction();
-                          },     
-                        ),
+                        ],
                       );
                     })
-                  ),
-              // child: DropdownButton<String>(
-              //       hint: const Text("Appareils"),
-              //       value: valSelectionne,
-              //       items: List.generate(deviceProvider.device!.length, (index) => DropdownMenuItem<String>(
-              //           value:deviceProvider.device![index].idDev,
-              //           child: Row(
-              //             children: [
-              //               Text(deviceProvider.device![index].idDev),
-              //             ],
-              //           ))
-              //         ).toList(),
-              //         onChanged: (value){
-              //         setState(() {
-              //           valSelectionne = value;
-              //           // _planning.appareils.addAll(valSelectionne);
-              //         });
-              //       }),
-                
-                
+                  ),      
             ],
           ),
         ),

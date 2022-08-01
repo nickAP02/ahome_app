@@ -38,8 +38,13 @@ class _DeviceListState extends State<DeviceList> {
                   deviceProvider.setNamedDevice();
                 });
                 if(snapshot.data == null){
-                  debugPrint("snapshot "+snapshot.data.toString());
-                  return const Center(child: CircularProgressIndicator(color: kPrimaryColor,),);
+                  debugPrint("snapshot circular"+snapshot.data.toString());
+                  return  Center(child: Column(
+                    children: [
+                      CircularProgressIndicator(color: kPrimaryColor,),
+                      Text("Chargement des données")
+                    ],
+                  ),);
                 }
                 if(snapshot.data == []){
                   debugPrint("snapshot "+snapshot.data.toString());
@@ -49,12 +54,12 @@ class _DeviceListState extends State<DeviceList> {
                    return Center(child: Text('${snapshot.hasError}'));
                 }
                 else{
-                  return deviceProvider.noNamedDevices.isEmpty?Center(child: Column(
+                  return deviceProvider.noNamedDevices.isEmpty?Column(
                     children: [
-                      Image.asset('assets/images/icons/peripherals.png',height: 500,width: 500,),
-                      Text("Pas de nouvel appareils détectés"),
+                      Image.asset('assets/images/icons/peripherals.png',height: 200,width: 500,),
+                      Text("Pas de nouveaux appareils détectés"),
                     ],
-                  )):ListView.builder(
+                  ):ListView.builder(
                     padding: EdgeInsets.all(5),
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
@@ -90,7 +95,12 @@ class _DeviceListState extends State<DeviceList> {
                    return Center(child: Text('${snapshot.hasError}'));
                 }
                 else{
-                   return capteurProvider.noNamedCapteurs.isEmpty?Text("Pas de nouveaux capteurs détectés"):ListView.builder(
+                   return capteurProvider.noNamedCapteurs.isEmpty?Column(
+                     children: [
+                      Image.asset('assets/images/icons/motion-sensor.png',height: 200,width: 500,),
+                       Text("Pas de nouveaux capteurs détectés"),
+                     ],
+                   ):ListView.builder(
                     padding: EdgeInsets.all(5),
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,

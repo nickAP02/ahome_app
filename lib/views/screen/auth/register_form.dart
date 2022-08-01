@@ -171,11 +171,12 @@ class _RegisterFormState extends State<RegisterForm> {
             children: [
               ElevatedButton(
                 onPressed: ()async{
-                  debugPrint("current state"+_formKey.currentState!.validate().toString());
+                  debugPrint("current state 1"+_formKey.currentState!.validate().toString());
                   if(_formKey.currentState!.validate()){
-                    
+                     debugPrint("current state 2"+_formKey.currentState!.validate().toString());
                     debugPrint("ici");
                     var req = await userProvider.register(user);
+                    // debugPrint(req["statut"]);
                     if(req["statut"]==200){
                       debugPrint(user.roles!.roleName.toString());
                       setState(() {

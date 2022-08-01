@@ -12,7 +12,7 @@ class HttpService{
   //initialisation du client http
   static final client = http.Client();
   //static const url = "http://10.20.1.1:5000/api/v1";
-  static const url = "http://192.168.1.101:5000/api/v1";
+  static const url = "http://192.168.43.32:5000/api/v1";
   Map<String,String> headers = 
   {
     'Content-Type':'application/json',
@@ -248,7 +248,7 @@ class HttpService{
   }
  //implementation de la route /rooms
   Future getRooms() async{
-    debugPrint(" ah rooms");
+    debugPrint(" entree rooms");
     List<Room>rooms=[];
     try {
       var response = await http.get(
@@ -271,7 +271,7 @@ class HttpService{
         }
       return rooms;
     }  catch (err) {
-      debugPrint("rooms erreur");
+      debugPrint("rooms exception");
  //     throw err.toString();
     }
   }

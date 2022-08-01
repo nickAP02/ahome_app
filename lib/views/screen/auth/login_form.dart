@@ -131,13 +131,16 @@ class _LoginFormState extends State<LoginForm> {
             children: [
               ElevatedButton(
                 onPressed: (){
-                  debugPrint("current state"+_formKey.currentState!.validate().toString());
+                  debugPrint("current state 1 "+_formKey.currentState!.validate().toString());
                   if(_formKey.currentState!.validate()){
-                    
+                     debugPrint("current state 2 "+_formKey.currentState!.validate().toString());
                     debugPrint("ici");
                     userProvider.login(user);
                     debugPrint("provider ici "+userProvider.userLogin.toString());
-                    if(userProvider.userLogin["statut"]==200){
+                    if(userProvider.userLogin==null){
+                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Une erreur s'est produite, reprendre la saisie",style: TextStyle(color: Colors.red),)));
+                    }
+                    else if(userProvider.userLogin["statut"]==200){
                       if(LocalStorage().getUser()==null){
                         LocalStorage().setToken(userProvider.userLogin["token"].toString());
                         LocalStorage().setUser(userProvider.userLogin["user"].toString());

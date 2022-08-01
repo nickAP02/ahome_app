@@ -1,12 +1,16 @@
+import 'dart:convert';
+
 import 'package:ago_ahome_app/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:switcher/core/switcher_size.dart';
 import 'package:switcher/switcher.dart';
 class DeviceCard extends StatefulWidget {
+  dynamic? state;
+  dynamic? id;
   String name;
   double conso;
-  DeviceCard(this.name,this.conso);
+  DeviceCard(this.name,this.conso,this.state,this.id);
   @override
   State<DeviceCard> createState() => _DeviceCardState();
 }
@@ -18,7 +22,7 @@ class _DeviceCardState extends State<DeviceCard> {
   var tapColor = const Color.fromRGBO(20,115,209,1);
   var colorOn = false;
   var textColor = Colors.white;
-  final server = WebSocketChannel.connect(Uri.parse("ws://10.20.1.1:5000/api/v1/device/allumerEteindre/"));
+  final server = WebSocketChannel.connect(Uri.parse("ws://127.0.0.1:5000/api/v1/device/allumerEteindre/"));
   @override
   void initState(){
     super.initState();
@@ -34,27 +38,42 @@ class _DeviceCardState extends State<DeviceCard> {
             _isSelected = !_isSelected;
             colorOn = true;
             textColor = textColor;
-            void allumerEteindre(msg){
-              debugPrint(msg);
-              server.sink.add(msg);
+           if(widget.state[0]==0){
+              widget.state[0]=1;
             }
+            else{
+              Text("L'appareil est déjà allumé");
+            }
+            // debugPrint("element 1 state "+widget.state[0].toString()+" element 2 state "+widget.state[1].toString()+" element 3 state "+widget.state[2].toString());
+            Map<String,dynamic> msg = {
+              "id":"${widget.id}",
+              "state":widget.state
+            };
+            debugPrint("arrive ici 1"+msg.toString());
+          allumerEteindre(jsonEncode(msg));
+          // debugPrint("element 1 state "+widget.state[0].toString());
             
           });
         },
-        onTapCancel: (){
+        onLongPress:(){
           setState(() {
             _isSelected = !_isSelected;
             colorOn =  false;
             textColor = Colors.black;
-            void allumerEteindre(msg){
-              debugPrint(msg);
-              server.sink.add(msg);
-            }
+            
+            widget.state[0]=0;
+            // debugPrint("state "+widget.state);
+                Map<String,dynamic> msg = {
+              "id":"${widget.id}",
+              "state":widget.state
+              };
+              debugPrint("arrive ici 2"+msg.toString());
+            allumerEteindre(jsonEncode(msg));
           });
         },
         child: Container(
-          height:50,
-          width: 100,
+          height:150,
+          width: 200,
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: _isSelected?kPrimaryColor:Colors.white,
@@ -87,7 +106,7 @@ class _DeviceCardState extends State<DeviceCard> {
                   ),
                 ],
               ),
-              Icon(Icons.lightbulb_outline,color:_isSelected?textColor:Colors.black),
+              // Icon(Icons.lightbulb_outline,color:_isSelected?textColor:Colors.black),
               
              Text(widget.name, 
                 style: TextStyle(

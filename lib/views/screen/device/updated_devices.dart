@@ -45,8 +45,10 @@ class _DevicesUpdatedState extends State<DevicesUpdated> {
                 height: MediaQuery.of(context).size.height/5,
                 width:  MediaQuery.of(context).size.width/8,
                 child: DeviceCard(
-                     '${Provider.of<DeviceProvider>(context,listen:true).namedDevices[index].nameDev}',
-                     Provider.of<DeviceProvider>(context,listen:true).namedDevices[index].conso!.toDouble() 
+                     '${Provider.of<DeviceProvider>(context,listen:false).namedDevices[index].nameDev}',
+                     Provider.of<DeviceProvider>(context,listen:false).namedDevices[index].conso!.toDouble(),
+                     Provider.of<DeviceProvider>(context,listen:false).namedDevices[index].state,
+                     Provider.of<DeviceProvider>(context,listen:false).namedDevices[index].idDev 
                   ),
               )
             //separatorBuilder: (_,index)=>SizedBox(width: 20)
@@ -90,7 +92,7 @@ class _DevicesUpdatedState extends State<DevicesUpdated> {
         icon: Icon(Icons.add),
         onPressed: (){
           showDialog(context: context, builder: (BuildContext build){
-            return  DeviceView(Provider.of<DeviceProvider>(context,listen:true).getNamedDevices()[index].idDev,Provider.of<DeviceProvider>(context,listen:true).getNamedDevices()[index].state);
+            return  DeviceView(Provider.of<DeviceProvider>(context,listen:false).getNamedDevices()[index].idDev,Provider.of<DeviceProvider>(context,listen:true).getNamedDevices()[index].state);
           });
         },
         ),

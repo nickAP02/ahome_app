@@ -22,7 +22,7 @@ class _DeviceViewState extends State<DeviceView> {
   Device newDevice =  Device(idDev: "",nameDev: "",categorie: "",puissance: 0,conso: 0,state: [0],room: "");
   // Device newDevice =  Device(idDev: "",nameDev:"",state:[],categorie: "",puissance: 0, conso:0,dateConso:DateTime.now(),room:"");
   bool selected=true;
-  final server = WebSocketChannel.connect(Uri.parse("ws://10.20.1.1:5000/api/v1/device/allumerEteindre/"));
+  final server = WebSocketChannel.connect(Uri.parse("ws://127.0.0.1:5000/api/v1/device/allumerEteindre/"));
   String ?valSelectionneCat;
   String ?valSelectionneP;
   TextEditingController _puissanceController = TextEditingController();
@@ -60,6 +60,7 @@ class _DeviceViewState extends State<DeviceView> {
                   alignment: Alignment.topCenter,
                   //width: 100,
                   child: TextFormField(
+                    cursorColor: kPrimaryColor,
                     controller: _nameDevController,
                     decoration: const InputDecoration(
                       hintText: "Nom de l'appareil"
@@ -81,6 +82,7 @@ class _DeviceViewState extends State<DeviceView> {
                   alignment: Alignment.topCenter,
                   //width: 100,
                   child: TextFormField(
+                    cursorColor: kPrimaryColor,
                     controller: _puissanceController,
                     decoration: const InputDecoration(
                       hintText: "Puissance(en W)"

@@ -28,7 +28,7 @@ class _CategoryDeviceState extends State<CategoryDevice> {
           crossAxisCount: 2,
           shrinkWrap: true,
           scrollDirection: Axis.vertical,
-          children:roomProvider.eclairageDevices.map((e) => DeviceCard('${roomProvider.eclairageDevices[index].nameDev}', roomProvider.eclairageDevices[index].conso!.truncateToDouble())).toList()
+          children:[]
           )
         );
   }

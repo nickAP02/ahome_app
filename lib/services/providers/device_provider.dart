@@ -15,7 +15,12 @@ class DeviceProvider extends ChangeNotifier{
     return noNamedDevices;
   }
   setNoNamedDevice(){
-    noNamedDevices = device!.where((element) => element.nameDev!.isEmpty).toList();
+    if(device!=null){
+       noNamedDevices = device!.where((element) => element.nameDev!.isEmpty).toList();
+    }
+    else{
+      Text("Pas d'appareils disponibles");
+    }
     notifyListeners();
   }
    List<Device>getNamedDevices(){
@@ -26,7 +31,12 @@ class DeviceProvider extends ChangeNotifier{
     
   }
   setNamedDevice(){
-    namedDevices = device!.where((element) => element.nameDev!.isNotEmpty).toList();
+    if(device!=null){
+       namedDevices = device!.where((element) => element.nameDev!.isNotEmpty).toList();
+    }
+    else{
+      Text("Pas d'appareils disponibles");
+    }
     notifyListeners();
   }
   Future getDeviceData() async{
