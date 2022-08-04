@@ -69,7 +69,7 @@ class _RoomDeviceState extends State<RoomDevice> {
                               debugPrint("result "+request.toString());
                              
                               setState(() {
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Nouvelle pièce enregistrée",style: TextStyle(color: Colors.white),)));
+                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Nouvelle pièce enregistrée",style: TextStyle(color: Colors.white),)));
                                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const Home()));
                               });
                               // else{
@@ -82,7 +82,7 @@ class _RoomDeviceState extends State<RoomDevice> {
                            
                           }
                           else{
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Une erreur s'est produite, reprendre la saisie",style: TextStyle(color: Colors.red),)));
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Une erreur s'est produite, reprendre la saisie",style: TextStyle(color: Colors.red),)));
                           }
                         },
                         child: const Text('Valider'),

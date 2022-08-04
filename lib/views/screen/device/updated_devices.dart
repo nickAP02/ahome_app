@@ -1,13 +1,13 @@
-import 'package:ago_ahome_app/model/capteur.dart';
-import 'package:ago_ahome_app/model/device.dart';
+// import 'package:ago_ahome_app/model/capteur.dart';
+// import 'package:ago_ahome_app/model/device.dart';
 import 'package:ago_ahome_app/services/providers/capteur_provider.dart';
 import 'package:ago_ahome_app/services/providers/device_provider.dart';
 import 'package:ago_ahome_app/utils/colors.dart';
-import 'package:ago_ahome_app/views/screen/capteur/capteur_view.dart';
-import 'package:ago_ahome_app/views/screen/device/delete_device.dart';
+// import 'package:ago_ahome_app/views/screen/capteur/capteur_view.dart';
+// import 'package:ago_ahome_app/views/screen/device/delete_device.dart';
 import 'package:ago_ahome_app/views/screen/device/device_card.dart';
 import 'package:ago_ahome_app/views/screen/device/device_view.dart';
-import 'package:ago_ahome_app/views/screen/device/update_device.dart';
+// import 'package:ago_ahome_app/views/screen/device/update_device.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:provider/provider.dart';
@@ -32,14 +32,14 @@ class _DevicesUpdatedState extends State<DevicesUpdated> {
         // mainAxisAlignment: MainAxisAlignment.center,
         children: [
            deviceProvider.namedDevices.isEmpty?
-           Center(
+           const Center(
             child: CircularProgressIndicator(color: kPrimaryColor,semanticsLabel: "Chargement des données",),
             )
            :ListView.builder(
             // padding: EdgeInsets.all(5),
             shrinkWrap: true,
             scrollDirection: Axis.vertical,
-            itemCount: Provider.of<DeviceProvider>(context,listen:true).getNamedDevices().length,
+            itemCount: Provider.of<DeviceProvider>(context,listen:false).getNamedDevices().length,
             itemBuilder: (context, index)=>
               Container(
                 height: MediaQuery.of(context).size.height/5,
@@ -54,8 +54,8 @@ class _DevicesUpdatedState extends State<DevicesUpdated> {
             //separatorBuilder: (_,index)=>SizedBox(width: 20)
           ),
          
-          capteurProvider.namedCapteurs.isEmpty?Center(child: CircularProgressIndicator(color: kPrimaryColor,),):ListView.builder(
-              padding: EdgeInsets.all(5),
+          capteurProvider.namedCapteurs.isEmpty?const Center(child: CircularProgressIndicator(color: kPrimaryColor,),):ListView.builder(
+              padding:const EdgeInsets.all(5),
               shrinkWrap: true,
               scrollDirection: Axis.vertical,
               itemCount: Provider.of<CapteurProvider>(context,listen:true).getNamedCapteurs().length,
@@ -64,7 +64,7 @@ class _DevicesUpdatedState extends State<DevicesUpdated> {
                   setState(() {
                     selected = index;
                   });
-                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Vous avez cliqué sur ce capteur")));
+                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Vous avez cliqué sur ce capteur")));
                   // Navigator.of(context).push(MaterialPageRoute(builder: (context)=> CapteurView(capteurProvider.capteur![index].id,capteurProvider.capteur![index].state)));
                 },
                 child: Container(
@@ -89,7 +89,7 @@ class _DevicesUpdatedState extends State<DevicesUpdated> {
         backgroundColor: kBackground,
         child: IconButton(
         highlightColor: kPrimaryColor,
-        icon: Icon(Icons.add),
+        icon:const Icon(Icons.add),
         onPressed: (){
           showDialog(context: context, builder: (BuildContext build){
             return  DeviceView(Provider.of<DeviceProvider>(context,listen:false).getNamedDevices()[index].idDev,Provider.of<DeviceProvider>(context,listen:true).getNamedDevices()[index].state);

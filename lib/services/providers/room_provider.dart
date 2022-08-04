@@ -5,9 +5,10 @@ import 'package:flutter/cupertino.dart';
 
 class RoomProvider extends ChangeNotifier{
   var room;
-  var rooms;
-  var roomOnDevices;
-  var roomDevices;
+  List<String> rooms=[];
+  List<dynamic> roomDevices=[];
+  List<Device> roomOnDevices =[];
+  
   var roomOffDevices;
   var nbOnDevices;
   double consoGlobale = 0;
@@ -17,18 +18,28 @@ class RoomProvider extends ChangeNotifier{
     loading = true;
     room = await httpService.getRooms().then((value) => room=value);
     loading = false;
+    // room.forEach(debugPrint);
     notifyListeners();
     return room;
   }
+  
   getRoomDevice(){
-    roomOnDevices = room!.where((element) => element.appareils).toList();
+    for(int i=0; i < room.length; i++) {
+      Map<String, dynamic> obj = room[i].appareils;
+      roomDevices.addAll(obj.values);
+      debugPrint("liste device room "+roomDevices.first);
+    }
+    notifyListeners();
+    return roomDevices;
+   
   }
-  // List<String>getRoomsName(){
-  //   loading = true;
-  //   notifyListeners();
-  //   loading = false;
-  //   return rooms;
-  // }
+  List<String>getRoomsName(){
+    rooms = room[0].keys.toList();
+    debugPrint("liste name "+rooms.first);
+    // rooms.forEach(debugPrint);
+    notifyListeners();
+    return rooms;
+  }
   // setRoomsName(){
   //   rooms = room!.where((element) => element.name.isNotEmpty).toList();
   //   notifyListeners();

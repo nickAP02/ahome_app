@@ -107,7 +107,7 @@ class _RegisterFormState extends State<RegisterForm> {
               validator: (value){
                 value = usernameController.text;
                 debugPrint("usernme value"+value.toString());
-                if (value == null || value.isEmpty) {
+                if (value.isEmpty) {
                   return 'Entrez le nom d\'utilisateur';
                 }
                 if(value.length<8){
@@ -150,7 +150,7 @@ class _RegisterFormState extends State<RegisterForm> {
               validator: (value){
                 value = pwdController.text;
                 debugPrint("pwd value "+value.toString());
-                if (value == null || value.isEmpty) {
+                if (value.isEmpty) {
                   return 'Entrez le mot de passe';
                 }
                 if(value.length<8){
@@ -182,17 +182,17 @@ class _RegisterFormState extends State<RegisterForm> {
                       setState(() {
                         user.roles!.roleName =="guest";
                         LocalStorage().setUser(user.email.toString());
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> Home()));
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const Home()));
                       });
                       debugPrint(user.roles!.roleName.toString());
                     }
                     else{
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Verifiez les champs renseignes",style: TextStyle(color: Colors.red),)));
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(req["result"],style: TextStyle(color: Colors.red),)));
                     }
                     
                     // Navigator.of(context).push(MaterialPageRoute(builder: (context)=> Home()));
                   }else{
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Une erreur s'est produite, reprendre la saisie",style: TextStyle(color: Colors.red),)));
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Une erreur s'est produite, reprendre la saisie",style: TextStyle(color: Colors.red),)));
                   }
                 },
                 child: const Text(
@@ -209,9 +209,9 @@ class _RegisterFormState extends State<RegisterForm> {
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
               onTap: (){
-                Navigator.of(context).push(MaterialPageRoute(builder: (context)=> Login()));
+                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const Login()));
               },
-              child: Text("Déjà inscrit ?Connectez-vous",style: TextStyle(color: kPrimaryColor),)
+              child:const Text("Déjà inscrit ?Connectez-vous",style: TextStyle(color: kPrimaryColor),)
             ),
           )
         ],

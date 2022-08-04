@@ -19,10 +19,10 @@ class DeviceView extends StatefulWidget {
 
 class _DeviceViewState extends State<DeviceView> {
   final  _formKey = GlobalKey<FormState>();
-  Device newDevice =  Device(idDev: "",nameDev: "",categorie: "",puissance: 0,conso: 0,state: [0],room: "");
-  // Device newDevice =  Device(idDev: "",nameDev:"",state:[],categorie: "",puissance: 0, conso:0,dateConso:DateTime.now(),room:"");
+  Device newDevice =  Device(idDev: "",nameDev: "",puissance: 0,conso: 0,state: [0],room: "");
+ 
   bool selected=true;
-  final server = WebSocketChannel.connect(Uri.parse("ws://127.0.0.1:5000/api/v1/device/allumerEteindre/"));
+  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.1.112:5000/api/v1/device/allumerEteindre/"));
   String ?valSelectionneCat;
   String ?valSelectionneP;
   TextEditingController _puissanceController = TextEditingController();
@@ -42,7 +42,7 @@ class _DeviceViewState extends State<DeviceView> {
     int index =0;
     return WillPopScope(
        onWillPop: ()async{
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Impossible de retourner en arrière")));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Impossible de retourner en arrière")));
         return false;
       },
       child: SimpleDialog(
@@ -101,39 +101,39 @@ class _DeviceViewState extends State<DeviceView> {
                   ),
                 ),
                 //liste des categories fixes
-               categorieDevice.isEmpty?const Text("Les catégories ne sont pas disponibles"):Container(
-                height: 50,
-                  alignment: Alignment.centerLeft,
-                  child: DropdownButton<String>(
-                        hint: const Text("Catégorie"),
-                        value: valSelectionneCat,
-                        items: categorieDevice.
-                        map((e) => 
-                          DropdownMenuItem<String>(
-                            value:e['categorie'],
-                            child: Row(
-                              children: [
-                                //Text(e['icone']),
-                                Text(e['categorie']),
-                              ],
-                            ))
-                          ).toList(),
-                          onChanged: (value){
-                          setState(() {
-                            valSelectionneCat = value;
-                            newDevice.categorie =  valSelectionneCat!;
-                            newDevice.conso = 0.0;
-                          });
-                        }
-                       ),
-                ),
+              //  categorieDevice.isEmpty?const Text("Les catégories ne sont pas disponibles"):Container(
+              //   height: 50,
+              //     alignment: Alignment.centerLeft,
+              //     child: DropdownButton<String>(
+              //           hint: const Text("Catégorie"),
+              //           value: valSelectionneCat,
+              //           items: categorieDevice.
+              //           map((e) => 
+              //             DropdownMenuItem<String>(
+              //               value:e['categorie'],
+              //               child: Row(
+              //                 children: [
+              //                   //Text(e['icone']),
+              //                   Text(e['categorie']),
+              //                 ],
+              //               ))
+              //             ).toList(),
+              //             onChanged: (value){
+              //             setState(() {
+              //               valSelectionneCat = value;
+              //               newDevice.categorie =  valSelectionneCat!;
+              //               newDevice.conso = 0.0;
+              //             });
+              //           }
+              //          ),
+              //   ),
                 // modifier pour afficher la liste des pieces
                 roomProvider.room.isEmpty?
-                Text("Les pièces ne sont pas disponibles"):Container(
+                const Text("Les pièces ne sont pas disponibles"):Container(
                 height: 50,
                 alignment: Alignment.centerLeft,
                 child: DropdownButton<String>(
-                      hint: Text("Pièce"),
+                      hint: const Text("Pièce"),
                       value: valSelectionneP,
                       items: List.generate(roomProvider.room.length, (index) => DropdownMenuItem<String>(
                           value:roomProvider.room[index].nameRoom,
@@ -154,33 +154,40 @@ class _DeviceViewState extends State<DeviceView> {
                   Row(
                   children: [
                     ElevatedButton(
-                      onLongPress: (){
-                        setState(() {
-                          debugPrint("state "+widget.state);
-                            Map<String,dynamic> msg = {
-                          "id":"${widget.id}",
-                          "state":"${widget.state}"
-                          };
-                        allumerEteindre(jsonEncode(msg));
-                        //  msg = jsonEncode(id,state)
-                        // allumerEteindre();
-                        });
-                      },
+                      // // onLongPress: (){
+                      // //   setState(() {
+                      // //     debugPrint("state "+widget.state);
+                      // //       Map<String,dynamic> msg = {
+                      // //     "id":"${widget.id}",
+                      // //     "state":widget.state
+                      // //     };
+                      // //   allumerEteindre(jsonEncode(msg));
+                      // //   //  msg = jsonEncode(id,state)
+                      // //   // allumerEteindre();
+                      // //   });
+                      // },
                       onPressed: (){
                        setState(() {
                           if(widget.state[0]==0){
                             widget.state[0]=1;
+                            Map<String,dynamic> msg = {
+                              "id":"${widget.id}",
+                              "state":widget.state
+                            };
+                            allumerEteindre(jsonEncode(msg));
                           }
                           else{
-                            Text("L'appareil est déjà allumé");
+                            widget.state[0]=0;
+                            Map<String,dynamic> msg = {
+                              "id":"${widget.id}",
+                              "state":widget.state
+                            };
+                            allumerEteindre(jsonEncode(msg));
                           }
-                          debugPrint("element 1 state "+widget.state[0].toString()+" element 2 state "+widget.state[1].toString()+" element 3 state "+widget.state[2].toString());
-                          Map<String,dynamic> msg = {
-                          "id":"${widget.id}",
-                          "state":"${widget.state}"
-                        };
-                        debugPrint("element 1 state "+widget.state[0].toString());
-                        allumerEteindre(jsonEncode(msg));
+                          // debugPrint("element 1 state "+widget.state[0].toString()+" element 2 state "+widget.state[1].toString()+" element 3 state "+widget.state[2].toString());
+                          
+                        // debugPrint("element 1 state "+widget.state[0].toString());
+                        // allumerEteindre(jsonEncode(msg));
                        });
                     }, 
                       style: selected ?ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.red)):ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.green)),

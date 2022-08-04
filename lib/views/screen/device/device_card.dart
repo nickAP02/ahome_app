@@ -6,8 +6,8 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:switcher/core/switcher_size.dart';
 import 'package:switcher/switcher.dart';
 class DeviceCard extends StatefulWidget {
-  dynamic? state;
-  dynamic? id;
+  dynamic state;
+  dynamic id;
   String name;
   double conso;
   DeviceCard(this.name,this.conso,this.state,this.id);
@@ -22,7 +22,7 @@ class _DeviceCardState extends State<DeviceCard> {
   var tapColor = const Color.fromRGBO(20,115,209,1);
   var colorOn = false;
   var textColor = Colors.white;
-  final server = WebSocketChannel.connect(Uri.parse("ws://127.0.0.1:5000/api/v1/device/allumerEteindre/"));
+  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.1.110:5000/api/v1/device/allumerEteindre/"));
   @override
   void initState(){
     super.initState();
@@ -40,35 +40,24 @@ class _DeviceCardState extends State<DeviceCard> {
             textColor = textColor;
            if(widget.state[0]==0){
               widget.state[0]=1;
+              Map<String,dynamic> msg = {
+                "id":"${widget.id}",
+                "state":widget.state
+              };
+              allumerEteindre(jsonEncode(msg));
             }
             else{
-              Text("L'appareil est déjà allumé");
+              widget.state[0]=0;
+              Map<String,dynamic> msg = {
+                "id":"${widget.id}",
+                "state":widget.state
+              };
+              allumerEteindre(jsonEncode(msg));
             }
             // debugPrint("element 1 state "+widget.state[0].toString()+" element 2 state "+widget.state[1].toString()+" element 3 state "+widget.state[2].toString());
-            Map<String,dynamic> msg = {
-              "id":"${widget.id}",
-              "state":widget.state
-            };
-            debugPrint("arrive ici 1"+msg.toString());
-          allumerEteindre(jsonEncode(msg));
+            
           // debugPrint("element 1 state "+widget.state[0].toString());
             
-          });
-        },
-        onLongPress:(){
-          setState(() {
-            _isSelected = !_isSelected;
-            colorOn =  false;
-            textColor = Colors.black;
-            
-            widget.state[0]=0;
-            // debugPrint("state "+widget.state);
-                Map<String,dynamic> msg = {
-              "id":"${widget.id}",
-              "state":widget.state
-              };
-              debugPrint("arrive ici 2"+msg.toString());
-            allumerEteindre(jsonEncode(msg));
           });
         },
         child: Container(
@@ -106,7 +95,6 @@ class _DeviceCardState extends State<DeviceCard> {
                   ),
                 ],
               ),
-              // Icon(Icons.lightbulb_outline,color:_isSelected?textColor:Colors.black),
               
              Text(widget.name, 
                 style: TextStyle(
@@ -130,114 +118,7 @@ class _DeviceCardState extends State<DeviceCard> {
     debugPrint(msg);
     server.sink.add(msg);
   }
-  //   return FutureBuilder<List<Device>>(
-  //     future: devices,
-  //     builder: (context,snapshot){
-  //       if(snapshot.hasData){
-  //           return Scaffold(
-  //           body: GestureDetector(
-  //             onTap: (){
-  //               setState(() {
-  //                 _isSelected = !_isSelected;
-  //                 colorOn = true;
-  //               });
-  //             },
-  //             onTapCancel: (){
-  //               setState(() {
-  //                 _isSelected = !_isSelected;
-  //                 colorOn =  false;
-  //               });
-  //             },
-  //             child: Container(
-  //             //color: const Color.fromRGBO(20,115,209,1),
-  //               margin: const EdgeInsets.fromLTRB(20,15, 20, 0),
-  //               width: MediaQuery.of(context).size.width*0.5,
-  //               height:200,
-  //               decoration: BoxDecoration(
-  //                 color: tapColor,
-  //                 border: Border.all(
-  //                   width: 0.5,
-  //                   color: _isSelected?tapColor:Colors.white,
-  //                 ), 
-  //                 borderRadius: BorderRadius.circular(25),
-  //               ),
-  //               child: Column(
-  //                 mainAxisAlignment: MainAxisAlignment.start,
-  //                 crossAxisAlignment: CrossAxisAlignment.center,
-  //                 children: [
-  //                   Row(
-  //                     verticalDirection: VerticalDirection.down,
-  //                     children: [
-  //                       Stack(
-  //                         alignment: AlignmentDirectional.centerStart,
-  //                         children: const [
-  //                           Text("Interrupteur",
-  //                           maxLines: 2,
-  //                           style: TextStyle(
-  //                             fontSize: 10,
-  //                             color: Colors.black87
-  //                           ),
-  //                         ),
-        
-  //                         ]
-  //                       ),
-  //                       RotatedBox(
-  //                         quarterTurns:90,
-  //                         child: Switcher(
-  //                           switcherButtonBoxShape: BoxShape.circle,
-  //                           enabledSwitcherButtonRotate: true,
-  //                           switcherButtonAngleTransform: 90,
-  //                           value: false,
-  //                           colorOff: Colors.white70,
-  //                           iconOn: Icons.circle_rounded,
-  //                           iconOff: Icons.circle_outlined,
-  //                           colorOn: colorOn? tapColor : Colors.white,
-  //                           size: SwitcherSize.small,
-  //                           onChanged: (switchVal){
-  //                             switchVal = !switchVal;
-  //                             colorOn = !colorOn;
-  //                           }
-  //                         ),
-  //                       )
-  //                     ],
-  //                   ),
-  //                   Column(
-  //                     crossAxisAlignment: CrossAxisAlignment.start,
-  //                     mainAxisAlignment: MainAxisAlignment.start,
-  //                     children: const [
-  //                       Icon(Icons.lightbulb_outline,
-  //                       color: Colors.white,
-  //                       )
-  //                     ],
-  //                   ),
-  //                   Column(
-  //                     crossAxisAlignment: CrossAxisAlignment.start,
-  //                     mainAxisAlignment: MainAxisAlignment.start,
-  //                     children: [
-  //                       Text(widget.name),
-  //                       const SizedBox(width: 50,height: 20,),
-  //                       Text("${widget.conso}",
-  //                       style: const TextStyle(
-  //                         color: Colors.white,
-  //                         fontFamily: "MontSerrat",
-  //                       ),
-  //                       )
-  //                     ],
-  //                   )
-  //                 ],
-  //               ),
-  //             ),
-  //           ),
-  //         );
-  //       }
-  //       else{
-  //         return const Center(child: CircularProgressIndicator(color: Colors.blue,));
-  //       }
-  //     }
-      
-  //   );
-    
-  // }
+
   @override
   void dispose(){
     super.dispose();

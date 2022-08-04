@@ -1,21 +1,21 @@
 import 'dart:convert';
-import 'package:ago_ahome_app/services/providers/device_provider.dart';
-import 'package:ago_ahome_app/services/providers/room_provider.dart';
-import 'package:ago_ahome_app/utils/colors.dart';
-import 'package:ago_ahome_app/model/device.dart';
-import 'package:ago_ahome_app/views/screen/device/device_list.dart';
+// import 'package:ago_ahome_app/services/providers/device_provider.dart';
+// import 'package:ago_ahome_app/services/providers/room_provider.dart';
+// import 'package:ago_ahome_app/utils/colors.dart';
+// import 'package:ago_ahome_app/model/device.dart';
+// import 'package:ago_ahome_app/views/screen/device/device_list.dart';
 import 'package:ago_ahome_app/views/screen/device/updated_devices.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:ago_ahome_app/utils/constant.dart';
+// import 'package:provider/provider.dart';
+// import 'package:web_socket_channel/web_socket_channel.dart';
+// import 'package:ago_ahome_app/utils/constant.dart';
 class DeleteDevice extends StatefulWidget {
    dynamic room;
-   dynamic categorie;
+  //  dynamic categorie;
    dynamic nameDev;
    dynamic conso;
    
-   DeleteDevice(this.room,this.categorie,this.nameDev,this.conso);
+   DeleteDevice(this.room,this.nameDev,this.conso);
 
   @override
   State<DeleteDevice> createState() => _DeleteDeviceState();
@@ -23,8 +23,7 @@ class DeleteDevice extends StatefulWidget {
 
 class _DeleteDeviceState extends State<DeleteDevice> {
   final  _formKey = GlobalKey<FormState>();
-  // Device newDevice =  Device(idDev: "",nameDev: "",categorie: "",puissance: 0,conso: 0,state: [0],room: "");
-  // Device newDevice =  Device(idDev: "",nameDev:"",state:[],categorie: "",puissance: 0, conso:0,dateConso:DateTime.now(),room:"");
+  
   bool selected=true;
   String ?valSelectionneCat;
   String ?valSelectionneP;
@@ -54,7 +53,7 @@ class _DeleteDeviceState extends State<DeleteDevice> {
               Container(
                 alignment: Alignment.topCenter,
                 //width: 100,
-                child: Text('dummy text')
+                child:const Text('dummy text')
               ),
               // Container(
               //   alignment: Alignment.topCenter,

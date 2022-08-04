@@ -40,11 +40,11 @@ class _CapteurViewState extends State<CapteurView> {
           key: _formKey,
           child: Column(
             children: [
-              roomProvider.room.isEmpty?Text("Les pièces ne sont pas disponibles"):Container(
+              roomProvider.room.isEmpty?const Text("Les pièces ne sont pas disponibles"):Container(
               height: 50,
               alignment: Alignment.centerLeft,
               child: DropdownButton<String>(
-                    hint: Text("Pièce"),
+                    hint:const Text("Pièce"),
                     value: valSelectionneP,
                     items: List.generate(roomProvider.room.length, (index) => DropdownMenuItem<String>(
                         value:roomProvider.room[index].nameRoom,

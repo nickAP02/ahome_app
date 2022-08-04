@@ -1,5 +1,6 @@
 import 'package:ago_ahome_app/services/providers/capteur_provider.dart';
 import 'package:ago_ahome_app/services/providers/device_provider.dart';
+import 'package:ago_ahome_app/services/providers/planning_provider.dart';
 import 'package:ago_ahome_app/services/providers/room_provider.dart';
 import 'package:ago_ahome_app/services/providers/user_provider.dart';
 import 'package:ago_ahome_app/services/theme_service.dart';
@@ -39,6 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ChangeNotifierProvider<RoomProvider>(create:(context)=>RoomProvider()),
       ChangeNotifierProvider<CapteurProvider>(create: (context)=>CapteurProvider()),
       ChangeNotifierProvider<UserProvider>(create: (context)=>UserProvider()),
+      ChangeNotifierProvider<PlanningProvider>(create: (context)=>PlanningProvider()),
     ],
     child: MaterialApp(
         theme:Themes.light,

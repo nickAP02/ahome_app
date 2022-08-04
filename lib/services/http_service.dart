@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:ago_ahome_app/model/capteur.dart';
+import 'package:ago_ahome_app/model/planning.dart';
 import 'package:ago_ahome_app/model/role.dart';
 import 'package:ago_ahome_app/model/room.dart';
 import 'package:ago_ahome_app/model/user.dart';
@@ -11,8 +12,8 @@ import 'package:ago_ahome_app/services/local_storage.dart';
 class HttpService{
   //initialisation du client http
   static final client = http.Client();
-  //static const url = "http://10.20.1.1:5000/api/v1";
-  static const url = "http://192.168.43.32:5000/api/v1";
+  // static const url = "http://10.20.1.1:5000/api/v1";
+  static const url = "http://192.168.1.112:5000/api/v1";
   Map<String,String> headers = 
   {
     'Content-Type':'application/json',
@@ -115,7 +116,7 @@ class HttpService{
 
 //implementation de la route /register
   Future<dynamic> register(User user) async{
-    var result;
+    // var result;
     try {
       debugPrint("ok");
       var response = await client.post(
@@ -153,15 +154,14 @@ class HttpService{
           fullUri('device/update'), 
           headers: headers,
           body:json.encode(device.toJson()));
-          if (response.statusCode == 200) {
+          var result=json.decode(response.body);
+          if (result["statut"] == 200) {
             // debugPrint("device enregistre");
             // debugPrint("body "+json.decode(response.body.toString()));
-            var result=json.decode(response.body);
-            debugPrint(result["result"]);
-            return result["result"];
+            return result;
           }
           else {
-            throw json.decode(response.body);
+            return result;
           }
         } on Exception catch (e) {
           debugPrint("add device");
@@ -191,7 +191,7 @@ class HttpService{
   }
   //implementation de la route /users
    Future<List<User>?>getUsers() async{
-    List<User> users = [];
+    // List<User> users = [];
     try {
       var response = await client.get(
         fullUri("users"),
@@ -220,26 +220,16 @@ class HttpService{
       debugPrint(response.body);
       var data = json.decode(response.body);
      // debugPrint("yes "+response.body.toString());
-      if(response.statusCode==200){
-          data.forEach((element)=>{
+      if(data["statut"]==200){
+          data["result"].forEach((element)=>{
+            debugPrint("il se passse qlq chose"),
             devices.add(Device.fromJson(element))
           });
+          debugPrint("liste devices " +devices.toString());
         }
         else{
           debugPrint(data);
         }
-    //  if(response.statusCode==200){
-    //     var data= json.decode(response.body);
-    //     // debugPrint(response);
-    //       data.forEach((element)=>{
-    //       // debugPrint(element),
-    //         devices.add(Device.fromJson(element))
-    //       }
-    //     );
-    //  }
-      // else{
-      //   throw Exception("");
-      // }
       return devices;
     }  catch (err) {
       debugPrint("devices ici");
@@ -255,13 +245,15 @@ class HttpService{
         fullUri("rooms"),
         headers:headers
       );
-   //   debugPrint("reponse "+response.body);
-      // debugPrint("statu "+response.statusCode.toString());
+      debugPrint("res "+response.body.toString());
       var data= json.decode(response.body);
+      debugPrint("ok "+data.toString());
         if(data["statut"]==200){
-         debugPrint("erreur ici"+data.toString());
-           data['result'].forEach((element)=>{
-            rooms.add(Room.fromJson(element))
+          debugPrint("rooms ici "+data.toString());
+           data["result"].forEach((element)=>{
+            debugPrint("rooms "+element.toString()),
+            rooms.add(Room.fromJson(element)),
+            // debugPrint("rooms "+rooms.toString())
            });
     
           debugPrint("resultat "+rooms.toString());
@@ -272,10 +264,10 @@ class HttpService{
       return rooms;
     }  catch (err) {
       debugPrint("rooms exception");
- //     throw err.toString();
     }
   }
   Future getCapteurs() async{
+     debugPrint("capteurs");
     List<Capteur> capteurs = [];
       try {
         var response = await http.get(
@@ -285,11 +277,14 @@ class HttpService{
         var data = json.decode(response.body);
         debugPrint(data.toString());
         if(response.statusCode==200){
-          data.forEach((element)=>{
-          capteurs.add(Capteur.fromJson(element))
-        });
+            data.forEach((element)=>{
+              debugPrint("ici capteurs"),
+            capteurs.add(Capteur.fromJson(element))
+          });
         }
-       
+        else{
+          debugPrint(data);
+        }
         return capteurs;
       } on Exception catch (e) {
         debugPrint("capteurs ici");
@@ -297,7 +292,7 @@ class HttpService{
       }
     }
     Future addCapteur(Capteur capteur) async{
-    // List<Capteur> capteurs = [];
+      // List<Capteur> capteurs = [];
       try {
         var response = await http.put(
           fullUri("capteur/update"),
@@ -370,7 +365,7 @@ class HttpService{
           body:json.encode({
           "id":device.idDev,
           "name":device.nameDev,
-          "categorie":device.categorie,
+          // "categorie":device.categorie,
           "puissance":device.puissance,
           "state":device.state,
           "nameRoom":device.room,
@@ -414,7 +409,7 @@ class HttpService{
     Future getTemperature(String name) async{
       try{
         var response = await http.get(
-          fullUri("temperature/${name}"),
+          fullUri("temperature/$name"),
           headers: headers
         );
         var data =json.decode(response.body);
@@ -443,4 +438,103 @@ class HttpService{
       }
     }
 
+    Future<Planning> addPlanning(Planning planning) async{
+      // try{
+          var response = await http.post(
+            fullUri("planning/add"),
+            headers: headers,
+            body:json.encode({
+            // "id":planning.idPlan,
+            "name":planning.nomPlan,
+            "dateDebut":planning.dateDebut,
+            "dateFin":planning.dateFin,
+            "appareils":planning.appareils
+            })
+          );
+          var data =response.body;
+          var result=json.decode(data);
+          if(result["statut"] == 200) {
+            // debugPrint("device enregistre");
+            // debugPrint("body "+json.decode(response.body.toString()));
+            debugPrint("statut "+result["statut"]);
+            debugPrint("result "+result["result"]);
+            return result;
+          }
+          else {
+            debugPrint("else");
+            return result;
+          }
+      //   } on Exception catch (e) {
+      //   debugPrint("add planning");
+      //   throw e.toString();
+      // }
+    }
+   Future<Planning> updatePlanning(Planning planning) async{
+      try{
+          var response = await http.put(
+            fullUri("planning/update"),
+            headers: headers,
+            body:json.encode({
+            "id":planning.idPlan,
+            "name":planning.nomPlan,
+            "dateHeure":planning.dateDebut,
+            "dateFin":planning.dateFin,
+            "appareils":planning.appareils
+            })
+          );
+          var result=json.decode(response.body);
+          if(result["statut"] == 200) {
+            // debugPrint("device enregistre");
+            // debugPrint("body "+json.decode(response.body.toString()));
+            debugPrint("result "+result["result"]);
+            return result["result"];
+          }
+          else {
+            throw json.decode(response.body);
+          }
+        } on Exception catch (e) {
+        debugPrint("add planning");
+        throw e.toString();
+      }
+    }
+    Future deletePlanning(String id) async{
+      try{
+          var response = await http.delete(
+            fullUri("planning/delete"),
+            headers: headers,
+            body:json.encode({
+            "id":id
+            })
+          );
+          if(response.statusCode == 200) {
+            // debugPrint("device enregistre");
+            // debugPrint("body "+json.decode(response.body.toString()));
+            var result=json.decode(response.body);
+            debugPrint(result["result"]);
+            return result["result"];
+          }
+          else {
+            throw json.decode(response.body);
+          }
+        } on Exception catch (e) {
+        debugPrint("add planning");
+        throw e.toString();
+      }
+    }
+    Future getPlannings() async{
+      List<Planning> plannnings=[];
+      try{
+        var response = await http.get(
+          fullUri("plannings"),
+          headers: headers
+        );
+        var data = json.decode(response.body);
+        data.forEach((element)=>{
+          plannnings.add(Planning.fromJson(element))
+        });
+        return plannnings;
+      }catch(e){
+        throw e.toString();
+      }
+    }
 }

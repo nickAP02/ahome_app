@@ -5,7 +5,7 @@ import 'package:ago_ahome_app/model/user.dart';
 import 'package:ago_ahome_app/services/http_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:ago_ahome_app/services/local_storage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 class UserProvider extends ChangeNotifier{
   var result;
   var userLogin;

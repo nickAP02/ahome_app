@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:ago_ahome_app/model/device.dart';
-import 'package:flutter/cupertino.dart';
 // import 'package:json_serializable/json_serializable.dart';
 // import 'package:json_annotation/json_annotation.dart';
 // @JsonSerializable()
@@ -10,10 +9,13 @@ class Room {
   String roomToJson(List<Room> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
   String idRoom;
   String nameRoom;
+  // double conso;
   List<Device> appareils;
+  
   Room({
       required this.idRoom,
       required this.nameRoom,
+      // required this.conso,
       required this.appareils
     });
   
@@ -22,10 +24,9 @@ class Room {
     var r= Room(
       idRoom: json["id"]??"",
       nameRoom: json["name"]??"",
+      // conso: json["conso"]??0,
       appareils :json["appareils"] !=null ?List<Device>.from( json["appareils"].map((x)=>
-  Device.fromJson(x)
-     
-      )):[]
+    Device.fromJson(x))):[]
     );
 
 return r;

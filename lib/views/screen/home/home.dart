@@ -1,14 +1,14 @@
 import 'dart:convert';
-
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:ago_ahome_app/services/providers/device_provider.dart';
 import 'package:ago_ahome_app/services/providers/room_provider.dart';
 import 'package:ago_ahome_app/services/providers/user_provider.dart';
 import 'package:ago_ahome_app/utils/colors.dart';
-import 'package:ago_ahome_app/views/screen/device/device_card.dart';
+// import 'package:ago_ahome_app/views/screen/device/device_card.dart';
 import 'package:ago_ahome_app/views/screen/home/conso_display_indicator.dart';
 import 'package:ago_ahome_app/views/screen/home/custom_drawer.dart';
 import 'package:ago_ahome_app/views/screen/home/custom_floating_action_button.dart';
-import 'package:ago_ahome_app/views/screen/home/device_category_display.dart';
+// import 'package:ago_ahome_app/views/screen/home/device_category_display.dart';
 import 'package:ago_ahome_app/views/screen/home/room_devices_display.dart';
 import 'package:ago_ahome_app/views/screen/home/room_display.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -32,7 +32,7 @@ class _HomeState extends State<Home>{
   var tapColor = const Color.fromRGBO(20,115,209,1);
   var colorOn = false;
   var textColor = Colors.white;
-  final server = WebSocketChannel.connect(Uri.parse("ws://127.0.0.1:5000/api/v1/device/allumerEteindre/"));
+  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.1.112:5000/api/v1/device/allumerEteindre/"));
   int index=0;
   @override
   void initState() {
@@ -40,14 +40,13 @@ class _HomeState extends State<Home>{
   }
   @override
   Widget build(BuildContext context) {
-    // 
     var roomProvider= Provider.of<RoomProvider>(context,listen: false);
     var deviceProvider= Provider.of<DeviceProvider>(context,listen: false);
     var userProvider= Provider.of<UserProvider>(context,listen: true);
     PageController pageController = PageController();
     return WillPopScope(
       onWillPop: ()async{
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Pour quitter l'application veuillez vous déconnecter")));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Pour quitter l'application veuillez vous déconnecter")));
         return false;
       },
       child: Scaffold(
@@ -77,20 +76,24 @@ class _HomeState extends State<Home>{
         body: FutureBuilder(
           future:roomProvider.getRoomData(),
           builder: (context,snapshot) {
+            debugPrint("data"+snapshot.data.toString());
+            
             if(snapshot.data == []){
-              debugPrint(snapshot.data.toString());
+              debugPrint("hold up "+snapshot.data.toString());
               return const Text("Pièces non disponibles");
             }
             if(snapshot.data == null){
-              debugPrint(snapshot.data.toString());
+              debugPrint("wait a min "+snapshot.data.toString());
               return const Center(child: CircularProgressIndicator(color: kPrimaryColor, semanticsLabel: "Données non chargées",),);
             }
             if(snapshot.hasError){
+              debugPrint("error ok "+index.toString());
                return const Center(child: Text('Une erreur s"est produite',style: TextStyle(color: Colors.red),));
             }
 
             else{
-              // debugPrint("data"+snapshot.data.toString());
+              var value=snapshot.data as List;
+              debugPrint("data"+snapshot.data.toString());
               return SingleChildScrollView(
                 child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -99,26 +102,29 @@ class _HomeState extends State<Home>{
                 const ConsoDisplay(),
                 //  const SizedBox(height: 110,),
                   RoomDisplay(selected, (int index){
+                    debugPrint("do smth ");
                     setState(() {
                       selected=index;
                       debugPrint("index "+index.toString());
                     });
                   pageController.jumpToPage(index);
                   },
-                  roomProvider.room
+                  value
                   ), 
                   Container(
                     height: MediaQuery.of(context).size.height/2,
                     child: RoomDevicesDisplay(
                       selected, 
                       (int index){
+                        debugPrint("oo baby baby ");
                         setState(() {
                           selected=index;
                           debugPrint("pageview index "+index.toString());
                         });
+                        debugPrint("push it real good ");
                       },
                       pageController,
-                      roomProvider.room[index].appareils
+                      value
                     ),
                   )
                 ],
@@ -155,31 +161,25 @@ class _HomeState extends State<Home>{
             colorOn = true;
             textColor = textColor;
             if(state==0){
+              _isSelected = true;
               state=1;
+              tapColor = tapColor;
+              Map<String,dynamic> msg = {
+                "id":id,
+                "state":state
+              };
+              allumerEteindre(jsonEncode(msg));
             }
             else{
-              Text("L'appareil est déjà allumé");
-            }
-            debugPrint("element 1 state "+state.toString());
-            Map<String,dynamic> msg = {
-              "id":"${id}",
-              "state":"${state}"
-            };
-          allumerEteindre(jsonEncode(msg));
-          debugPrint("element 1 state "+state.toString());
-            
-          });
-        },
-        onTapCancel: (){
-          setState(() {
-            colorOn =  false;
-            textColor = Colors.black;
-            debugPrint("state "+state.toString());
-                Map<String,dynamic> msg = {
-              "id":"${id}",
-              "state":"${state}"
+              _isSelected = false;
+              state=0;
+              tapColor = Colors.white;
+               Map<String,dynamic> msg = {
+                "id":id,
+                "state":state
               };
-            allumerEteindre(jsonEncode(msg));
+              allumerEteindre(jsonEncode(msg));
+            }
           });
         },
         child: Container(
@@ -187,7 +187,7 @@ class _HomeState extends State<Home>{
           width: 100,
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: selected==index?kPrimaryColor:Colors.white,
+            color: _isSelected?tapColor:Colors.amber,
             borderRadius: BorderRadius.circular(20)),
               //color: Colors.blue,
             child: Column(

@@ -6,6 +6,7 @@ class DeviceProvider extends ChangeNotifier{
   List<Device>? device = [];
   List<Device> noNamedDevices = [];
   List<Device> namedDevices = [];
+  dynamic newDevice;
   bool loading = false;
   final HttpService httpService = HttpService();
   List<Device>getNoNamedDevices(){
@@ -15,11 +16,13 @@ class DeviceProvider extends ChangeNotifier{
     return noNamedDevices;
   }
   setNoNamedDevice(){
+    debugPrint("liste vide device " +device.toString());
     if(device!=null){
-       noNamedDevices = device!.where((element) => element.nameDev!.isEmpty).toList();
+      noNamedDevices = device!.where((element) => element.nameDev!.isEmpty).toList();
+      // noNamedDevices.forEach((element) {debugPrint(element.nameDev);});
     }
     else{
-      Text("Pas d'appareils disponibles");
+     debugPrint("liste vide noNamedDevices " +noNamedDevices.toString());
     }
     notifyListeners();
   }
@@ -33,9 +36,10 @@ class DeviceProvider extends ChangeNotifier{
   setNamedDevice(){
     if(device!=null){
        namedDevices = device!.where((element) => element.nameDev!.isNotEmpty).toList();
+      //  namedDevices.forEach((element) {debugPrint(element.nameDev);});
     }
     else{
-      Text("Pas d'appareils disponibles");
+      debugPrint("liste vide namedDevices " +noNamedDevices.toString());
     }
     notifyListeners();
   }

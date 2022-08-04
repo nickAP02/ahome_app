@@ -3,7 +3,7 @@ import 'package:ago_ahome_app/services/providers/device_provider.dart';
 import 'package:ago_ahome_app/services/providers/room_provider.dart';
 import 'package:ago_ahome_app/utils/colors.dart';
 import 'package:ago_ahome_app/model/device.dart';
-import 'package:ago_ahome_app/views/screen/device/device_list.dart';
+// import 'package:ago_ahome_app/views/screen/device/device_list.dart';
 import 'package:ago_ahome_app/views/screen/device/updated_devices.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -20,10 +20,10 @@ class UpdateDevice extends StatefulWidget {
 
 class _UpdateDeviceState extends State<UpdateDevice> {
   final  _formKey = GlobalKey<FormState>();
-  Device newDevice =  Device(idDev: "",nameDev: "",categorie: "",puissance: 0,conso: 0,state:[0],room: "");
+  Device newDevice =  Device(idDev: "",nameDev: "",puissance: 0,conso: 0,state:[0],room: "");
   // Device newDevice =  Device(idDev: "",nameDev:"",state:[],categorie: "",puissance: 0, conso:0,dateConso:DateTime.now(),room:"");
   bool selected=true;
-  final server = WebSocketChannel.connect(Uri.parse("ws://127.0.0.1:5000/api/v1/device/allumerEteindre/"));
+  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.1.112:5000/api/v1//api/v1/device/allumerEteindre/"));
   String ?valSelectionneCat;
   String ?valSelectionneP;
   @override
@@ -89,38 +89,38 @@ class _UpdateDeviceState extends State<UpdateDevice> {
                 ),
               ),
               //liste des categories fixes
-             categorieDevice.isEmpty?const Text("Les catégories ne sont pas disponibles"):Container(
-              height: 50,
-                alignment: Alignment.centerLeft,
-                child: DropdownButton<String>(
-                      hint: const Text("Catégorie"),
-                      value: valSelectionneCat,
-                      items: categorieDevice.
-                      map((e) => 
-                        DropdownMenuItem<String>(
-                          value:e['categorie'],
-                          child: Row(
-                            children: [
-                              //Text(e['icone']),
-                              Text(e['categorie']),
-                            ],
-                          ))
-                        ).toList(),
-                        onChanged: (value){
-                        setState(() {
-                          valSelectionneCat = value;
-                          newDevice.categorie =  valSelectionneCat!;
-                          newDevice.conso = 0.0;
-                        });
-                      }
-                     ),
-              ),
+            //  categorieDevice.isEmpty?const Text("Les catégories ne sont pas disponibles"):Container(
+            //   height: 50,
+            //     alignment: Alignment.centerLeft,
+            //     child: DropdownButton<String>(
+            //           hint: const Text("Catégorie"),
+            //           value: valSelectionneCat,
+            //           items: categorieDevice.
+            //           map((e) => 
+            //             DropdownMenuItem<String>(
+            //               value:e['categorie'],
+            //               child: Row(
+            //                 children: [
+            //                   //Text(e['icone']),
+            //                   Text(e['categorie']),
+            //                 ],
+            //               ))
+            //             ).toList(),
+            //             onChanged: (value){
+            //             setState(() {
+            //               valSelectionneCat = value;
+            //               newDevice.categorie =  valSelectionneCat!;
+            //               newDevice.conso = 0.0;
+            //             });
+            //           }
+            //          ),
+            //   ),
               // modifier pour afficher la liste des pieces
-              roomProvider.room.isEmpty?Text("Les pièces ne sont pas disponibles"):Container(
+              roomProvider.room.isEmpty?const Text("Les pièces ne sont pas disponibles"):Container(
               height: 50,
               alignment: Alignment.centerLeft,
               child: DropdownButton<String>(
-                    hint: Text("Pièce"),
+                    hint:const Text("Pièce"),
                     value: valSelectionneP,
                     items: List.generate(roomProvider.room.length, (index) => DropdownMenuItem<String>(
                         value:roomProvider.room[index].nameRoom,
@@ -175,13 +175,20 @@ class _UpdateDeviceState extends State<UpdateDevice> {
                   // ),
                   Padding(
                     padding: const EdgeInsets.all(2.0),
-                    child: ElevatedButton(onPressed: (){
+                    child: ElevatedButton(onPressed: () async{
                       if(_formKey.currentState!.validate()){
                         debugPrint("widget id "+widget.id.toString());
                         newDevice.idDev = widget.id.toString();
                         newDevice.state = widget.state;
-                        deviceProvider.addDevice(newDevice);
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> DevicesUpdated()));
+                        var req = await deviceProvider.addDevice(newDevice);
+                        if(req["statut"]==200){
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context)=> DevicesUpdated()));
+                        }
+                        else{
+                           ScaffoldMessenger.of(context).showSnackBar( SnackBar(content: Text(req["result"],style: TextStyle(color: Colors.red),)));
+                          // Text(req["result"]);
+                        }
+                        
                       }
                       // server.sink.add(newDevice);
                     }, 

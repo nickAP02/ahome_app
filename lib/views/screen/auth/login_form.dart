@@ -5,7 +5,7 @@ import 'package:ago_ahome_app/utils/colors.dart';
 import 'package:ago_ahome_app/views/screen/auth/register.dart';
 import 'package:ago_ahome_app/views/screen/auth/text_field_container.dart';
 import 'package:ago_ahome_app/views/screen/home/home.dart';
-import 'package:ago_ahome_app/views/screen/space/space.dart';
+// import 'package:ago_ahome_app/views/screen/space/space.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -26,12 +26,12 @@ class _LoginFormState extends State<LoginForm> {
     var pwdController = TextEditingController();
     Size size = MediaQuery.of(context).size;
     User user = User(username: "",password: "",email: "");
-    String email = "";
-    final bool _isValid = EmailValidator.validate(email);
+    // String email = "";
+    // final bool _isValid = EmailValidator.validate(email);
     final userProvider = Provider.of<UserProvider>(context,listen: false);
     return  WillPopScope(
        onWillPop: ()async{
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Impossible de retourner en arrière")));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Impossible de retourner en arrière")));
         return false;
       },
       child: SingleChildScrollView(
@@ -110,7 +110,7 @@ class _LoginFormState extends State<LoginForm> {
                 validator: (value){
                  value = pwdController.text;
                 debugPrint("pwd value "+value.toString());
-                if (value == null || value.isEmpty) {
+                if (value.isEmpty) {
                   return 'Entrez le mot de passe';
                 }
                 if(value.length<8){
@@ -138,7 +138,7 @@ class _LoginFormState extends State<LoginForm> {
                     userProvider.login(user);
                     debugPrint("provider ici "+userProvider.userLogin.toString());
                     if(userProvider.userLogin==null){
-                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Une erreur s'est produite, reprendre la saisie",style: TextStyle(color: Colors.red),)));
+                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Une erreur s'est produite, reprendre la saisie",style: TextStyle(color: Colors.red),)));
                     }
                     else if(userProvider.userLogin["statut"]==200){
                       if(LocalStorage().getUser()==null){
@@ -147,24 +147,24 @@ class _LoginFormState extends State<LoginForm> {
                         setState(() {
                         // user.roles!.roleName =="guest";
                         // debugPrint("user"+LocalStorage().getUser());
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> Home()));
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> const Home()));
                       });
                       }
                       else{
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> Home()));
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Vous êtes déjà connecté",style: TextStyle(color: Colors.red),)));
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const Home()));
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Vous êtes déjà connecté",style: TextStyle(color: Colors.red),)));
                       }
                       debugPrint(userProvider.userLogin["token"].toString());
                       
                       // debugPrint(user.roles!.roleName.toString());
                     }
                     else{
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Verifiez les champs renseignes",style: TextStyle(color: Colors.red),)));
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Verifiez les champs renseignes",style: TextStyle(color: Colors.red),)));
                     }
                     
                     // Navigator.of(context).push(MaterialPageRoute(builder: (context)=> Home()));
                   }else{
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Une erreur s'est produite, reprendre la saisie",style: TextStyle(color: Colors.red),)));
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Une erreur s'est produite, reprendre la saisie",style: TextStyle(color: Colors.red),)));
                   }
                 },
                 child: const Text(
@@ -181,9 +181,9 @@ class _LoginFormState extends State<LoginForm> {
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
               onTap: (){
-                Navigator.of(context).push(MaterialPageRoute(builder: (context)=> Register()));
+                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const Register()));
               },
-              child: Text("Pas de compte ?Inscrivez-vous",style: TextStyle(color: kPrimaryColor),)
+              child:const Text("Pas de compte ?Inscrivez-vous",style: TextStyle(color: kPrimaryColor),)
             ),
           )
           ],

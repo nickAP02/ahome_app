@@ -1,7 +1,7 @@
-import 'package:ago_ahome_app/services/providers/room_provider.dart';
+// import 'package:ago_ahome_app/services/providers/room_provider.dart';
 import 'package:ago_ahome_app/services/providers/user_provider.dart';
 import 'package:ago_ahome_app/utils/colors.dart';
-import 'package:ago_ahome_app/views/screen/home/home.dart';
+// import 'package:ago_ahome_app/views/screen/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -98,12 +98,12 @@ class _UsersState extends State<Users> {
                       height: 50,
                       alignment: Alignment.centerLeft,
                       child: DropdownButton<String>(
-                          hint: Text("Roles"),
+                          hint: const Text("Roles"),
                           value: valSelectionneP,
                           items: List.generate(10, (index) => DropdownMenuItem<String>(
                               value:"",
                               child: Row(
-                                children: [
+                                children: const [
                                   Text(""),
                                 ],
                               ))

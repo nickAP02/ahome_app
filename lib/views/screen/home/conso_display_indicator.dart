@@ -19,7 +19,7 @@ class _ConsoDisplayState extends State<ConsoDisplay> {
   Widget build(BuildContext context) {
     int index = 0;
     // var capteurProvider=Provider.of<CapteurProvider>(context,listen:false);
-    var roomProvider = Provider.of<RoomProvider>(context,listen: true);
+    var roomProvider = Provider.of<RoomProvider>(context,listen: false);
     return  CircularPercentIndicator(
       circularStrokeCap: CircularStrokeCap.round,
       arcType: ArcType.FULL,
@@ -58,7 +58,7 @@ class _ConsoDisplayState extends State<ConsoDisplay> {
             //   ],
             // ),
             Padding(
-              padding: EdgeInsets.only(top: 20,bottom: 0),
+              padding:const EdgeInsets.only(top: 20,bottom: 0),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,

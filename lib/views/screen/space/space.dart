@@ -8,7 +8,7 @@ class Space extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(body: WillPopScope(
        onWillPop: ()async{
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Impossible de retourner en arrière")));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Impossible de retourner en arrière")));
         return false;
       },
       child: SafeArea(

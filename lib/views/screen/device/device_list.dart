@@ -38,9 +38,9 @@ class _DeviceListState extends State<DeviceList> {
                   deviceProvider.setNamedDevice();
                 });
                 if(snapshot.data == null){
-                  debugPrint("snapshot circular"+snapshot.data.toString());
+                  debugPrint("snapshot circular "+snapshot.data.toString());
                   return  Center(child: Column(
-                    children: [
+                    children: const[
                       CircularProgressIndicator(color: kPrimaryColor,),
                       Text("Chargement des données")
                     ],
@@ -57,10 +57,10 @@ class _DeviceListState extends State<DeviceList> {
                   return deviceProvider.noNamedDevices.isEmpty?Column(
                     children: [
                       Image.asset('assets/images/icons/peripherals.png',height: 200,width: 500,),
-                      Text("Pas de nouveaux appareils détectés"),
+                      const Text("Pas de nouveaux appareils détectés"),
                     ],
                   ):ListView.builder(
-                    padding: EdgeInsets.all(5),
+                    padding: const EdgeInsets.all(5),
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
                     itemCount: Provider.of<DeviceProvider>(context,listen:false).getNoNamedDevices().length,
@@ -87,6 +87,10 @@ class _DeviceListState extends State<DeviceList> {
             FutureBuilder(
               future: capteurProvider.getCapteurData(),
               builder: (context,snapshot){
+                Future.delayed(Duration.zero,(){
+                  capteurProvider.setNamedCapteurs();
+                  capteurProvider.setNoNamedCapteurs();
+                });
                 if(snapshot.data == null){
                   debugPrint("snapshot "+snapshot.data.toString());
                   return const Text("Pas de capteurs détectés");
@@ -98,10 +102,10 @@ class _DeviceListState extends State<DeviceList> {
                    return capteurProvider.noNamedCapteurs.isEmpty?Column(
                      children: [
                       Image.asset('assets/images/icons/motion-sensor.png',height: 200,width: 500,),
-                       Text("Pas de nouveaux capteurs détectés"),
+                      const Text("Pas de nouveaux capteurs détectés"),
                      ],
                    ):ListView.builder(
-                    padding: EdgeInsets.all(5),
+                    padding:const EdgeInsets.all(5),
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
                     itemCount: capteurProvider.noNamedCapteurs.length,
@@ -149,7 +153,7 @@ class _DeviceListState extends State<DeviceList> {
         color: selected==index?kPrimaryColor:  Colors.white,
       ),
       child:ListTile(
-        title: Text("Appareil"),
+        title: const Text("Appareil"),
         subtitle: Text(
         name,
         style: const TextStyle(
