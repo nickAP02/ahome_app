@@ -22,7 +22,7 @@ class _DeviceViewState extends State<DeviceView> {
   Device newDevice =  Device(idDev: "",nameDev: "",puissance: 0,conso: 0,state: [0],room: "");
  
   bool selected=true;
-  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.0.106:5000/api/v1/device/allumerEteindre/"));
+  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.1.105:5000/api/v1/device/allumerEteindre/"));
   String ?valSelectionneCat;
   String ?valSelectionneP;
   TextEditingController _puissanceController = TextEditingController();
@@ -157,19 +157,22 @@ class _DeviceViewState extends State<DeviceView> {
                     Padding(
                       padding: const EdgeInsets.all(2.0),
                       child: ElevatedButton(
-                        onPressed: (){
+                        onPressed: ()async{
                         if(_formKey.currentState!.validate()){
                           newDevice.idDev = widget.id.toString();
                           newDevice.state = widget.state;
-                          var req = deviceProvider.addDevice(newDevice);
-                          setState(() {
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Nouvel appareil enregistré",style: TextStyle(color: Colors.white))));
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=> DevicesUpdated()));
+                          dynamic req = await deviceProvider.addDevice(newDevice);
+                           if(req["statut"]==200){
+                            setState(() {
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(req["result"],style: TextStyle(color: Colors.white))));
+                              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> DevicesUpdated()));
 
                             });
-                          // if(req["statut"]==200){
-                            
-                          // }
+                          }
+                          else{
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(req["result"],style: TextStyle(color: Colors.white))));
+                          }
+                         
                          
                         }
                          else{

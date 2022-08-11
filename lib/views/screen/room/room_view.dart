@@ -62,10 +62,10 @@ class _RoomDeviceState extends State<RoomDevice> {
                         padding: const EdgeInsets.only(right:18.0),
                         child: ElevatedButton(
                         style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(kPrimaryColor)),
-                        onPressed: (){
+                        onPressed: () async{
                           if (_formKey.currentState!.validate()) {
                             try{
-                              var request = roomProvider.addRoom(room);
+                              dynamic request =await roomProvider.addRoom(room);
                               if(request["statut"]==200){
                                  setState(() {
                                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(request["result"],style: TextStyle(color: Colors.white),)));

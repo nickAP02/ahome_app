@@ -23,7 +23,7 @@ class _CapteurViewState extends State<CapteurView> {
   bool selected=true;
   String ?valSelectionneCat;
   String ?valSelectionneP;
-  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.0.106:5000/api/v1/device/allumerEteindre/"));
+  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.1.105:5000/api/v1/device/allumerEteindre/"));
   @override
   void initState() {
     super.initState();
@@ -51,11 +51,11 @@ class _CapteurViewState extends State<CapteurView> {
               child: DropdownButton<String>(
                     hint:const Text("Pièce"),
                     value: valSelectionneP,
-                    items: List.generate(roomProvider.room.length, (index) => DropdownMenuItem<String>(
-                        value:roomProvider.room[index]["name"],
+                    items: List.generate(roomProvider.room["result"].length, (index) => DropdownMenuItem<String>(
+                        value:roomProvider.room["result"][index]["name"],
                         child: Row(
                           children: [
-                            Text(roomProvider.room[index]["name"]),
+                            Text(roomProvider.room["result"][index]["name"]),
                           ],
                         ))
                       ).toList(),
@@ -70,18 +70,7 @@ class _CapteurViewState extends State<CapteurView> {
                 Row(
                   children: [
                     ElevatedButton(
-                      // // onLongPress: (){
-                      // //   setState(() {
-                      // //     debugPrint("state "+widget.state);
-                      // //       Map<String,dynamic> msg = {
-                      // //     "id":"${widget.id}",
-                      // //     "state":widget.state
-                      // //     };
-                      // //   allumerEteindre(jsonEncode(msg));
-                      // //   //  msg = jsonEncode(id,state)
-                      // //   // allumerEteindre();
-                      // //   });
-                      // },
+                      
                       onPressed: (){
                        setState(() {
                           if(widget.state[0]==0){
@@ -112,14 +101,14 @@ class _CapteurViewState extends State<CapteurView> {
                     Padding(
                       padding: const EdgeInsets.all(2.0),
                       child: ElevatedButton(
-                        onPressed: (){
+                        onPressed: () async{
                         if(_formKey.currentState!.validate()){
                           debugPrint("widget id "+widget.id.toString());
                           capteur.id = widget.id.toString();
                           capteur.state = widget.state;
-                          var req =  capteurProvider.addCapteur(capteur);
+                          dynamic req = await capteurProvider.addCapteur(capteur);
                           debugPrint("request "+req.toString());
-                          if(req[1]["statut"]==200){
+                          if(req["statut"]==200){
                             setState(() {
                               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(req["result"],style: TextStyle(color: Colors.white))));
                               Navigator.of(context).push(MaterialPageRoute(builder: (context)=> DevicesUpdated()));

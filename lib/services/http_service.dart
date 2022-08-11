@@ -14,7 +14,7 @@ class HttpService{
   //initialisation du client http
   static final client = http.Client();
   // static const url = "http://10.20.1.1:5000/api/v1";
-  static const url = "http://192.168.0.106:5000/api/v1";
+  static const url = "http://192.168.1.105:5000/api/v1";
   Map<String,String> headers = 
   {
     'Content-Type':'application/json',
@@ -134,7 +134,7 @@ class HttpService{
     }
   }
   //implementation de la route /device/add
-  Future addDevice(Device device) async{
+  Future<dynamic> addDevice(Device device) async{
       try {
         var response = await client.put(
           fullUri('device/update'), 
@@ -155,10 +155,10 @@ class HttpService{
       }
   }
   
-   addRoom(Room room) async{
+  Future<dynamic> addRoom(Room room) async{
     debugPrint("add room ici");
     try {
-       debugPrint("add room catch");
+      
       final response = await client.post( 
         fullUri("room/add"),
         headers: headers,
@@ -166,8 +166,9 @@ class HttpService{
           "name": room.nameRoom,
         })
       );
-      var result=json.decode(response.body);
+       var result=json.decode(response.body) as Map;
       if(result["statut"] == 200){
+     print( 'cccgc'+result.toString());
         return result;
       }
       else{
@@ -335,19 +336,22 @@ class HttpService{
       }
     }
 
-    Future<Room> deleteRoom(Room room) async{
+    Future<dynamic> deleteRoom(String id) async{
         try {
           var response= await http.delete(
-          fullUri("room/delete"),
-          headers: headers,
-          body: {
-            jsonEncode(room.toJson())
-          });
+          fullUri("room/delete/$id"),
+          headers: headers
+          );
+          debugPrint("body "+response.body.toString());
           var result=json.decode(response.body);
+          debugPrint("result "+result);
+          debugPrint("stat "+response.statusCode.toString());
           if (result["statut"] == 200) {
+            debugPrint("result "+result);
            return result;
           }
           else {
+            debugPrint("result else "+result);
             return result;
           }
         }catch (e) {
@@ -383,12 +387,12 @@ class HttpService{
           throw e.toString();
         }
      }
-     Future<Device> deleteDevice(Device device) async{
+     Future<dynamic> deleteDevice(String id) async{
       try{
           var response = await client.delete(
-          fullUri('device/delete'), 
-          headers: headers,
-          body:json.encode(device.toJson()));
+          fullUri('device/delete/$id'), 
+          headers: headers
+          );
           var result=json.decode(response.body);
           if (result["statut"] == 200) {
             debugPrint("body "+result.toString());
@@ -497,14 +501,11 @@ class HttpService{
         throw e.toString();
       }
     }
-    Future deletePlanning(String id) async{
+    Future<dynamic> deletePlanning(String id) async{
       try{
           var response = await http.delete(
-            fullUri("planning/delete"),
-            headers: headers,
-            body:json.encode({
-            "id":id
-            })
+            fullUri("planning/delete/$id"),
+            headers: headers
           );
           if(response.statusCode == 200) {
             // debugPrint("device enregistre");

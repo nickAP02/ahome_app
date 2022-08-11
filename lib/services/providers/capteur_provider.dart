@@ -53,10 +53,11 @@ class CapteurProvider extends ChangeNotifier{
    notifyListeners();
    return temperature;
   }
-  addCapteur(Capteur capteur) async{
+  Future<dynamic>addCapteur(Capteur capteur) async{
     debugPrint("capteur");
     var result = httpService.addCapteur(capteur);
     debugPrint("result capteur add "+result.toString());
+    return result;
     notifyListeners();
   }
 }

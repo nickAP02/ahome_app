@@ -23,7 +23,7 @@ class _UpdateDeviceState extends State<UpdateDevice> {
   Device newDevice =  Device(idDev: "",nameDev: "",puissance: 0,conso: 0,state:[0],room: "");
   // Device newDevice =  Device(idDev: "",nameDev:"",state:[],categorie: "",puissance: 0, conso:0,dateConso:DateTime.now(),room:"");
   bool selected=true;
-  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.0.106:5000/api/v1/device/allumerEteindre/"));
+  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.1.105:5000/api/v1/device/allumerEteindre/"));
   String ?valSelectionneCat;
   String ?valSelectionneP;
   var deviceProvider;

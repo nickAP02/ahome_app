@@ -74,18 +74,20 @@ class RoomProvider extends ChangeNotifier{
     return valConso;
   }
  
-  addRoom(Room room) async{
+  Future<dynamic> addRoom(Room room) async{
     debugPrint("ok add room");
     try{
-       var result = httpService.addRoom(room);
-       debugPrint("ajout piece"+result.toString());
+       final result = httpService.addRoom(room);
+      debugPrint("ajout piece"+result.toString());
+      notifyListeners();
+      return result ;
     }
    catch(e){
     debugPrint("erreur ajout piece");
     throw e.toString();
     
    }
-    notifyListeners();
+    
   }
 
   double getConsoGlobale(){
@@ -99,8 +101,8 @@ class RoomProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  Future deleteRoom(Room room) async{
-    httpService.deleteRoom(room);
+  Future<dynamic> deleteRoom(String id) async{
+    httpService.deleteRoom(id);
     notifyListeners();
   }
 

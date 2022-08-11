@@ -22,7 +22,7 @@ class _DeviceCardState extends State<DeviceCard> {
   var tapColor = const Color.fromRGBO(20,115,209,1);
   var colorOn = false;
   var textColor = Colors.white;
-  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.0.106:5000/api/v1/device/allumerEteindre/"));
+  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.1.105:5000/api/v1/device/allumerEteindre/"));
   @override
   void initState(){
     super.initState();

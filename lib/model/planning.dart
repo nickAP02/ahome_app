@@ -23,10 +23,10 @@ class Planning{
   
   factory Planning.fromJson(Map<String,dynamic> json){
     // print("viens tu ici ?");
-    // print("le resultat "+json.toString());
+    print("le resultat "+json.toString());
     return Planning(
-      idPlan: json["idPlan"],
-      nomPlan: json["nomPlan"],
+      idPlan: json["id"],
+      nomPlan: json["name"],
       dateDebut : json["dateDebut"],
       dateFin : json["dateFin"],
       appareils : json["appareils"],

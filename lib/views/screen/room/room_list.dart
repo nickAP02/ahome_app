@@ -1,3 +1,4 @@
+import 'package:ago_ahome_app/model/room.dart';
 import 'package:ago_ahome_app/services/providers/room_provider.dart';
 import 'package:ago_ahome_app/utils/colors.dart';
 import 'package:ago_ahome_app/views/screen/home/home.dart';
@@ -52,13 +53,14 @@ class _RoomsState extends State<Rooms> {
             else{
               debugPrint("value "+snapshot.data.toString());
               var result = snapshot.data as Map;
-              var value = result["result"];
+              var value = result["result"] as List;
               return value.isEmpty?const CircularProgressIndicator(
               color: kPrimaryColor,
               semanticsLabel: "Chargement des données"
             ):
             Container(
               height: MediaQuery.of(context).size.height,
+              // width: 300,
               child: ListView.builder(
                 //padding: const EdgeInsets.only(top: 200),
                 itemCount: value.length,
@@ -79,10 +81,12 @@ class _RoomsState extends State<Rooms> {
                                     child: ElevatedButton(
                                     style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
                                     onPressed: () async{
-                                      var request = await roomProvider.deleteRoom(value[index]);
+                                      
+                                      var request = await roomProvider.deleteRoom(value[index]["id"]);
+                                      debugPrint("statut room view "+request["result"].toString());
                                       if(request["statut"]==200){
                                         setState(() {
-                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Vous avez supprimé ${value[index]["name"]}")));
+                                          // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Vous avez supprimé ${value[index]["name"]}")));
                                           Navigator.of(context).pop();
                                         });
                                       }
@@ -106,7 +110,8 @@ class _RoomsState extends State<Rooms> {
                     setState(() {
                       selected = index;
                     });
-                    SimpleDialog(
+                    showDialog(context: context, builder: (BuildContext buildContext){
+                    return  SimpleDialog(
                       title: const Text("Modification de la pièce"),
                       contentPadding: const EdgeInsets.all(10),
                       children: [
@@ -143,7 +148,8 @@ class _RoomsState extends State<Rooms> {
                                     padding: const EdgeInsets.all(2.0),
                                     child: ElevatedButton(onPressed: () async{
                                       if(_formKey.currentState!.validate()){
-                                        var req = await roomProvider.updateRoom(value[index]);
+                                        var val = value[index] as Room;
+                                        var req = await roomProvider.updateRoom(val);
                                         if(req["statut"]==200){
                                           Navigator.of(context).push(MaterialPageRoute(builder: (context)=> Rooms()));
                                         }
@@ -174,20 +180,21 @@ class _RoomsState extends State<Rooms> {
                       ],
                     );
                                   
+                    });
                   },
-                  // child: Container(
-                  //   padding: const EdgeInsets.all(20),
-                  //   decoration: BoxDecoration(
-                  //     //borderRadius: BorderRadius.,
-                  //     color: selected==index?kPrimaryColor:  Colors.white,
-                  //   ),
-                  //   child: Text( 
-                  //     value[index]["name"],
-                  //     style: const TextStyle(
-                  //       fontWeight: FontWeight.bold
-                  //     ),
-                  //   ),
-                  // ),
+                  child: Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      //borderRadius: BorderRadius.,
+                      color: selected==index?kPrimaryColor:  Colors.white,
+                    ),
+                    child: Text( 
+                      value[index]["name"],
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold
+                      ),
+                    ),
+                  ),
                 ),
                 scrollDirection: Axis.vertical,
                   //separatorBuilder: (_,index)=>SizedBox(width: 20)

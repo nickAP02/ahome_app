@@ -34,7 +34,7 @@ class PlanningProvider extends ChangeNotifier{
   Future onPlanning(String id) async{
     debugPrint("planning "+id);
     httpService.onPlanning(id);
-    notifyListeners();
+    // notifyListeners();
   }
 
   Future offPlanning(String id) async{

@@ -65,8 +65,8 @@ class DeviceProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  Future deleteDevice(Device device) async{
-    httpService.deleteDevice(device);
+  Future deleteDevice(String id) async{
+    httpService.deleteDevice(id);
     notifyListeners();
   }
 }

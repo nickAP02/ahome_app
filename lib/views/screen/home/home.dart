@@ -33,7 +33,7 @@ class _HomeState extends State<Home>{
   var tapColor = const Color.fromRGBO(20,115,209,1);
   var colorOn = false;
   var textColor = Colors.white;
-  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.0.106:5000/api/v1/device/allumerEteindre/"));
+  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.1.105:5000/api/v1/device/allumerEteindre/"));
   int index=0;
   @override
   void initState() {
@@ -109,7 +109,9 @@ class _HomeState extends State<Home>{
             }
              debugPrint("somthing "+listRoomsNames.toString());
               debugPrint("data else "+snapshot.data.toString());
-              return DefaultTabController(
+              return listRooms.isEmpty?Center(
+                child: Text("Pas de pièces"),
+              ):DefaultTabController(
                 length: listRooms.length,
                 child: 
                 // SingleChildScrollView(
@@ -131,8 +133,8 @@ class _HomeState extends State<Home>{
                     ]
                     ),
                   Container(
-                    height: 300,
-                    width:250,
+                    height: MediaQuery.of(context).size.height/2,
+                    width:MediaQuery.of(context).size.width/2,
                     child: TabBarView(
                       children: [
                         for(var i=0;i<listRoomsNames.length;i++)...{

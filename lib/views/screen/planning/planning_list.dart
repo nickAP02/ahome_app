@@ -22,7 +22,7 @@ class _PlanningsState extends State<Plannings> {
 
   @override
   void initState() {
-    planningProvider = Provider.of<PlanningProvider>(context,listen: true); 
+    planningProvider = Provider.of<PlanningProvider>(context,listen: false); 
     super.initState();
   }
 
@@ -64,7 +64,6 @@ class _PlanningsState extends State<Plannings> {
                         setState(() {
                           selected =  index;
                         });
-
                     },
                     child: Container(
                       padding: const EdgeInsets.all(20),
@@ -73,7 +72,7 @@ class _PlanningsState extends State<Plannings> {
                         color: selected==index?kPrimaryColor:  Colors.white,
                       ),
                       child:ListTile(
-                        title: Text(value[index].nom.toString(), style: TextStyle(color: Colors.red),),
+                        title: Text(value[index].nomPlan.toString(),),
                         subtitle: Row(
                           children: [
                               Text(value[index].dateDebut,
@@ -123,7 +122,7 @@ class _PlanningsState extends State<Plannings> {
                           colorOn: colorOn?tapColor:const Color.fromRGBO(255, 255, 255, 0.5),
                           size: SwitcherSize.small,
                           onChanged: (switchVal){
-                            planningProvider.onPlanning(value[index].id);
+                            planningProvider.onPlanning(value[index].idPlan);
                             switchVal = !colorOn;
                             colorOn = !colorOn;
                           }

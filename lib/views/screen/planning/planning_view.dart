@@ -252,42 +252,40 @@ class _PlanningViewState extends State<PlanningView> {
                             // ),
                           );
                         }), 
-                      ElevatedButton
-                      (
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(kPrimaryColor),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left:70.0,right: 40),
+                            child: ElevatedButton
+                            (
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(kPrimaryColor),
+                            ),
+                            child: 
+                            const Text
+                            (
+                              "Valider",
+                              style: TextStyle(color: Colors.white)
+                            ) ,
+                            onPressed: () async{
+                              debugPrint("current state "+_formKey.currentState!.validate().toString());
+                              if(_formKey.currentState!.validate()){
+                                var response=planningProvider.addPlanning(planning);
+                                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Planning enregistré",style: TextStyle(color: Colors.white))));
+                                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=> Plannings()));
+                              
+                              }
+                              
+                            },     
                       ),
-                      child: 
-                      const Text
-                      (
-                        "Valider",
-                        style: TextStyle(color: Colors.white)
-                      ) ,
-                      onPressed: () async{
-                        debugPrint("current state "+_formKey.currentState!.validate().toString());
-                        if(_formKey.currentState!.validate()){
-                          var response=planningProvider.addPlanning(planning);
-                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Planning enregistré",style: TextStyle(color: Colors.white))));
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=> Plannings()));
-                         
-                          // else{
-                          //    debugPrint("a problem here "+response["result"]);
-                          //    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response["result"],style: TextStyle(color: Colors.red),)));
-                          // }
-                        }
-                        debugPrint("pff");
-                        debugPrint("pff"+planning.nomPlan);
-                        debugPrint("pff"+planning.dateDebut);
-                        debugPrint("pff"+planning.dateFin);
-                        debugPrint("pff"+planning.appareils.toString());
-              
-                        debugPrint("planning "+planning.toJson().toString());
-                        //  planningProvider.addPlanning(planning);
-                      //  else{
-                      //     Text("Renseignez tous les champs avant de valider",style: TextStyle(color: Colors.red),);
-                      //  }
-                        // channel.sink.add();
-                      },     
+                          ),
+                      ElevatedButton(onPressed: (){
+                        Navigator.of(context).pop();
+                        }, 
+                        style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.white12)),
+                        child: const Text("Annuler")
+                      )
+                    ],
                     ),
                            
                   ],

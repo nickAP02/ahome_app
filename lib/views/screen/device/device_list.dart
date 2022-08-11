@@ -79,7 +79,10 @@ class _DeviceListState extends State<DeviceList> {
                           selected = index;
                           });
                           //ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Vous avez cliqué cliqué sur cet appareil")));
-                          showDialog(context: context, builder: (BuildContext build){
+                          showDialog(
+                            barrierDismissible: false,
+                            context: context, 
+                            builder: (BuildContext build){
                             return  DeviceView(deviceProvider.noNamedDevices[index].idDev,deviceProvider.noNamedDevices[index].state);
                           });
                         },
@@ -122,7 +125,10 @@ class _DeviceListState extends State<DeviceList> {
                         setState(() {
                           selected = index;
                         });
-                        showDialog(context: context, builder: (BuildContext build){
+                        showDialog(
+                          barrierDismissible: false,
+                          context: context, 
+                          builder: (BuildContext build){
                           return  CapteurView(capteurProvider.noNamedCapteurs[index].id,capteurProvider.noNamedCapteurs[index].state);
                         });
                       

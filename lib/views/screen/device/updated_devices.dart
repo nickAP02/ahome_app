@@ -32,10 +32,10 @@ class _DevicesUpdatedState extends State<DevicesUpdated> {
   String ?valSelectionneCat;
   String ?valSelectionneP;
   bool _isSelected = true;
-  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.0.106:5000/api/v1/device/allumerEteindre/"));
+  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.1.105:5000/api/v1/device/allumerEteindre/"));
   void initState() {
-    var capteurProvider=Provider.of<CapteurProvider>(context,listen:true);
-    var roomProvider = Provider.of<RoomProvider>(context,listen: true);
+    var capteurProvider=Provider.of<CapteurProvider>(context,listen:false);
+    var roomProvider = Provider.of<RoomProvider>(context,listen: false);
     super.initState();
   }
 
@@ -57,11 +57,16 @@ class _DevicesUpdatedState extends State<DevicesUpdated> {
             // padding: EdgeInsets.all(5),
             shrinkWrap: true,
             scrollDirection: Axis.vertical,
-            itemCount: Provider.of<DeviceProvider>(context,listen:true).getNamedDevices().length,
+            itemCount: Provider.of<DeviceProvider>(context,listen:false).getNamedDevices().length,
             itemBuilder: (context, index)=>
               GestureDetector(
                 onTap: (){
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder:(context)=>UpdateDevice( Provider.of<DeviceProvider>(context,listen:true).getNamedDevices()[index].idDev,  Provider.of<DeviceProvider>(context,listen:true).getNamedDevices()[index].state)));
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder:(context)=>UpdateDevice(
+                      Provider.of<DeviceProvider>(context,listen:false).getNamedDevices()[index].idDev,  
+                      Provider.of<DeviceProvider>(context,listen:false).getNamedDevices()[index].state)
+                      )
+                    );
                 },
                 onLongPress: (){
                   
@@ -70,10 +75,10 @@ class _DevicesUpdatedState extends State<DevicesUpdated> {
                   height: MediaQuery.of(context).size.height/5,
                   width:  MediaQuery.of(context).size.width/8,
                   child: DeviceCard(
-                       '${Provider.of<DeviceProvider>(context,listen:true).getNamedDevices()[index].nameDev}',
-                       Provider.of<DeviceProvider>(context,listen:true).getNamedDevices()[index].conso!.toDouble(),
-                       Provider.of<DeviceProvider>(context,listen:true).getNamedDevices()[index].state,
-                       Provider.of<DeviceProvider>(context,listen:true).getNamedDevices()[index].idDev 
+                       '${Provider.of<DeviceProvider>(context,listen:false).getNamedDevices()[index].nameDev}',
+                       Provider.of<DeviceProvider>(context,listen:false).getNamedDevices()[index].conso!.toDouble(),
+                       Provider.of<DeviceProvider>(context,listen:false).getNamedDevices()[index].state,
+                       Provider.of<DeviceProvider>(context,listen:false).getNamedDevices()[index].idDev 
                     ),
                 ),
               )
@@ -84,7 +89,7 @@ class _DevicesUpdatedState extends State<DevicesUpdated> {
               padding:const EdgeInsets.all(5),
               shrinkWrap: true,
               scrollDirection: Axis.vertical,
-              itemCount: Provider.of<CapteurProvider>(context,listen:true).getNamedCapteurs().length,
+              itemCount: Provider.of<CapteurProvider>(context,listen:false).getNamedCapteurs().length,
               itemBuilder: (context,index)=>GestureDetector(
                 onLongPress: (){
                   showDialog(context: context, builder: (BuildContext buildContext){
@@ -100,12 +105,15 @@ class _DevicesUpdatedState extends State<DevicesUpdated> {
                                     child: ElevatedButton(
                                     style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
                                     onPressed: () async{
-                                      var request = await roomProvider.deleteCapteur(Provider.of<CapteurProvider>(context,listen:true).getNamedCapteurs()[index]);
+                                      var request = await roomProvider.deleteCapteur(Provider.of<CapteurProvider>(context,listen:false).getNamedCapteurs()[index]);
                                       if(request["statut"]==200){
                                         setState(() {
-                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Vous avez supprimé ce capteur}")));
+                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(request["result"])));
                                           Navigator.of(context).pop();
                                         });
+                                      }
+                                      else{
+                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(request["result"])));
                                       }
                                     },
                                     child: const Text('Oui'),
@@ -144,7 +152,7 @@ class _DevicesUpdatedState extends State<DevicesUpdated> {
                           child: DropdownButton<String>(
                                 hint:const Text("Pièce"),
                                 value: valSelectionneP,
-                                items: List.generate(roomProvider.room.length, (index) => DropdownMenuItem<String>(
+                                items: List.generate(roomProvider.room["result"].length, (index) => DropdownMenuItem<String>(
                                     value:roomProvider.room[index]["name"],
                                     child: Row(
                                       children: [
@@ -156,7 +164,7 @@ class _DevicesUpdatedState extends State<DevicesUpdated> {
                                   setState(() {
                                     valSelectionneP = value;
                                     debugPrint(valSelectionneP);
-                                    Provider.of<CapteurProvider>(context,listen:true).getNamedCapteurs()[index].nameRoom =  valSelectionneP!;
+                                    Provider.of<CapteurProvider>(context,listen:false).getNamedCapteurs()[index].nameRoom =  valSelectionneP!;
                                   });
                                 }),
                             ),
@@ -166,19 +174,19 @@ class _DevicesUpdatedState extends State<DevicesUpdated> {
                                 
                                   onPressed: (){
                                   setState(() {
-                                      if(Provider.of<CapteurProvider>(context,listen:true).getNamedCapteurs()[index].state[0]==0){
-                                        Provider.of<CapteurProvider>(context,listen:true).getNamedCapteurs()[index].state[0]=1;
+                                      if(Provider.of<CapteurProvider>(context,listen:false).getNamedCapteurs()[index].state[0]==0){
+                                        Provider.of<CapteurProvider>(context,listen:false).getNamedCapteurs()[index].state[0]=1;
                                         Map<String,dynamic> msg = {
-                                          "id":"${Provider.of<CapteurProvider>(context,listen:true).getNamedCapteurs()[index].id}",
-                                          "state":Provider.of<CapteurProvider>(context,listen:true).getNamedCapteurs()[index].state
+                                          "id":"${Provider.of<CapteurProvider>(context,listen:false).getNamedCapteurs()[index].id}",
+                                          "state":Provider.of<CapteurProvider>(context,listen:false).getNamedCapteurs()[index].state
                                         };
                                         allumerEteindre(jsonEncode(msg));
                                       }
                                       else{
-                                        Provider.of<CapteurProvider>(context,listen:true).getNamedCapteurs()[index].state[0]=0;
+                                        Provider.of<CapteurProvider>(context,listen:false).getNamedCapteurs()[index].state[0]=0;
                                         Map<String,dynamic> msg = {
-                                          "id":"${Provider.of<CapteurProvider>(context,listen:true).getNamedCapteurs()[index].id}",
-                                          "state":Provider.of<CapteurProvider>(context,listen:true).getNamedCapteurs()[index].state
+                                          "id":"${Provider.of<CapteurProvider>(context,listen:false).getNamedCapteurs()[index].id}",
+                                          "state":Provider.of<CapteurProvider>(context,listen:false).getNamedCapteurs()[index].state
                                         };
                                         allumerEteindre(jsonEncode(msg));
                                       }
@@ -194,9 +202,9 @@ class _DevicesUpdatedState extends State<DevicesUpdated> {
                                 Padding(
                                   padding: const EdgeInsets.all(2.0),
                                   child: ElevatedButton(
-                                    onPressed: (){
+                                    onPressed: () async{
                                     if(_formKey.currentState!.validate()){
-                                      var req =  capteurProvider.addCapteur(Provider.of<CapteurProvider>(context,listen:true).getNamedCapteurs()[index]);
+                                      dynamic req =  await capteurProvider.addCapteur(Provider.of<CapteurProvider>(context,listen:false).getNamedCapteurs()[index]);
                                       debugPrint("request "+req.toString());
                                       if(req["statut"]==200){
                                         setState(() {
