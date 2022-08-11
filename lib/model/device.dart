@@ -23,17 +23,19 @@ class Device{
 
   List<Device> deviceFromJson(String str) => List<Device>.from(json.decode(str).map((x)=>Device.fromJson(x)));
   String deviceToJson(List<Device> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+  
   factory Device.fromJson(Map<String, dynamic> json){
-
+    print("state "+json['state'].toString());
     return Device(
       idDev : json['id'],
-      nameDev : json['name'],
+      nameDev : json['name']??"",
       // categorie : json['categorie'],
       puissance: json['puissance'].toDouble(),
       conso : json['conso'].toDouble(),
       state : List.from(json['state']),
-      room : json['nameRoom']
+      room : json['nameRoom']??""
       );
+      
   }
   Map<dynamic, dynamic> toJson() => {
     'id':idDev,

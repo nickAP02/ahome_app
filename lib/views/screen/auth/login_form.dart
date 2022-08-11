@@ -45,10 +45,10 @@ class _LoginFormState extends State<LoginForm> {
               "CONNEXION",
               style:TextStyle(fontWeight: FontWeight.bold)
             ),
-            SvgPicture.asset(
-              "assets/images/login.svg",
-              height:size.height*0.35
-            ),
+            Image.asset(
+                  'assets/images/banner.png',
+                  scale: 1.2,
+              ),
               TextFieldContainer(
               child: TextFormField(
                 controller: emailController,
@@ -177,15 +177,15 @@ class _LoginFormState extends State<LoginForm> {
               ),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: GestureDetector(
-              onTap: (){
-                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const Register()));
-              },
-              child:const Text("Pas de compte ?Inscrivez-vous",style: TextStyle(color: kPrimaryColor),)
-            ),
-          )
+          // Padding(
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: GestureDetector(
+          //     onTap: (){
+          //       Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const Register()));
+          //     },
+          //     child:const Text("Pas de compte ?Inscrivez-vous",style: TextStyle(color: kPrimaryColor),)
+          //   ),
+          // )
           ],
         )),
       ),

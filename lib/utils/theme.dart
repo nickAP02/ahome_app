@@ -12,9 +12,9 @@ class Themes{
     onSecondary: Colors.black,
     error: Colors.black, 
     onError: Colors.black,
-    background: Colors.black,
-    onBackground: Colors.black,
-    surface: Colors.black,
+    background: Colors.white,
+    onBackground: Colors.blueGrey,
+    surface: Colors.blueGrey,
     onSurface: Colors.black
     )
   );

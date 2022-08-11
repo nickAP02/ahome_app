@@ -10,42 +10,47 @@ class DeviceProvider extends ChangeNotifier{
   bool loading = false;
   final HttpService httpService = HttpService();
   List<Device>getNoNamedDevices(){
-    loading = true;
+    // loading = true;
     notifyListeners();
-    loading = false;
+    // loading = false;
     return noNamedDevices;
   }
   setNoNamedDevice(){
     debugPrint("liste vide device " +device.toString());
     if(device!=null){
-      noNamedDevices = device!.where((element) => element.nameDev!.isEmpty).toList();
+      noNamedDevices = device!.where((element) => element.nameDev!.isEmpty&&element.room!.isEmpty).toList();
+      notifyListeners();
+      debugPrint("liste  nonamedDevices " +noNamedDevices.toList().toString());
       // noNamedDevices.forEach((element) {debugPrint(element.nameDev);});
     }
     else{
-     debugPrint("liste vide noNamedDevices " +noNamedDevices.toString());
+     debugPrint("liste vide noNamedDevices " +noNamedDevices.toList().toString());
     }
     notifyListeners();
   }
    List<Device>getNamedDevices(){
-    loading = true;
+    // loading = true;
     notifyListeners();
-    loading = false;
+    // loading = false;
     return namedDevices;
     
   }
   setNamedDevice(){
     if(device!=null){
-       namedDevices = device!.where((element) => element.nameDev!.isNotEmpty).toList();
+       namedDevices = device!.where((element) => element.nameDev!.isNotEmpty&&element.room!.isEmpty).toList();
+       debugPrint("liste namedDevices " +namedDevices.toList().toString());
+       notifyListeners();
       //  namedDevices.forEach((element) {debugPrint(element.nameDev);});
     }
     else{
-      debugPrint("liste vide namedDevices " +noNamedDevices.toString());
+      debugPrint("liste vide namedDevices " +namedDevices.toList().toString());
     }
     notifyListeners();
   }
   Future getDeviceData() async{
     loading = true;
     device = await httpService.getDevices();
+    debugPrint("value "+device.toString());
     loading = false;
     notifyListeners();
     return device;
@@ -54,5 +59,14 @@ class DeviceProvider extends ChangeNotifier{
     httpService.addDevice(device);
     notifyListeners();
   }
-  
+
+  Future updateDevice(Device device) async{
+    httpService.updateDevice(device);
+    notifyListeners();
+  }
+
+  Future deleteDevice(Device device) async{
+    httpService.deleteDevice(device);
+    notifyListeners();
+  }
 }

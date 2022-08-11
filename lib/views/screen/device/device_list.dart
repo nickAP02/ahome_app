@@ -14,16 +14,24 @@ class DeviceList extends StatefulWidget {
 }
 
 class _DeviceListState extends State<DeviceList> {
-   int index = 0;
+  int index = 0;
   String name="";
   int selected = 0;
   Color buttonColor = Colors.red;
+  var deviceProvider;
+  var capteurProvider;
+  @override
+  void initState() {
+    deviceProvider=Provider.of<DeviceProvider>(context,listen:false);
+    capteurProvider=Provider.of<CapteurProvider>(context,listen:false);
+    super.initState();
+  }
+ 
   
   @override
   Widget build(BuildContext context) {
     
-    var deviceProvider=Provider.of<DeviceProvider>(context,listen:false);
-    var capteurProvider=Provider.of<CapteurProvider>(context,listen:false);
+  
     return Scaffold(
       appBar: AppBar(title: const Text("Appareils détectés"),),
       body:SingleChildScrollView(
@@ -63,7 +71,7 @@ class _DeviceListState extends State<DeviceList> {
                     padding: const EdgeInsets.all(5),
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
-                    itemCount: Provider.of<DeviceProvider>(context,listen:false).getNoNamedDevices().length,
+                    itemCount: deviceProvider.noNamedDevices.length,
                     itemBuilder: (context, index)=>
                       GestureDetector(
                         onTap: (){
@@ -72,7 +80,7 @@ class _DeviceListState extends State<DeviceList> {
                           });
                           //ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Vous avez cliqué cliqué sur cet appareil")));
                           showDialog(context: context, builder: (BuildContext build){
-                            return  DeviceView(Provider.of<DeviceProvider>(context,listen:false).getNoNamedDevices()[index].idDev,Provider.of<DeviceProvider>(context,listen:true).getNoNamedDevices()[index].state);
+                            return  DeviceView(deviceProvider.noNamedDevices[index].idDev,deviceProvider.noNamedDevices[index].state);
                           });
                         },
                         child: deviceTypeCheck(deviceProvider.noNamedDevices, index),
@@ -115,7 +123,7 @@ class _DeviceListState extends State<DeviceList> {
                           selected = index;
                         });
                         showDialog(context: context, builder: (BuildContext build){
-                          return  CapteurView(Provider.of<CapteurProvider>(context,listen:false).getNoNamedCapteurs()[index].id,Provider.of<CapteurProvider>(context,listen:true).getNoNamedCapteurs()[index].state);
+                          return  CapteurView(capteurProvider.noNamedCapteurs[index].id,capteurProvider.noNamedCapteurs[index].state);
                         });
                       
                       },

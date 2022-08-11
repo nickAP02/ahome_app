@@ -11,22 +11,38 @@ class CapteurProvider extends ChangeNotifier{
   final HttpService httpService = HttpService();
 
   List<Capteur>getNoNamedCapteurs(){
+    notifyListeners();
     return noNamedCapteurs;
   }
   setNoNamedCapteurs(){
-    noNamedCapteurs = capteur!.where((element) => element.nameRoom.isEmpty).toList();
+    debugPrint("liste vide capteur " +capteur.toString());
+    if(capteur!=null){
+      noNamedCapteurs = capteur!.where((element) => element.nameRoom.isEmpty).toList();
+      notifyListeners();
+    }
+    else{
+      debugPrint("liste vide capteurs " +noNamedCapteurs.toString());
+    }
     notifyListeners();
   }
    List<Capteur>getNamedCapteurs(){
+    // notifyListeners();
     return namedCapteurs;
   }
   setNamedCapteurs(){
-    namedCapteurs = capteur!.where((element) => element.nameRoom.isNotEmpty).toList();
+    if(capteur!=null){
+      namedCapteurs = capteur!.where((element) => element.nameRoom.isNotEmpty).toList();
+      notifyListeners();
+    }
+    else{
+      debugPrint("liste vide named capteurs " +namedCapteurs.toString());
+    }
+    
     notifyListeners();
   }
   Future getCapteurData() async{
     loading = true;
-    capteur = await httpService.getCapteurs();
+    capteur = await httpService.getCapteurs().then((value) => capteur=value);
     loading = false;
     notifyListeners();
     return capteur;
@@ -37,9 +53,10 @@ class CapteurProvider extends ChangeNotifier{
    notifyListeners();
    return temperature;
   }
-  Future addCapteur(Capteur capteur) async{
+  addCapteur(Capteur capteur) async{
     debugPrint("capteur");
-    httpService.addCapteur(capteur);
+    var result = httpService.addCapteur(capteur);
+    debugPrint("result capteur add "+result.toString());
     notifyListeners();
   }
 }

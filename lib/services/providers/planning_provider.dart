@@ -14,7 +14,8 @@ class PlanningProvider extends ChangeNotifier{
   }
 
   Future getPlannings() async{
-    plannings = await httpService.getPlannings();
+    plannings = await httpService.getPlannings().then((value) => plannings=value);
+    debugPrint("liste plannings "+plannings.toString());
     notifyListeners();
     return plannings;
   }
@@ -30,6 +31,15 @@ class PlanningProvider extends ChangeNotifier{
     httpService.deletePlanning(id);
     notifyListeners();
   }
+  Future onPlanning(String id) async{
+    debugPrint("planning "+id);
+    httpService.onPlanning(id);
+    notifyListeners();
+  }
 
-
+  Future offPlanning(String id) async{
+    debugPrint("planning "+id);
+    httpService.offPlanning(id);
+    notifyListeners();
+  }
 }

@@ -22,14 +22,13 @@ class _DeviceCardState extends State<DeviceCard> {
   var tapColor = const Color.fromRGBO(20,115,209,1);
   var colorOn = false;
   var textColor = Colors.white;
-  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.1.110:5000/api/v1/device/allumerEteindre/"));
+  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.0.106:5000/api/v1/device/allumerEteindre/"));
   @override
   void initState(){
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
-    // var roomProvider = Provider.of<RoomProvider>(context,listen: true);
       return Padding(
         padding: const EdgeInsets.all(8.0),
         child: GestureDetector(
@@ -54,9 +53,6 @@ class _DeviceCardState extends State<DeviceCard> {
               };
               allumerEteindre(jsonEncode(msg));
             }
-            // debugPrint("element 1 state "+widget.state[0].toString()+" element 2 state "+widget.state[1].toString()+" element 3 state "+widget.state[2].toString());
-            
-          // debugPrint("element 1 state "+widget.state[0].toString());
             
           });
         },
@@ -72,30 +68,6 @@ class _DeviceCardState extends State<DeviceCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  RotatedBox(
-                  quarterTurns:135,
-                  child:Switcher(
-                    switcherButtonBoxShape: BoxShape.circle,
-                    enabledSwitcherButtonRotate: true,
-                    switcherButtonAngleTransform: 90,
-                    value: false,
-                    colorOff: colorOn?const Color.fromRGBO(255, 255, 255, 0.5):tapColor,
-                    iconOn: Icons.circle_outlined,
-                    iconOff: Icons.circle_outlined,
-                    colorOn: colorOn?tapColor:const Color.fromRGBO(255, 255, 255, 0.5),
-                    size: SwitcherSize.small,
-                    onChanged: (switchVal){
-                      switchVal = !switchVal;
-                      colorOn = !colorOn;
-                    }
-                  ),
-                  ),
-                ],
-              ),
-              
              Text(widget.name, 
                 style: TextStyle(
                   color:_isSelected?textColor:Colors.black,

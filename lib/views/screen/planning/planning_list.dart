@@ -2,8 +2,8 @@ import 'package:ago_ahome_app/services/providers/planning_provider.dart';
 import 'package:ago_ahome_app/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-// import 'package:switcher/core/switcher_size.dart';
-// import 'package:switcher/switcher.dart';
+import 'package:switcher/core/switcher_size.dart';
+import 'package:switcher/switcher.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 class Plannings extends StatefulWidget {
   const Plannings({Key? key}) : super(key: key);
@@ -13,17 +13,19 @@ class Plannings extends StatefulWidget {
 }
 
 class _PlanningsState extends State<Plannings> {
-  @override
-  void initState() {
-    var planningProvider = Provider.of<PlanningProvider>(context,listen:false);
-    super.initState();
-  }
-  var planningProvider;
+  
   int selected=0;
   var colorOn = false;
   var tapColor = const Color.fromRGBO(20,115,209,1);
-  // final channel = WebSocketChannel.connect(Uri.parse("ws://10.20.1.98:5000/api/v1/planning/on/"));
+  var planningProvider;
  
+
+  @override
+  void initState() {
+    planningProvider = Provider.of<PlanningProvider>(context,listen: true); 
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,16 +35,23 @@ class _PlanningsState extends State<Plannings> {
       body: FutureBuilder(
         future: planningProvider.getPlannings(),
         builder: (context,snapshot) {
+          debugPrint("snapshot 1 "+snapshot.data.toString());
           if(snapshot.data==null){
-              return Text("rien a afficher");
+              return Center(child: Text("Pas de plannings disponibles"));
           }
           if(snapshot.data==[]){
-            return CircularProgressIndicator();
+            return Column(
+              children: const [
+                Center(child: CircularProgressIndicator(color: kPrimaryColor,)),
+                Text("Chargement des données")
+              ],
+            );
           }
           else{
-            var value = snapshot.data as List<dynamic>;
+            var value = snapshot.data as List;
             debugPrint("snapshot "+value.toString());
-            return Container(
+             debugPrint("snapshot "+value.toString());
+            return value.isEmpty?Center(child: Text("Pas de plannings à afficher"),):Container(
             height: 800,
             child: ListView.builder(
                 // padding: EdgeInsets.all(5),
@@ -55,6 +64,7 @@ class _PlanningsState extends State<Plannings> {
                         setState(() {
                           selected =  index;
                         });
+
                     },
                     child: Container(
                       padding: const EdgeInsets.all(20),
@@ -63,7 +73,7 @@ class _PlanningsState extends State<Plannings> {
                         color: selected==index?kPrimaryColor:  Colors.white,
                       ),
                       child:ListTile(
-                        title: Text(value[index].nomPlan),
+                        title: Text(value[index].nom.toString(), style: TextStyle(color: Colors.red),),
                         subtitle: Row(
                           children: [
                               Text(value[index].dateDebut,
@@ -83,40 +93,41 @@ class _PlanningsState extends State<Plannings> {
                             ),
                           ],
                         ),
-                        trailing: ElevatedButton
-                          (
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(kPrimaryColor),
-                          ),
-                          child: 
-                          const Text
-                          (
-                            "Activer",
-                            style: TextStyle(color: Colors.white)
-                          ) ,
-                          onPressed: () async{
-                            // _sendAction();
-                            // channel.sink.add(planningProvider.plannings[index].idPlan);
-                            debugPrint("active");
-                            // debugPrint("appareils long "+planning.appareils.length.toString());
-                          },     
-                        ),
-                        // trailing:Switcher(
-                        //   switcherButtonBoxShape: BoxShape.circle,
-                        //   enabledSwitcherButtonRotate: true,
-                        //   switcherButtonAngleTransform: 90,
-                        //   value: false,
-                        //   colorOff: colorOn?const Color.fromRGBO(255, 255, 255, 0.5):tapColor,
-                        //   iconOn: Icons.circle_outlined,
-                        //   iconOff: Icons.circle_outlined,
-                        //   colorOn: colorOn?tapColor:const Color.fromRGBO(255, 255, 255, 0.5),
-                        //   size: SwitcherSize.small,
-                        //   onChanged: (switchVal){
-                        //     debugPrint("appareil allumé, oh yeah");
-                        //     switchVal = !colorOn;
-                        //     colorOn = !colorOn;
-                        //   }
+                        // trailing: ElevatedButton
+                        //   (
+                        //   style: ButtonStyle(
+                        //     backgroundColor: MaterialStateProperty.all<Color>(kPrimaryColor),
+                        //   ),
+                        //   child: 
+                        //   const Text
+                        //   (
+                        //     "Activer",
+                        //     style: TextStyle(color: Colors.white)
+                        //   ) ,
+                        //   onPressed: () async{
+                            
+                        //     // _sendAction();
+                        //     // channel.sink.add(planningProvider.plannings[index].idPlan);
+                        //     debugPrint("active");
+                        //     // debugPrint("appareils long "+planning.appareils.length.toString());
+                        //   },     
                         // ),
+                        trailing:Switcher(
+                          switcherButtonBoxShape: BoxShape.circle,
+                          enabledSwitcherButtonRotate: true,
+                          switcherButtonAngleTransform: 90,
+                          value: false,
+                          colorOff: colorOn?const Color.fromRGBO(255, 255, 255, 0.5):tapColor,
+                          iconOn: Icons.circle_outlined,
+                          iconOff: Icons.circle_outlined,
+                          colorOn: colorOn?tapColor:const Color.fromRGBO(255, 255, 255, 0.5),
+                          size: SwitcherSize.small,
+                          onChanged: (switchVal){
+                            planningProvider.onPlanning(value[index].id);
+                            switchVal = !colorOn;
+                            colorOn = !colorOn;
+                          }
+                        ),
                     )           //separatorBuilder: (_,index)=>SizedBox(width: 20)
                 ),
               ),

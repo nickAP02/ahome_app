@@ -4,6 +4,7 @@ import 'package:ago_ahome_app/model/planning.dart';
 import 'package:ago_ahome_app/model/role.dart';
 import 'package:ago_ahome_app/model/room.dart';
 import 'package:ago_ahome_app/model/user.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:ago_ahome_app/model/device.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,7 @@ class HttpService{
   //initialisation du client http
   static final client = http.Client();
   // static const url = "http://10.20.1.1:5000/api/v1";
-  static const url = "http://192.168.1.112:5000/api/v1";
+  static const url = "http://192.168.0.106:5000/api/v1";
   Map<String,String> headers = 
   {
     'Content-Type':'application/json',
@@ -40,7 +41,13 @@ class HttpService{
           "roleName":role.roleName
         })
        );
-       return response.body;
+       var result=json.decode(response.body);
+       if(result["statut"] == 200){
+        return result;
+      }
+      else{
+        return result;
+      }
     }on Exception catch (e) {
       throw e.toString();
     }
@@ -62,13 +69,11 @@ class HttpService{
   Future getRoles()async{
     try{
       var response  = await client.get(fullUri('/roles'));
-      if(response.statusCode==200){
-        var result = json.decode(response.body);
+      var result=json.decode(response.body);
+     if(result["statut"] == 200){
         return result;
       }
-      else {
-        debugPrint("reponse "+response.body);
-        var result=json.decode(response.body);
+      else{
         return result;
       }
     }on Exception catch (e) {
@@ -86,29 +91,16 @@ class HttpService{
             "password":user.password,
             // "role_id":user.roles!.roleName.toString()
       }));
-      // debugPrint("api response"+response.body);
-      // debugPrint("api status"+response.statusCode.toString());
-      
-      
-      //print(jsonDecode(response.body));
-      if (response.statusCode == 200) {
-        var result=json.decode(response.body);
-        // debugPrint("result token"+result["token"]);
-        // debugPrint("result statut"+result['statut'].toString());
-        if(result["statut"]==200){
+      var result=json.decode(response.body);
+      if(result["statut"]==200){
           LocalStorage().setToken(result["token"]);
           debugPrint("pref token"+LocalStorage().getToken().then((value) => value.toString()).toString());
+
         }
         else{
           debugPrint("statut "+result['statut']);
+          return result;
         }
-        return result;
-      } 
-      else {
-        debugPrint("api response"+response.body);
-        var result=json.decode(response.body);
-        return result;
-      }
     } on Exception catch (e) {
       throw e.toString();
     }
@@ -131,17 +123,11 @@ class HttpService{
       debugPrint("api status "+result.toString());
       // debugPrint("api response "+result["result"]);
 
-      if (response.statusCode == 200) {
-        result=json.decode(response.body);
-        debugPrint("response result "+result.toString());
+      if(result["statut"] == 200){
         return result;
       }
-      
-      else {
-        result=json.decode(response.body);
-        debugPrint("response statut "+result["statut"]);
+      else{
         return result;
-        // Exception("La requête n'a pas aboutie : ${response.statusCode}");
       }
     } on Exception catch (e) {
       throw e.toString();
@@ -169,7 +155,7 @@ class HttpService{
       }
   }
   
-  Future addRoom(Room room) async{
+   addRoom(Room room) async{
     debugPrint("add room ici");
     try {
        debugPrint("add room catch");
@@ -181,7 +167,12 @@ class HttpService{
         })
       );
       var result=json.decode(response.body);
-      return result;
+      if(result["statut"] == 200){
+        return result;
+      }
+      else{
+        return result;
+      }
     }  catch (err) {
       debugPrint("add room erreur");
       debugPrint(err.toString());
@@ -196,14 +187,13 @@ class HttpService{
       var response = await client.get(
         fullUri("users"),
         headers: headers);
-      if(response.statusCode == 200){
-        var data = jsonDecode(response.body);
-        return data;
+        var result=json.decode(response.body);
+      if(result["statut"] == 200){
+        return result;
       }
       else{
-        Exception("La requête n'a pas aboutie : ${response.statusCode}");
+        return result;
       }
-      return null;
     } on Exception catch (e) {
       throw e.toString();
     }
@@ -239,32 +229,39 @@ class HttpService{
  //implementation de la route /rooms
   Future getRooms() async{
     debugPrint(" entree rooms");
-    List<Room>rooms=[];
+    var rooms;
     try {
       var response = await http.get(
         fullUri("rooms"),
         headers:headers
       );
-      debugPrint("res "+response.body.toString());
       var data= json.decode(response.body);
-      debugPrint("ok "+data.toString());
-        if(data["statut"]==200){
-          debugPrint("rooms ici "+data.toString());
-           data["result"].forEach((element)=>{
-            debugPrint("rooms "+element.toString()),
-            rooms.add(Room.fromJson(element)),
-            // debugPrint("rooms "+rooms.toString())
-           });
-    
-          debugPrint("resultat "+rooms.toString());
-        }
-        else{
-          debugPrint("erreur "+data.toString());
-        }
+      // debugPrint("ok "+data.toString());
+      
+      if(data["statut"]==200){
+        
+        //   data["result"].forEach((element)=>{
+        //   debugPrint("rooms "+element.toString()),
+        //   rooms.add(Room.fromJson(element)),
+        //   // debugPrint("rooms "+rooms.toString())
+        // });
+        rooms = data;
+        // debugPrint("rooms "+rooms.toString());
+        // debugPrint("rooms result "+rooms["result"]);
+        // debugPrint("rooms op "+rooms["statut"]);
+        // debugPrint("rooms op 0"+rooms["result"][0]["appareils"].toString());
+        // debugPrint("rooms op 1"+rooms[0]["id"].toString());
+        // debugPrint("rooms op 2"+rooms[0]["name"].toString());
+        return rooms;
+      }
+      else{
+        debugPrint("erreur "+data.toString());
+      }
+      debugPrint("fin rooms "+rooms.toString());
       return rooms;
-    }  catch (err) {
-      debugPrint("rooms exception");
-    }
+      }  catch (err) {
+        debugPrint("rooms exception");
+      }
   }
   Future getCapteurs() async{
      debugPrint("capteurs");
@@ -276,8 +273,8 @@ class HttpService{
         );
         var data = json.decode(response.body);
         debugPrint(data.toString());
-        if(response.statusCode==200){
-            data.forEach((element)=>{
+        if(data["statut"]==200){
+            data["result"].forEach((element)=>{
               debugPrint("ici capteurs"),
             capteurs.add(Capteur.fromJson(element))
           });
@@ -292,7 +289,6 @@ class HttpService{
       }
     }
     Future addCapteur(Capteur capteur) async{
-      // List<Capteur> capteurs = [];
       try {
         var response = await http.put(
           fullUri("capteur/update"),
@@ -300,16 +296,17 @@ class HttpService{
           body: json.encode({
           "id":capteur.id,
           "nameRoom":capteur.nameRoom,
-      })
+          })
         );
-        if (response.statusCode == 200) {
+        var result=json.decode(response.body);
+        if (result["statut"] == 200) {
           // debugPrint("body "+json.decode(response.body.toString()));
-          var result=json.decode(response.body);
+          
           debugPrint(result["result"]);
-          return result["result"];
+          return result;
         }
         else {
-          throw json.decode(response.body);
+           return result;
         }
       } on Exception catch (e) {
         debugPrint("capteurs ici");
@@ -325,11 +322,12 @@ class HttpService{
           body: {
             jsonEncode(room.toJson())
           });
-          if (response.statusCode == 200) {
-          return Room.fromJson(jsonDecode(response.body));
+          var result=json.decode(response.body);
+          if (result["statut"] == 200) {
+          return result;
         }
         else {
-          throw Exception("La requête n'a pas aboutie : ${response.statusCode}");
+          return result;
         }
       } on Exception catch (e) {
         debugPrint("update room");
@@ -345,11 +343,12 @@ class HttpService{
           body: {
             jsonEncode(room.toJson())
           });
-          if (response.statusCode == 200) {
-            return Room.fromJson(jsonDecode(response.body));
+          var result=json.decode(response.body);
+          if (result["statut"] == 200) {
+           return result;
           }
           else {
-            throw Exception("La requête n'a pas aboutie : ${response.statusCode}");
+            return result;
           }
         }catch (e) {
           debugPrint("delete room");
@@ -365,9 +364,8 @@ class HttpService{
           body:json.encode({
           "id":device.idDev,
           "name":device.nameDev,
-          // "categorie":device.categorie,
-          "puissance":device.puissance,
           "state":device.state,
+          "puissance":device.puissance,
           "nameRoom":device.room,
       })
         );
@@ -391,10 +389,10 @@ class HttpService{
           fullUri('device/delete'), 
           headers: headers,
           body:json.encode(device.toJson()));
-          if (response.statusCode == 200) {
-            // debugPrint("device enregistre");
-            debugPrint("body "+json.decode(response.body));
-            var result=json.decode(response.body);
+          var result=json.decode(response.body);
+          if (result["statut"] == 200) {
+            debugPrint("body "+result.toString());
+            
             return result["result"];
           }
           else {
@@ -439,7 +437,7 @@ class HttpService{
     }
 
     Future<Planning> addPlanning(Planning planning) async{
-      // try{
+      try{
           var response = await http.post(
             fullUri("planning/add"),
             headers: headers,
@@ -453,6 +451,8 @@ class HttpService{
           );
           var data =response.body;
           var result=json.decode(data);
+            debugPrint("statut "+result["statut"].toString());
+            debugPrint("result "+result["result"].toString());
           if(result["statut"] == 200) {
             // debugPrint("device enregistre");
             // debugPrint("body "+json.decode(response.body.toString()));
@@ -464,10 +464,10 @@ class HttpService{
             debugPrint("else");
             return result;
           }
-      //   } on Exception catch (e) {
-      //   debugPrint("add planning");
-      //   throw e.toString();
-      // }
+        } on Exception catch (e) {
+        debugPrint("add planning");
+        throw e.toString();
+      }
     }
    Future<Planning> updatePlanning(Planning planning) async{
       try{
@@ -521,7 +521,35 @@ class HttpService{
         throw e.toString();
       }
     }
+
+    Future onPlanning(String id)async{
+       debugPrint("planning on ici");
+       var response = await http.post(
+        fullUri("planning/on/$id"),
+        headers: headers,
+        body: json.encode(
+          {
+            "id":id
+          }
+        )
+      );
+    }
+
+    Future offPlanning(String id)async{
+       debugPrint("planning off ici");
+       var response = await http.post(
+        fullUri("planning/off/$id"),
+        headers: headers,
+        body: json.encode(
+          {
+            "id":id
+          }
+        )
+      );
+    }
+
     Future getPlannings() async{
+      debugPrint("planning arrive ici");
       List<Planning> plannnings=[];
       try{
         var response = await http.get(
@@ -529,9 +557,17 @@ class HttpService{
           headers: headers
         );
         var data = json.decode(response.body);
-        data.forEach((element)=>{
-          plannnings.add(Planning.fromJson(element))
-        });
+        if(data["statut"]==200){
+          data["result"].forEach((element)=>{
+            // debugPrint("planning ici av"+element.toString()),
+            plannnings.add(Planning.fromJson(element)),
+            debugPrint("planning ici ap"+element.toString())
+          });
+        }
+        else{
+          debugPrint("erreur "+data.toString());
+        }
+
         return plannnings;
       }catch(e){
         throw e.toString();

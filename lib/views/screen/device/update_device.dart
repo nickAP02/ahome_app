@@ -23,19 +23,23 @@ class _UpdateDeviceState extends State<UpdateDevice> {
   Device newDevice =  Device(idDev: "",nameDev: "",puissance: 0,conso: 0,state:[0],room: "");
   // Device newDevice =  Device(idDev: "",nameDev:"",state:[],categorie: "",puissance: 0, conso:0,dateConso:DateTime.now(),room:"");
   bool selected=true;
-  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.1.112:5000/api/v1//api/v1/device/allumerEteindre/"));
+  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.0.106:5000/api/v1/device/allumerEteindre/"));
   String ?valSelectionneCat;
   String ?valSelectionneP;
+  var deviceProvider;
+  var roomProvider;
   @override
   void initState() {
     // int index = 0;
+    deviceProvider=Provider.of<DeviceProvider>(context,listen:false);
+    roomProvider  = Provider.of<RoomProvider>(context,listen: false);
     //  valSelectionne =RoomProvider().room![index].nameRoom;
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
-    var deviceProvider=Provider.of<DeviceProvider>(context,listen:false);
-    var roomProvider = Provider.of<RoomProvider>(context,listen: false);
+    
+    
     int index =0;
     return SimpleDialog(
       title: const Text("Modification de l'appareil"),
@@ -88,34 +92,7 @@ class _UpdateDeviceState extends State<UpdateDevice> {
                   },
                 ),
               ),
-              //liste des categories fixes
-            //  categorieDevice.isEmpty?const Text("Les catégories ne sont pas disponibles"):Container(
-            //   height: 50,
-            //     alignment: Alignment.centerLeft,
-            //     child: DropdownButton<String>(
-            //           hint: const Text("Catégorie"),
-            //           value: valSelectionneCat,
-            //           items: categorieDevice.
-            //           map((e) => 
-            //             DropdownMenuItem<String>(
-            //               value:e['categorie'],
-            //               child: Row(
-            //                 children: [
-            //                   //Text(e['icone']),
-            //                   Text(e['categorie']),
-            //                 ],
-            //               ))
-            //             ).toList(),
-            //             onChanged: (value){
-            //             setState(() {
-            //               valSelectionneCat = value;
-            //               newDevice.categorie =  valSelectionneCat!;
-            //               newDevice.conso = 0.0;
-            //             });
-            //           }
-            //          ),
-            //   ),
-              // modifier pour afficher la liste des pieces
+           
               roomProvider.room.isEmpty?const Text("Les pièces ne sont pas disponibles"):Container(
               height: 50,
               alignment: Alignment.centerLeft,
@@ -140,39 +117,7 @@ class _UpdateDeviceState extends State<UpdateDevice> {
                 ),
                 Row(
                 children: [
-                  // ElevatedButton(
-                  //   onLongPress: (){
-                  //     setState(() {
-                  //       debugPrint("state "+widget.state);
-                  //         Map<String,dynamic> msg = {
-                  //       "id":"${widget.id}",
-                  //       "state":"${widget.state}"
-                  //       };
-                  //     allumerEteindre(jsonEncode(msg));
-                  //     //  msg = jsonEncode(id,state)
-                  //     // allumerEteindre();
-                  //     });
-                  //   },
-                  //   onPressed: (){
-                  //    setState(() {
-                  //       if(widget.state[0]==0){
-                  //         widget.state[0]=1;
-                  //       }
-                  //       else{
-                  //         Text("L'appareil est déjà allumé");
-                  //       }
-                  //       debugPrint("element 1 state "+widget.state[0].toString()+" element 2 state "+widget.state[1].toString()+" element 3 state "+widget.state[2].toString());
-                  //       Map<String,dynamic> msg = {
-                  //       "id":"${widget.id}",
-                  //       "state":"${widget.state}"
-                  //     };
-                  //     debugPrint("element 1 state "+widget.state[0].toString());
-                  //     allumerEteindre(jsonEncode(msg));
-                  //    });
-                  // }, 
-                  //   style: selected ?ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.red)):ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.green)),
-                  //   child: const Text("Tester")
-                  // ),
+                  
                   Padding(
                     padding: const EdgeInsets.all(2.0),
                     child: ElevatedButton(onPressed: () async{

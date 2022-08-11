@@ -17,11 +17,11 @@ class _RoomDeviceState extends State<RoomDevice> {
   int index = 0;
   TextEditingController _nameController = TextEditingController();
   String? valSelectionne;
-  Room room= Room(idRoom: "",nameRoom: "",appareils:[]);
+  Room room= Room(idRoom: "",nameRoom: "",appareils:[],capteurs:[]);
 
   @override
   void initState() {
-    super.initState();
+    super.initState(); 
   }
   @override
   Widget build(BuildContext context) {
@@ -62,24 +62,24 @@ class _RoomDeviceState extends State<RoomDevice> {
                         padding: const EdgeInsets.only(right:18.0),
                         child: ElevatedButton(
                         style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(kPrimaryColor)),
-                        onPressed: () async {
+                        onPressed: (){
                           if (_formKey.currentState!.validate()) {
                             try{
-                              var request =await roomProvider.addRoom(room);
-                              debugPrint("result "+request.toString());
-                             
-                              setState(() {
-                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Nouvelle pièce enregistrée",style: TextStyle(color: Colors.white),)));
-                                 Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const Home()));
-                              });
-                              // else{
-                              //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Verifiez les champs renseignes",style: TextStyle(color: Colors.red),)));
-                              // }
+                              var request = roomProvider.addRoom(room);
+                              if(request["statut"]==200){
+                                 setState(() {
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(request["result"],style: TextStyle(color: Colors.white),)));
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const Home()));
+                                });
+                              }
+                              
+                              else{
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(request["result"],style: TextStyle(color: Colors.red),)));
+                              }
                             }catch(e){
                               throw e.toString();
                             }
                             
-                           
                           }
                           else{
                             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Une erreur s'est produite, reprendre la saisie",style: TextStyle(color: Colors.red),)));

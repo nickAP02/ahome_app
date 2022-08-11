@@ -5,6 +5,8 @@ import 'package:ago_ahome_app/services/providers/room_provider.dart';
 import 'package:ago_ahome_app/services/providers/user_provider.dart';
 import 'package:ago_ahome_app/services/theme_service.dart';
 import 'package:ago_ahome_app/utils/theme.dart';
+import 'package:ago_ahome_app/views/screen/auth/login.dart';
+import 'package:ago_ahome_app/views/screen/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
@@ -26,15 +28,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  //fonction d'initialisation du cycle de vie de l'application
   @override
   void initState() {
     super.initState();
   }  
-  //fonction de traitement du cycle de vie de l'application
   @override
   Widget build(BuildContext context) {
-    //appel des providers du projet
     return MultiProvider(providers: [
       ChangeNotifierProvider<DeviceProvider>(create:(context)=>DeviceProvider()),
       ChangeNotifierProvider<RoomProvider>(create:(context)=>RoomProvider()),
@@ -48,13 +47,12 @@ class _MyHomePageState extends State<MyHomePage> {
         darkTheme:Themes.dark, 
         debugShowCheckedModeBanner: false,
         home: const Scaffold(
-        body: SplashScreen()
+        body: Home()
         ),
       )
     );
     
   }
-  //fonction de cloture du cycle de vie de l'application
   @override
   void dispose(){
       super.dispose();

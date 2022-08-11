@@ -119,26 +119,26 @@ class CustomDrawer extends StatelessWidget {
                 color: Colors.white,
               ),),
         ),
-        const SizedBox(height: 10,),
-        ListTile(
-          leading: IconButton(
-            icon:const Icon(Icons.bar_chart_sharp,
-            color: Colors.white,
-            size: 40,),
-            onPressed: (){
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (BuildContext context) =>  const Statistic()));
-            }
-          )
-        ),
-        const SizedBox(height: 10,),
-        const Align(
-          alignment: Alignment.center,
-          child: Text("Statistiques",
-              style: TextStyle(
-                color: Colors.white,
-              ),),
-        ),
+        // const SizedBox(height: 10,),
+        // ListTile(
+        //   leading: IconButton(
+        //     icon:const Icon(Icons.bar_chart_sharp,
+        //     color: Colors.white,
+        //     size: 40,),
+        //     onPressed: (){
+        //     Navigator.of(context).push(MaterialPageRoute(
+        //       builder: (BuildContext context) =>  const Statistic()));
+        //     }
+        //   )
+        // ),
+        // const SizedBox(height: 10,),
+        // const Align(
+        //   alignment: Alignment.center,
+        //   child: Text("Statistiques",
+        //       style: TextStyle(
+        //         color: Colors.white,
+        //       ),),
+        // ),
         const SizedBox(height: 50,),
         ListTile(
           leading:IconButton(onPressed: (){

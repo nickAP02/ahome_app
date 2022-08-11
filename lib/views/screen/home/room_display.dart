@@ -9,7 +9,7 @@ class RoomDisplay extends StatelessWidget {
   const RoomDisplay( this.selected,  this.callback,  this.room);
 
   Widget build(BuildContext context) {
-    return Container(
+    return room.isEmpty?Text("Pas de pièces dispo") :Container(
       height: 100,
       padding: const EdgeInsets.symmetric(vertical: 30),
       child: ListView.separated(
@@ -24,7 +24,7 @@ class RoomDisplay extends StatelessWidget {
               color: selected==index?kPrimaryColor:  Colors.white,
             ),
             child:Text(
-              '${room[index].nameRoom}',
+              '${room[index]["name"]}',
               style: const TextStyle(
                 fontWeight: FontWeight.bold
               ),

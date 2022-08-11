@@ -22,7 +22,7 @@ class _DeviceViewState extends State<DeviceView> {
   Device newDevice =  Device(idDev: "",nameDev: "",puissance: 0,conso: 0,state: [0],room: "");
  
   bool selected=true;
-  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.1.112:5000/api/v1/device/allumerEteindre/"));
+  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.0.106:5000/api/v1/device/allumerEteindre/"));
   String ?valSelectionneCat;
   String ?valSelectionneP;
   TextEditingController _puissanceController = TextEditingController();
@@ -30,8 +30,6 @@ class _DeviceViewState extends State<DeviceView> {
   // TextEditingController _pController = TextEditingController();
   @override
   void initState() {
-    // int index = 0;
-    //  valSelectionne =RoomProvider().room![index].nameRoom;
     super.initState();
   }
   @override
@@ -51,7 +49,12 @@ class _DeviceViewState extends State<DeviceView> {
         children: [
           Container(
             height: MediaQuery.of(context).size.height*0.4,
-            constraints: const BoxConstraints(maxHeight: 500,minHeight: 250,maxWidth: 800,minWidth: 500),
+            constraints: const BoxConstraints(
+              maxHeight: 500,
+              minHeight: 250,
+              maxWidth: 800,
+              minWidth: 500
+            ),
             child: Form(
             key: _formKey,
             child: Column(
@@ -100,35 +103,7 @@ class _DeviceViewState extends State<DeviceView> {
                     },
                   ),
                 ),
-                //liste des categories fixes
-              //  categorieDevice.isEmpty?const Text("Les catégories ne sont pas disponibles"):Container(
-              //   height: 50,
-              //     alignment: Alignment.centerLeft,
-              //     child: DropdownButton<String>(
-              //           hint: const Text("Catégorie"),
-              //           value: valSelectionneCat,
-              //           items: categorieDevice.
-              //           map((e) => 
-              //             DropdownMenuItem<String>(
-              //               value:e['categorie'],
-              //               child: Row(
-              //                 children: [
-              //                   //Text(e['icone']),
-              //                   Text(e['categorie']),
-              //                 ],
-              //               ))
-              //             ).toList(),
-              //             onChanged: (value){
-              //             setState(() {
-              //               valSelectionneCat = value;
-              //               newDevice.categorie =  valSelectionneCat!;
-              //               newDevice.conso = 0.0;
-              //             });
-              //           }
-              //          ),
-              //   ),
-                // modifier pour afficher la liste des pieces
-                roomProvider.room.isEmpty?
+                roomProvider.room?.isEmpty?
                 const Text("Les pièces ne sont pas disponibles"):Container(
                 height: 50,
                 alignment: Alignment.centerLeft,
@@ -136,10 +111,10 @@ class _DeviceViewState extends State<DeviceView> {
                       hint: const Text("Pièce"),
                       value: valSelectionneP,
                       items: List.generate(roomProvider.room.length, (index) => DropdownMenuItem<String>(
-                          value:roomProvider.room[index].nameRoom,
+                          value:roomProvider.room["result"][index]["name"],
                           child: Row(
                             children: [
-                              Text(roomProvider.room[index].nameRoom),
+                              Text(roomProvider.room["result"][index]["name"]),
                             ],
                           ))
                         ).toList(),
@@ -154,18 +129,7 @@ class _DeviceViewState extends State<DeviceView> {
                   Row(
                   children: [
                     ElevatedButton(
-                      // // onLongPress: (){
-                      // //   setState(() {
-                      // //     debugPrint("state "+widget.state);
-                      // //       Map<String,dynamic> msg = {
-                      // //     "id":"${widget.id}",
-                      // //     "state":widget.state
-                      // //     };
-                      // //   allumerEteindre(jsonEncode(msg));
-                      // //   //  msg = jsonEncode(id,state)
-                      // //   // allumerEteindre();
-                      // //   });
-                      // },
+                   
                       onPressed: (){
                        setState(() {
                           if(widget.state[0]==0){
@@ -184,10 +148,7 @@ class _DeviceViewState extends State<DeviceView> {
                             };
                             allumerEteindre(jsonEncode(msg));
                           }
-                          // debugPrint("element 1 state "+widget.state[0].toString()+" element 2 state "+widget.state[1].toString()+" element 3 state "+widget.state[2].toString());
-                          
-                        // debugPrint("element 1 state "+widget.state[0].toString());
-                        // allumerEteindre(jsonEncode(msg));
+                       
                        });
                     }, 
                       style: selected ?ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.red)):ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.green)),
@@ -195,15 +156,25 @@ class _DeviceViewState extends State<DeviceView> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(2.0),
-                      child: ElevatedButton(onPressed: (){
+                      child: ElevatedButton(
+                        onPressed: (){
                         if(_formKey.currentState!.validate()){
-                          debugPrint("widget id "+widget.id.toString());
                           newDevice.idDev = widget.id.toString();
                           newDevice.state = widget.state;
-                          deviceProvider.addDevice(newDevice);
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context)=> DevicesUpdated()));
+                          var req = deviceProvider.addDevice(newDevice);
+                          setState(() {
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Nouvel appareil enregistré",style: TextStyle(color: Colors.white))));
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=> DevicesUpdated()));
+
+                            });
+                          // if(req["statut"]==200){
+                            
+                          // }
+                         
                         }
-                        // server.sink.add(newDevice);
+                         else{
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Une erreur s'est produit, reprendre la saisie",style: TextStyle(color: Colors.red),)));
+                          }
                       }, 
                       style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(kPrimaryColor)),
                       child: const Text("Enregistrer")

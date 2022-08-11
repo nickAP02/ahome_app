@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:ago_ahome_app/views/screen/device/device_card.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:ago_ahome_app/services/providers/device_provider.dart';
 import 'package:ago_ahome_app/services/providers/room_provider.dart';
@@ -32,7 +33,7 @@ class _HomeState extends State<Home>{
   var tapColor = const Color.fromRGBO(20,115,209,1);
   var colorOn = false;
   var textColor = Colors.white;
-  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.1.112:5000/api/v1/device/allumerEteindre/"));
+  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.0.106:5000/api/v1/device/allumerEteindre/"));
   int index=0;
   @override
   void initState() {
@@ -76,7 +77,8 @@ class _HomeState extends State<Home>{
         body: FutureBuilder(
           future:roomProvider.getRoomData(),
           builder: (context,snapshot) {
-            debugPrint("data"+snapshot.data.toString());
+            debugPrint("data "+snapshot.data.toString());
+           
             
             if(snapshot.data == []){
               debugPrint("hold up "+snapshot.data.toString());
@@ -92,44 +94,111 @@ class _HomeState extends State<Home>{
             }
 
             else{
-              var value=snapshot.data as List;
-              debugPrint("data"+snapshot.data.toString());
-              return SingleChildScrollView(
-                child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                const ConsoDisplay(),
-                //  const SizedBox(height: 110,),
-                  RoomDisplay(selected, (int index){
-                    debugPrint("do smth ");
-                    setState(() {
-                      selected=index;
-                      debugPrint("index "+index.toString());
-                    });
-                  pageController.jumpToPage(index);
-                  },
-                  value
-                  ), 
-                  Container(
-                    height: MediaQuery.of(context).size.height/2,
-                    child: RoomDevicesDisplay(
-                      selected, 
-                      (int index){
-                        debugPrint("oo baby baby ");
-                        setState(() {
-                          selected=index;
-                          debugPrint("pageview index "+index.toString());
-                        });
-                        debugPrint("push it real good ");
-                      },
-                      pageController,
-                      value
+              debugPrint("data else "+snapshot.data.toString());
+              var value=snapshot.data as dynamic;
+               var mapListRooms = snapshot.data as Map;
+            var listRooms  = mapListRooms['result'] as List;
+            var listRoomsNames = [];
+            var listAppareilPerPiece = [];
+            for(var i = 0;i<listRooms.length;i++){
+              listRoomsNames.add(listRooms[i]['name']) ;
+            //   for(var j = 0;j<listRoomsNames.length;j++){
+            //   listAppareilPerPiece.add(listRooms[i]['appareils']) ;
+              
+            // }
+            }
+             debugPrint("somthing "+listRoomsNames.toString());
+              debugPrint("data else "+snapshot.data.toString());
+              return DefaultTabController(
+                length: listRooms.length,
+                child: 
+                // SingleChildScrollView(
+                //   child: 
+                  Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                  const ConsoDisplay(),
+                  TabBar(
+                    tabs: [
+                      for(var i=0;i<listRoomsNames.length;i++)...{
+                        Tab(
+                        child: Text(listRoomsNames[i],style:TextStyle(color: kPrimaryColor) ,),
+                        // text: listRoomsNames[index],
+                      )
+                      }
+                      
+                    ]
                     ),
-                  )
-                ],
-              ),
-            );
+                  Container(
+                    height: 300,
+                    width:250,
+                    child: TabBarView(
+                      children: [
+                        for(var i=0;i<listRoomsNames.length;i++)...{
+                          //DeviceCard(mapListRooms["result"][i]["name"],mapListRooms["result"][i]["appareils"][1]["conso"], mapListRooms["result"][i]["appareils"][1]['state'], mapListRooms["result"][i]["appareils"][1]["id"]),
+                          Container(
+                          height: MediaQuery.of(context).size.height,
+                          child: Column(
+                            children: [
+                              // Text(mapListRooms["result"][i]["appareils"].toString()),
+                              RoomDevicesDisplay(
+                                // Provider.of<RoomProvider>(context,listen: true).getRoomIndex(), 
+                                index,
+                                (){
+                                  debugPrint("index 2 "+index.toString());
+                                  debugPrint("oo baby baby ");
+                                  setState(() {
+                                    // Provider.of<RoomProvider>(context,listen: false).setRoomIndex(index);
+                                    index;
+                                    debugPrint("pageview index "+index.toString());
+                                  });
+                                  debugPrint("push it real good ");
+                                },
+                                pageController,
+                                mapListRooms["result"][i]
+                        ),
+                            ],
+                          ),
+                    )
+                        }
+                      ]
+                    ),
+                  ),
+                  //  const SizedBox(height: 110,),
+                    // RoomDisplay(selected, (int index){
+                    //   debugPrint("do smth ");
+                    //   setState(() {
+                    //     selected=index;
+                    //     Provider.of<RoomProvider>(context,listen: false).setRoomIndex(index);
+                    //     debugPrint("index "+index.toString());
+                    //   });
+                    // pageController.jumpToPage(index);
+                    // },
+                    // value["result"]
+                    // ), 
+                    
+                    // Container(
+                    //   height: MediaQuery.of(context).size.height,
+                    //   child: RoomDevicesDisplay(
+                    //     Provider.of<RoomProvider>(context,listen: true).getRoomIndex(), 
+                    //     (){
+                    //       debugPrint("index 2 "+index.toString());
+                    //       debugPrint("oo baby baby ");
+                    //       setState(() {
+                    //         Provider.of<RoomProvider>(context,listen: false).setRoomIndex(index);
+                    //         debugPrint("pageview index "+index.toString());
+                    //       });
+                    //       debugPrint("push it real good ");
+                    //     },
+                    //     pageController,
+                    //     value["result"]
+                    //   ),
+                    // )
+                  ],
+                ),
+                         // ),
+              );
             }
           }
         ),

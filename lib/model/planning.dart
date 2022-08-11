@@ -8,7 +8,7 @@ class Planning{
   String nomPlan;
   String dateDebut;
   String dateFin;
-  List<Device> appareils;
+  List<dynamic> appareils;
   dynamic job;
   Planning({
     this.idPlan,
@@ -22,6 +22,8 @@ class Planning{
   String planningToJson(List<Planning> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
   
   factory Planning.fromJson(Map<String,dynamic> json){
+    // print("viens tu ici ?");
+    // print("le resultat "+json.toString());
     return Planning(
       idPlan: json["idPlan"],
       nomPlan: json["nomPlan"],

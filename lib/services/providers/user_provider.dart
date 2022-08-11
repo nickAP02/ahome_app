@@ -34,5 +34,6 @@ class UserProvider extends ChangeNotifier{
   }
   Future<dynamic> getUser()async{
     userRole = json.decode(localStorage.getUser());
+    notifyListeners();
   }
 }
