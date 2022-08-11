@@ -75,7 +75,7 @@ class RoomProvider extends ChangeNotifier{
   }
  
   Future<dynamic> addRoom(Room room) async{
-    debugPrint("ok add room");
+    // debugPrint("ok add room");
     try{
        final result = httpService.addRoom(room);
       debugPrint("ajout piece"+result.toString());

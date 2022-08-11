@@ -110,7 +110,8 @@ class _DeviceViewState extends State<DeviceView> {
                 child: DropdownButton<String>(
                       hint: const Text("Pièce"),
                       value: valSelectionneP,
-                      items: List.generate(roomProvider.room.length, (index) => DropdownMenuItem<String>(
+                      items: List.generate(
+                        roomProvider.room.length, (index) => DropdownMenuItem<String>(
                           value:roomProvider.room["result"][index]["name"],
                           child: Row(
                             children: [

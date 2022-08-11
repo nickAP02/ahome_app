@@ -64,23 +64,25 @@ class _DeviceCardState extends State<DeviceCard> {
             color: _isSelected?kPrimaryColor:Colors.white,
             borderRadius: BorderRadius.circular(20)),
               //color: Colors.blue,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-             Text(widget.name, 
-                style: TextStyle(
-                  color:_isSelected?textColor:Colors.black,
-                  fontWeight: FontWeight.bold
+            child: Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+               Text(widget.name, 
+                  style: TextStyle(
+                    color:_isSelected?textColor:Colors.black,
+                    fontWeight: FontWeight.bold
+                  )
+                ),
+                Text('${widget.conso}'+' kwh', 
+                  style: TextStyle(
+                    color:_isSelected?textColor:Colors.black,
+                    fontWeight: FontWeight.bold
+                  )
                 )
+              ],
               ),
-              Text('${widget.conso}'+' kwh', 
-                style: TextStyle(
-                  color:_isSelected?textColor:Colors.black,
-                  fontWeight: FontWeight.bold
-                )
-              )
-            ],
             )
           ),
         ),

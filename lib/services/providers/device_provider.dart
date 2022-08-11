@@ -16,15 +16,15 @@ class DeviceProvider extends ChangeNotifier{
     return noNamedDevices;
   }
   setNoNamedDevice(){
-    debugPrint("liste vide device " +device.toString());
+    debugPrint("liste device " +device.toString());
     if(device!=null){
-      noNamedDevices = device!.where((element) => element.nameDev!.isEmpty&&element.room!.isEmpty).toList();
+      noNamedDevices = device!.where((element) => element.nameDev!.isEmpty).toList();
       notifyListeners();
-      debugPrint("liste  nonamedDevices " +noNamedDevices.toList().toString());
+      debugPrint("liste  nonamedDevices " +noNamedDevices.toString());
       // noNamedDevices.forEach((element) {debugPrint(element.nameDev);});
     }
     else{
-     debugPrint("liste vide noNamedDevices " +noNamedDevices.toList().toString());
+     debugPrint("liste vide noNamedDevices " +noNamedDevices.toString());
     }
     notifyListeners();
   }
@@ -37,27 +37,28 @@ class DeviceProvider extends ChangeNotifier{
   }
   setNamedDevice(){
     if(device!=null){
-       namedDevices = device!.where((element) => element.nameDev!.isNotEmpty&&element.room!.isEmpty).toList();
-       debugPrint("liste namedDevices " +namedDevices.toList().toString());
+       namedDevices = device!.where((element) => element.nameDev!.isNotEmpty).toList();
+       debugPrint("liste namedDevices " +namedDevices.toString());
        notifyListeners();
       //  namedDevices.forEach((element) {debugPrint(element.nameDev);});
     }
     else{
-      debugPrint("liste vide namedDevices " +namedDevices.toList().toString());
+      debugPrint("liste vide namedDevices " +namedDevices.toString());
     }
     notifyListeners();
   }
   Future getDeviceData() async{
     loading = true;
-    device = await httpService.getDevices();
+    device = await httpService.getDevices().then((value) => device=value);
     debugPrint("value "+device.toString());
     loading = false;
     notifyListeners();
     return device;
   }
-  Future addDevice(Device device) async{
-    httpService.addDevice(device);
+  Future<dynamic> addDevice(Device device) async{
+    var result = httpService.addDevice(device);
     notifyListeners();
+    return result;
   }
 
   Future updateDevice(Device device) async{
@@ -65,7 +66,7 @@ class DeviceProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  Future deleteDevice(String id) async{
+  Future<dynamic> deleteDevice(String id) async{
     httpService.deleteDevice(id);
     notifyListeners();
   }

@@ -15,7 +15,7 @@ class CapteurProvider extends ChangeNotifier{
     return noNamedCapteurs;
   }
   setNoNamedCapteurs(){
-    debugPrint("liste vide capteur " +capteur.toString());
+    debugPrint("liste capteur " +capteur.toString());
     if(capteur!=null){
       noNamedCapteurs = capteur!.where((element) => element.nameRoom.isEmpty).toList();
       notifyListeners();
@@ -26,19 +26,19 @@ class CapteurProvider extends ChangeNotifier{
     notifyListeners();
   }
    List<Capteur>getNamedCapteurs(){
-    // notifyListeners();
+    notifyListeners();
     return namedCapteurs;
   }
   setNamedCapteurs(){
     if(capteur!=null){
       namedCapteurs = capteur!.where((element) => element.nameRoom.isNotEmpty).toList();
-      notifyListeners();
+      // notifyListeners();
     }
     else{
       debugPrint("liste vide named capteurs " +namedCapteurs.toString());
     }
     
-    notifyListeners();
+    // notifyListeners();
   }
   Future getCapteurData() async{
     loading = true;
@@ -57,7 +57,12 @@ class CapteurProvider extends ChangeNotifier{
     debugPrint("capteur");
     var result = httpService.addCapteur(capteur);
     debugPrint("result capteur add "+result.toString());
-    return result;
     notifyListeners();
+    return result;
+    
+  }
+  Future<dynamic> deleteCapteur(String id)async{
+    var result = httpService.deleteCapteur(id);
+    return result;
   }
 }

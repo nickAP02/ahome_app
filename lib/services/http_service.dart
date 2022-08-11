@@ -390,7 +390,7 @@ class HttpService{
      Future<dynamic> deleteDevice(String id) async{
       try{
           var response = await client.delete(
-          fullUri('device/delete/$id'), 
+          fullUri('device/remove/$id'), 
           headers: headers
           );
           var result=json.decode(response.body);
@@ -528,11 +528,6 @@ class HttpService{
        var response = await http.post(
         fullUri("planning/on/$id"),
         headers: headers,
-        body: json.encode(
-          {
-            "id":id
-          }
-        )
       );
     }
 
@@ -541,11 +536,6 @@ class HttpService{
        var response = await http.post(
         fullUri("planning/off/$id"),
         headers: headers,
-        body: json.encode(
-          {
-            "id":id
-          }
-        )
       );
     }
 
@@ -573,5 +563,29 @@ class HttpService{
       }catch(e){
         throw e.toString();
       }
+    }
+
+    Future<dynamic> deleteCapteur(String id)async{
+      try {
+          var response= await http.delete(
+          fullUri("capteur/remove/$id"),
+          headers: headers
+          );
+          // debugPrint("body "+response.body.toString());
+          var result=json.decode(response.body);
+          debugPrint("result "+result);
+          // debugPrint("stat "+response.statusCode.toString());
+          if (result["statut"] == 200) {
+            debugPrint("result "+result);
+           return result;
+          }
+          else {
+            debugPrint("result else "+result);
+            return result;
+          }
+        }catch (e) {
+          debugPrint("delete room");
+          throw e.toString();
+        }
     }
 }

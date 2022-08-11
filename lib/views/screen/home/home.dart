@@ -135,36 +135,40 @@ class _HomeState extends State<Home>{
                   Container(
                     height: MediaQuery.of(context).size.height/2,
                     width:MediaQuery.of(context).size.width/2,
-                    child: TabBarView(
-                      children: [
-                        for(var i=0;i<listRoomsNames.length;i++)...{
-                          //DeviceCard(mapListRooms["result"][i]["name"],mapListRooms["result"][i]["appareils"][1]["conso"], mapListRooms["result"][i]["appareils"][1]['state'], mapListRooms["result"][i]["appareils"][1]["id"]),
-                          Container(
-                          height: MediaQuery.of(context).size.height,
-                          child: Column(
-                            children: [
-                              // Text(mapListRooms["result"][i]["appareils"].toString()),
-                              RoomDevicesDisplay(
-                                // Provider.of<RoomProvider>(context,listen: true).getRoomIndex(), 
-                                index,
-                                (){
-                                  debugPrint("index 2 "+index.toString());
-                                  debugPrint("oo baby baby ");
-                                  setState(() {
-                                    // Provider.of<RoomProvider>(context,listen: false).setRoomIndex(index);
-                                    index;
-                                    debugPrint("pageview index "+index.toString());
-                                  });
-                                  debugPrint("push it real good ");
-                                },
-                                pageController,
-                                mapListRooms["result"][i]
+                    child: SingleChildScrollView(
+                      child: Container(
+                        height:MediaQuery.of(context).size.height,
+                        width: MediaQuery.of(context).size.width,
+                        child: TabBarView(
+                          children: [
+                            for(var i=0;i<listRoomsNames.length;i++)...{
+                              //DeviceCard(mapListRooms["result"][i]["name"],mapListRooms["result"][i]["appareils"][1]["conso"], mapListRooms["result"][i]["appareils"][1]['state'], mapListRooms["result"][i]["appareils"][1]["id"]),
+                              Container(
+                              height: MediaQuery.of(context).size.height,
+                              width: MediaQuery.of(context).size.width,
+                              child: Expanded(
+                                child: RoomDevicesDisplay(
+                                  // Provider.of<RoomProvider>(context,listen: true).getRoomIndex(), 
+                                  index,
+                                  (){
+                                    debugPrint("index 2 "+index.toString());
+                                    debugPrint("oo baby baby ");
+                                    setState(() {
+                                      // Provider.of<RoomProvider>(context,listen: false).setRoomIndex(index);
+                                      index;
+                                      debugPrint("pageview index "+index.toString());
+                                    });
+                                    debugPrint("push it real good "+ mapListRooms["result"][i]);
+                                  },
+                                  pageController,
+                                  mapListRooms["result"][i]
+                                                  ),
+                              ),
+                        )
+                            }
+                          ]
                         ),
-                            ],
-                          ),
-                    )
-                        }
-                      ]
+                      ),
                     ),
                   ),
                   //  const SizedBox(height: 110,),
