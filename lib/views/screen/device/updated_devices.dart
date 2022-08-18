@@ -6,6 +6,7 @@ import 'package:ago_ahome_app/services/providers/capteur_provider.dart';
 import 'package:ago_ahome_app/services/providers/device_provider.dart';
 import 'package:ago_ahome_app/services/providers/room_provider.dart';
 import 'package:ago_ahome_app/utils/colors.dart';
+import 'package:ago_ahome_app/utils/constant.dart';
 // import 'package:ago_ahome_app/views/screen/capteur/capteur_view.dart';
 // import 'package:ago_ahome_app/views/screen/device/delete_device.dart';
 import 'package:ago_ahome_app/views/screen/device/device_card.dart';
@@ -32,35 +33,20 @@ class _DevicesUpdatedState extends State<DevicesUpdated> {
   String ?valSelectionneCat;
   String ?valSelectionneP;
   bool _isSelected = true;
-  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.1.105:5000/api/v1/device/allumerEteindre/"));
+  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.1.103:5000/api/v1/device/allumerEteindre/"));
   void initState() {
     var capteurProvider=Provider.of<CapteurProvider>(context,listen:false);
     var roomProvider = Provider.of<RoomProvider>(context,listen: false);
+    var deviceProvider=Provider.of<DeviceProvider>(context,listen:false);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    var deviceProvider=Provider.of<DeviceProvider>(context,listen:true);
-    var capteurProvider=Provider.of<CapteurProvider>(context,listen:true);
-    return Scaffold(
-      appBar: AppBar(title: const Text("Liste des appareils"),),
-      body:SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          // mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-             deviceProvider.namedDevices.isEmpty?
-             const Center(
-              child: CircularProgressIndicator(color: kPrimaryColor,semanticsLabel: "Chargement des données",),
-              )
-             :ListView.builder(
-              // padding: EdgeInsets.all(5),
-              shrinkWrap: true,
-              scrollDirection: Axis.vertical,
-              itemCount: deviceProvider.namedDevices.length,
-              itemBuilder: (context, index)=>
-                GestureDetector(
+    var deviceProvider=Provider.of<DeviceProvider>(context,listen:false);
+    var capteurProvider=Provider.of<CapteurProvider>(context,listen:false);
+    var listDevice = List.generate(
+      deviceProvider.namedDevices.length,(index)=>GestureDetector(
                   onTap: (){
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(builder:(context)=>UpdateDevice(
@@ -109,16 +95,35 @@ class _DevicesUpdatedState extends State<DevicesUpdated> {
                     });
                   },
                   child: Container(
-                    height: MediaQuery.of(context).size.height/5,
-                    width:  MediaQuery.of(context).size.width/8,
+                    height: 255,
+                    width: 150,
                     child: DeviceCard(
                          '${deviceProvider.namedDevices[index].nameDev}',
-                         deviceProvider.namedDevices[index].conso!.toDouble(),
+                         deviceProvider.namedDevices[index].conso,
                          deviceProvider.namedDevices[index].state,
                          deviceProvider.namedDevices[index].idDev 
                       ),
                   ),
                 )
+    );
+    return Scaffold(
+      appBar: AppBar(title: const Text("Liste des appareils"),),
+      body:SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          // mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+             deviceProvider.namedDevices.isEmpty?
+             const Center(
+              child: CircularProgressIndicator(color: kPrimaryColor,semanticsLabel: "Chargement des données",),
+              )
+             :GridView.count(
+              // padding: EdgeInsets.all(5),
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              crossAxisCount: 2,
+              children:listDevice
+                
               //separatorBuilder: (_,index)=>SizedBox(width: 20)
             ),
            
@@ -142,7 +147,7 @@ class _DevicesUpdatedState extends State<DevicesUpdated> {
                                       child: ElevatedButton(
                                       style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
                                       onPressed: () async{
-                                        var request = await capteurProvider.deleteCapteur(Provider.of<CapteurProvider>(context,listen:false).namedCapteurs[index].id);
+                                        var request = await capteurProvider.deleteCapteur(capteurProvider.namedCapteurs[index].id);
                                         if(request["statut"]==200){
                                           setState(() {
                                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(request["result"])));

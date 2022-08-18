@@ -23,15 +23,15 @@ class _CapteurViewState extends State<CapteurView> {
   bool selected=true;
   String ?valSelectionneCat;
   String ?valSelectionneP;
-  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.1.105:5000/api/v1/device/allumerEteindre/"));
+  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.1.103:5000/api/v1/device/allumerEteindre/"));
   @override
   void initState() {
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
-    var capteurProvider=Provider.of<CapteurProvider>(context,listen:true);
-    var roomProvider = Provider.of<RoomProvider>(context,listen: true);
+    var capteurProvider=Provider.of<CapteurProvider>(context,listen:false);
+    var roomProvider = Provider.of<RoomProvider>(context,listen: false);
     int index =0;
     return SimpleDialog(
       title: const Text("Enregistrement d'un capteur"),
@@ -111,8 +111,12 @@ class _CapteurViewState extends State<CapteurView> {
                           if(req["statut"]==200){
                             setState(() {
                               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(req["result"],style: TextStyle(color: Colors.white))));
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=> DevicesUpdated()));
-
+                              // Navigator.of(context).push(MaterialPageRoute(builder: (context)=> DevicesUpdated()));
+                              Navigator.pushAndRemoveUntil<void>(
+                                      context,
+                                      MaterialPageRoute<void>(builder: (BuildContext build)=>DevicesUpdated()),
+                                      ModalRoute.withName('/'),
+                                      );
                             });
                           }
                           else{

@@ -62,7 +62,7 @@ class CapteurProvider extends ChangeNotifier{
     
   }
   Future<dynamic> deleteCapteur(String id)async{
-    var result = httpService.deleteCapteur(id);
-    return result;
+    httpService.deleteCapteur(id);
+    notifyListeners();
   }
 }

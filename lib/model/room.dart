@@ -9,6 +9,7 @@ class Room {
   String roomToJson(List<Room> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
   String idRoom;
   String nameRoom;
+  late String icone;
   // double conso;
   List<Device> appareils;
   List<Capteur>? capteurs;

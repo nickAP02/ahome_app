@@ -32,6 +32,7 @@ class _PlanningViewState extends State<PlanningView> {
     var roomProvider;
     var deviceProvider;
     var planningProvider;
+    List<bool> _listSelected = [];
     bool _isSelected=false;
   @override
   void initState() {
@@ -53,7 +54,7 @@ class _PlanningViewState extends State<PlanningView> {
       ),
       body: 
       FutureBuilder(
-        future:  deviceProvider.getDeviceData(),
+        future:  deviceProvider.getNamedDevices(),
         builder: (context,snapshot) {
           debugPrint("snapshot 1 "+snapshot.data.toString());
           if(snapshot.connectionState==ConnectionState.none){
@@ -64,8 +65,8 @@ class _PlanningViewState extends State<PlanningView> {
             return CircularProgressIndicator(color: kPrimaryColor,);
           }
           else{
-            var value = snapshot.data as List;
-            debugPrint("snapshot 3 "+value.toString());
+            // var value = snapshot.data as List;
+            debugPrint("snapshot 3 "+snapshot.data.toString());
             return 
             Container(
            height: MediaQuery.of(context).size.height,
@@ -192,7 +193,7 @@ class _PlanningViewState extends State<PlanningView> {
                       ),
                       // const Padding(padding: EdgeInsets.only(bottom: 20)),
                       // roomProvider.roomDevices.isEmpty
-                      deviceProvider./*namedDevices*/device.isEmpty?Center(child: Column(
+                      Provider.of<DeviceProvider>(context,listen:true).namedDevices.isEmpty?Center(child: Column(
                             children: const[
                               CircularProgressIndicator(color: kPrimaryColor,),
                               Text("Patientez le chargement des données"),
@@ -202,25 +203,29 @@ class _PlanningViewState extends State<PlanningView> {
                         scrollDirection: Axis.vertical,
                         itemCount:   deviceProvider./*namedDevices*/device.length,
                         itemBuilder: (context, index) {
+                          _listSelected.add(false);
                           return CheckboxListTile(
                           //  value: false,
-                            selected: _isSelected,
-                            value:_isSelected,
+                          
+                            selected: _listSelected[index],
+                            value: _listSelected[index],
                             onChanged: (value){
                               debugPrint("index "+index.toString());
                              setState(() {
-                             debugPrint("value "+ deviceProvider./*namedDevices*/device.toString());
-                               _isSelected = value!;
+                               _listSelected[index] = ! _listSelected[index];
+                               planning.appareils.insert(index,  deviceProvider./*namedDevices*/device[index]);
+                            //  debugPrint("value "+ deviceProvider./*namedDevices*/device.toString());
+                            //    _isSelected = value!;
                              });
-                              planning.appareils.insert(index,  deviceProvider./*namedDevices*/device[index]);
+                              
                               debugPrint("appareils long "+planning.appareils.length.toString());
                             },
                             // selected: _isSelected[index],
             
                             // activeColor: kPrimaryColor,
                             checkColor: kBackground,
-                            title:Text("${deviceProvider.device[index].room}"),
-                            subtitle: Text("${deviceProvider.device[index].nameDev}"),
+                            title:Text("${Provider.of<DeviceProvider>(context,listen:true).namedDevices[index].room}"),
+                            subtitle: Text("${Provider.of<DeviceProvider>(context,listen:true).namedDevices[index].nameDev}"),
                             // leading:  Row(
                             //   children: [
                             //     Text("${roomProvider.room[index].appareils[index].conso}"),
@@ -272,7 +277,11 @@ class _PlanningViewState extends State<PlanningView> {
                               if(_formKey.currentState!.validate()){
                                 var response=planningProvider.addPlanning(planning);
                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Planning enregistré",style: TextStyle(color: Colors.white))));
-                                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=> Plannings()));
+                                    Navigator.pushAndRemoveUntil<void>(
+                                      context,
+                                      MaterialPageRoute<void>(builder: (BuildContext build)=>Plannings()),
+                                      ModalRoute.withName('/'),
+                                      );
                               
                               }
                               

@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:ago_ahome_app/utils/constant.dart';
 import 'package:ago_ahome_app/views/screen/device/device_card.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:ago_ahome_app/services/providers/device_provider.dart';
 import 'package:ago_ahome_app/services/providers/room_provider.dart';
@@ -33,7 +35,7 @@ class _HomeState extends State<Home>{
   var tapColor = const Color.fromRGBO(20,115,209,1);
   var colorOn = false;
   var textColor = Colors.white;
-  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.1.105:5000/api/v1/device/allumerEteindre/"));
+  final server = WebSocketChannel.connect(Uri.parse("ws://192.168.1.103:5000/api/v1/device/allumerEteindre/"));
   int index=0;
   @override
   void initState() {
@@ -43,89 +45,103 @@ class _HomeState extends State<Home>{
   Widget build(BuildContext context) {
     var roomProvider= Provider.of<RoomProvider>(context,listen: false);
     var deviceProvider= Provider.of<DeviceProvider>(context,listen: false);
-    var userProvider= Provider.of<UserProvider>(context,listen: true);
+    var userProvider= Provider.of<UserProvider>(context,listen: false);
     PageController pageController = PageController();
-    return WillPopScope(
-      onWillPop: ()async{
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Pour quitter l'application veuillez vous déconnecter")));
-        return false;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: kBackground,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Text("Bienvenue",style: TextStyle(fontSize: 15),),
-              Padding(
-                padding:  EdgeInsets.only(right:18.0,left: 5),
-                child: Text("",style: TextStyle(fontSize: 15,color: kPrimaryColor)),
-              )
-            ],
-          ),
-        ),
-        drawer:const ClipRRect(
-          borderRadius: BorderRadius.only(bottomRight:Radius.elliptical(65, 65)),
-          child: Drawer(
-            backgroundColor:Color.fromRGBO(20,115,209,1),
-            elevation:300,
-            width: 98,
-            child: CustomDrawer(),
-          ),
-        ),
+    return Scaffold(
+      appBar: AppBar(
         backgroundColor: kBackground,
-        body: FutureBuilder(
-          future:roomProvider.getRoomData(),
-          builder: (context,snapshot) {
-            debugPrint("data "+snapshot.data.toString());
-           
-            
-            if(snapshot.data == []){
-              debugPrint("hold up "+snapshot.data.toString());
-              return const Text("Pièces non disponibles");
-            }
-            if(snapshot.data == null){
-              debugPrint("wait a min "+snapshot.data.toString());
-              return const Center(child: CircularProgressIndicator(color: kPrimaryColor, semanticsLabel: "Données non chargées",),);
-            }
-            if(snapshot.hasError){
-              debugPrint("error ok "+index.toString());
-               return const Center(child: Text('Une erreur s"est produite',style: TextStyle(color: Colors.red),));
-            }
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Text("Bienvenue",style: TextStyle(fontSize: 18),),
+            Padding(
+              padding:  EdgeInsets.only(right:18.0,left: 5),
+              child: Text("",style: TextStyle(fontSize: 18,color: kPrimaryColor)),
+            )
+          ],
+        ),
+      ),
+      drawer:const ClipRRect(
+        borderRadius: BorderRadius.only(bottomRight:Radius.elliptical(65, 65)),
+        child: Drawer(
+          backgroundColor:Color.fromRGBO(20,115,209,1),
+          elevation:300,
+          width: 98,
+          child: CustomDrawer(),
+        ),
+      ),
+      backgroundColor: kBackground,
+      body: FutureBuilder(
+        future:roomProvider.getRoomData(),
+        builder: (context,snapshot) {
+          debugPrint("data "+snapshot.data.toString());
+         
+          
+          if(snapshot.data == []){
+            debugPrint("hold up "+snapshot.data.toString());
+            return const Text("Pièces non disponibles");
+          }
+          if(snapshot.data == null){
+            debugPrint("wait a min "+snapshot.data.toString());
+            return const Center(child: CircularProgressIndicator(color: kPrimaryColor, semanticsLabel: "Données non chargées",),);
+          }
+          if(snapshot.hasError){
+            debugPrint("error ok "+index.toString());
+             return const Center(child: Text('Une erreur s"est produite',style: TextStyle(color: Colors.red),));
+          }
 
-            else{
-              debugPrint("data else "+snapshot.data.toString());
-              var value=snapshot.data as dynamic;
-               var mapListRooms = snapshot.data as Map;
-            var listRooms  = mapListRooms['result'] as List;
-            var listRoomsNames = [];
-            var listAppareilPerPiece = [];
-            for(var i = 0;i<listRooms.length;i++){
-              listRoomsNames.add(listRooms[i]['name']) ;
-            //   for(var j = 0;j<listRoomsNames.length;j++){
-            //   listAppareilPerPiece.add(listRooms[i]['appareils']) ;
-              
-            // }
-            }
-             debugPrint("somthing "+listRoomsNames.toString());
-              debugPrint("data else "+snapshot.data.toString());
-              return listRooms.isEmpty?Center(
-                child: Text("Pas de pièces"),
-              ):DefaultTabController(
-                length: listRooms.length,
-                child: 
-                // SingleChildScrollView(
-                //   child: 
-                  Column(
+          else{
+            debugPrint("data else "+snapshot.data.toString());
+            var value=snapshot.data as dynamic;
+             var mapListRooms = snapshot.data as Map;
+          var listRooms  = mapListRooms['result'] as List;
+          var listRoomsNames = [];
+          var listAppareilPerPiece = [];
+          for(var i = 0;i<listRooms.length;i++){
+            listRoomsNames.add(listRooms[i]['name']);
+          //   for(var j = 0;j<listRoomsNames.length;j++){
+          //   listAppareilPerPiece.add(listRooms[i]['appareils']) ;
+            
+          // }
+          }
+           debugPrint("somthing "+listRoomsNames.toString());
+            debugPrint("data else "+snapshot.data.toString());
+            return listRooms.isEmpty?Center(
+              child: Text("Pas de pièces"),
+            ):DefaultTabController(
+              length: listRooms.length,
+              child: 
+              // SingleChildScrollView(
+              //   child: 
+                SingleChildScrollView(
+                  child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                  const Padding(padding: EdgeInsets.only(top: 25)),
                   const ConsoDisplay(),
                   TabBar(
+                    indicatorPadding: const EdgeInsets.only(bottom: 10,top: 25),
+                    indicatorWeight: 1,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    indicator: BoxDecoration(
+                      //shape: BoxShape.circle,
+                      borderRadius: BorderRadius.circular(40),
+                      color: kPrimaryColor
+                    ),
+                    dragStartBehavior: DragStartBehavior.start,
+                    labelColor: Colors.black,
+                    indicatorColor: kPrimaryColor,
                     tabs: [
                       for(var i=0;i<listRoomsNames.length;i++)...{
                         Tab(
-                        child: Text(listRoomsNames[i],style:TextStyle(color: kPrimaryColor) ,),
+                        child: Text(
+                          listRoomsNames[i],
+                          style:TextStyle(
+                            fontSize: 18,
+                            color: Colors.black
+                          ),
+                        ),
                         // text: listRoomsNames[index],
                       )
                       }
@@ -133,83 +149,46 @@ class _HomeState extends State<Home>{
                     ]
                     ),
                   Container(
-                    height: MediaQuery.of(context).size.height/2,
-                    width:MediaQuery.of(context).size.width/2,
-                    child: SingleChildScrollView(
-                      child: Container(
-                        height:MediaQuery.of(context).size.height,
-                        width: MediaQuery.of(context).size.width,
-                        child: TabBarView(
-                          children: [
-                            for(var i=0;i<listRoomsNames.length;i++)...{
-                              //DeviceCard(mapListRooms["result"][i]["name"],mapListRooms["result"][i]["appareils"][1]["conso"], mapListRooms["result"][i]["appareils"][1]['state'], mapListRooms["result"][i]["appareils"][1]["id"]),
-                              Container(
-                              height: MediaQuery.of(context).size.height,
-                              width: MediaQuery.of(context).size.width,
-                              child: Expanded(
-                                child: RoomDevicesDisplay(
-                                  // Provider.of<RoomProvider>(context,listen: true).getRoomIndex(), 
-                                  index,
-                                  (){
-                                    debugPrint("index 2 "+index.toString());
-                                    debugPrint("oo baby baby ");
-                                    setState(() {
-                                      // Provider.of<RoomProvider>(context,listen: false).setRoomIndex(index);
-                                      index;
-                                      debugPrint("pageview index "+index.toString());
-                                    });
-                                    debugPrint("push it real good "+ mapListRooms["result"][i]);
-                                  },
-                                  pageController,
-                                  mapListRooms["result"][i]
-                                                  ),
-                              ),
+                    padding: EdgeInsets.only(left: 10,right: 15),
+                    height:MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    child: TabBarView(
+                      children: [
+                        for(var i=0;i<listRoomsNames.length;i++)...{
+                          //DeviceCard(mapListRooms["result"][i]["name"],mapListRooms["result"][i]["appareils"][1]["conso"], mapListRooms["result"][i]["appareils"][1]['state'], mapListRooms["result"][i]["appareils"][1]["id"]),
+                          Container(
+                          height: MediaQuery.of(context).size.height,
+                          width: MediaQuery.of(context).size.width,
+                          child: RoomDevicesDisplay(
+                            // Provider.of<RoomProvider>(context,listen: true).getRoomIndex(), 
+                            index,
+                            (){
+                              debugPrint("index 2 "+index.toString());
+                              debugPrint("oo baby baby ");
+                              setState(() {
+                                // Provider.of<RoomProvider>(context,listen: false).setRoomIndex(index);
+                                index;
+                                debugPrint("pageview index "+index.toString());
+                              });
+                              debugPrint("push it real good "+ mapListRooms["result"][i]);
+                            },
+                            pageController,
+                            mapListRooms["result"][i]
+                          ),
                         )
-                            }
-                          ]
-                        ),
-                      ),
+                        }
+                      ]
                     ),
                   ),
-                  //  const SizedBox(height: 110,),
-                    // RoomDisplay(selected, (int index){
-                    //   debugPrint("do smth ");
-                    //   setState(() {
-                    //     selected=index;
-                    //     Provider.of<RoomProvider>(context,listen: false).setRoomIndex(index);
-                    //     debugPrint("index "+index.toString());
-                    //   });
-                    // pageController.jumpToPage(index);
-                    // },
-                    // value["result"]
-                    // ), 
-                    
-                    // Container(
-                    //   height: MediaQuery.of(context).size.height,
-                    //   child: RoomDevicesDisplay(
-                    //     Provider.of<RoomProvider>(context,listen: true).getRoomIndex(), 
-                    //     (){
-                    //       debugPrint("index 2 "+index.toString());
-                    //       debugPrint("oo baby baby ");
-                    //       setState(() {
-                    //         Provider.of<RoomProvider>(context,listen: false).setRoomIndex(index);
-                    //         debugPrint("pageview index "+index.toString());
-                    //       });
-                    //       debugPrint("push it real good ");
-                    //     },
-                    //     pageController,
-                    //     value["result"]
-                    //   ),
-                    // )
+                 
                   ],
+                  ),
                 ),
-                         // ),
               );
-            }
           }
-        ),
-        floatingActionButton: const CustomFloatingActionBtn(),
+        }
       ),
+      floatingActionButton: const CustomFloatingActionBtn(),
     );
   }
   void allumerEteindre(msg){
@@ -262,7 +241,7 @@ class _HomeState extends State<Home>{
           width: 100,
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: _isSelected?tapColor:Colors.amber,
+            color: _isSelected?tapColor:Colors.white,
             borderRadius: BorderRadius.circular(20)),
               //color: Colors.blue,
             child: Column(

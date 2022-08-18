@@ -24,7 +24,23 @@ class RoomDevicesDisplay extends StatelessWidget {
     // var roomProvider= Provider.of<RoomProvider>(context,listen: true);
     var value = List.generate(
             room["appareils"].length, 
-            (index) => DeviceCard(room["appareils"][index]["name"], room["appareils"][index]["conso"], room["appareils"][index]["state"], room["appareils"][index]["id"])
+            (index){
+              if(room["appareils"][index]["state"][0]==0){
+                  return DeviceCard(
+                room["appareils"][index]["name"],
+                0, 
+                room["appareils"][index]["state"], 
+                room["appareils"][index]["id"]);
+              }
+              else{
+                return DeviceCard(
+              room["appareils"][index]["name"],
+              room["appareils"][index]["conso"], 
+              room["appareils"][index]["state"], 
+              room["appareils"][index]["id"]);
+              }
+              
+            }
             );
             debugPrint(value.toString());
     // int index =0;
@@ -32,36 +48,24 @@ class RoomDevicesDisplay extends StatelessWidget {
     // var roomProvider = Provider.of(context)<RoomProvider>(context,listen:false);
     // debugPrint("liste app "+room["appareils"].toString());
     return room/*[index]*/["appareils"].isEmpty?Center(child: Text("Pas d'appareils dispo")):Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      // crossAxisAlignment: CrossAxisAlignment.start,
       // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         // Padding(padding: EdgeInsets.only(left: 50)),
         // Text(room.toString()),
-         Row(
-            mainAxisAlignment:MainAxisAlignment.start,
-            children: [
-              Text("Consommation "),
-              Text("${2}"),
-              Text(" kWh"),
-            ],
-        ),
-        Row(
-          mainAxisAlignment:MainAxisAlignment.start,
-          
-          children: [
-            
-            Text("${Provider.of<RoomProvider>(context,listen: true).roomOnDevices.length}"),
-            Text(" appareils"),
-            Text(" allumés"),
-          ],
-        ),
         Container(
+          // color: Colors.red,
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           // padding: const EdgeInsets.symmetric(horizontal: 25),
-          child: GridView.count(
-              crossAxisCount: 2,
-              children: value,
+          child: SingleChildScrollView(
+            child: GridView.count(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              scrollDirection: Axis.vertical,
+                crossAxisCount: 2,
+                children: value,
+            ),
           )
         ),
       ],

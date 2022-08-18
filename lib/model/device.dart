@@ -3,7 +3,7 @@ class Device{
   
   String idDev;
   String? nameDev;
-  // String? categorie;
+  // String? icone;
   double? puissance;
   double? conso;
   List<dynamic> state;
@@ -13,7 +13,7 @@ class Device{
   Device({
      required this.idDev,
      this.nameDev,
-    //  this.categorie,
+    //  this.icone,
      this.puissance,
      this.conso,
      required this.state,
@@ -29,7 +29,7 @@ class Device{
     return Device(
       idDev : json['id'],
       nameDev : json['name']??"",
-      // categorie : json['categorie'],
+      // icone : json['icone']??"",
       puissance: json['puissance'].toDouble(),
       conso : json['conso'].toDouble(),
       state : List.from(json['state']),
@@ -40,7 +40,7 @@ class Device{
   Map<dynamic, dynamic> toJson() => {
     'id':idDev,
     'name': nameDev,
-    // 'categorie':categorie,
+    // 'icone':icone,
     'puissance': puissance,
      'state' : state,
     // 'state' : List.from(state.map((e) => e)),

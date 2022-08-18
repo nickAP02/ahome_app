@@ -39,7 +39,7 @@ class _DeviceListState extends State<DeviceList> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             FutureBuilder(
-              future: deviceProvider.getDeviceData(),
+              future: Provider.of<DeviceProvider>(context,listen:true).getDeviceData(),
               builder: (context,snapshot) {
                 Future.delayed(Duration.zero,(){
                   deviceProvider.setNoNamedDevice();
@@ -72,8 +72,9 @@ class _DeviceListState extends State<DeviceList> {
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
                     itemCount: deviceProvider.noNamedDevices.length,
-                    itemBuilder: (context, index)=>
-                      GestureDetector(
+                    itemBuilder: (context, index){
+                      index = 0;
+                     return GestureDetector(
                         onTap: (){
                           setState(() {
                           selected = index;
@@ -87,7 +88,8 @@ class _DeviceListState extends State<DeviceList> {
                           });
                         },
                         child: deviceTypeCheck(deviceProvider.noNamedDevices, index),
-                      )
+                    );
+                    }
                     //separatorBuilder: (_,index)=>SizedBox(width: 20)
                   );
                 }

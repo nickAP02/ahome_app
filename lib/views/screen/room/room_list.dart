@@ -1,7 +1,9 @@
 import 'package:ago_ahome_app/model/room.dart';
 import 'package:ago_ahome_app/services/providers/room_provider.dart';
 import 'package:ago_ahome_app/utils/colors.dart';
+import 'package:ago_ahome_app/utils/constant.dart';
 import 'package:ago_ahome_app/views/screen/home/home.dart';
+import 'package:ago_ahome_app/views/screen/room/room_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,10 +21,14 @@ class _RoomsState extends State<Rooms> {
   var homeList = [];
   var deleteList = [];
   var roomProvider;
+  var textColor = Colors.white;
   final  _formKey = GlobalKey<FormState>();
   @override
   void initState() {
     roomProvider = Provider.of<RoomProvider>(context,listen: false);
+    Future.delayed(Duration.zero,(){
+      roomProvider.getRoomData();
+    });
     super.initState();
   }
   @override
@@ -54,17 +60,9 @@ class _RoomsState extends State<Rooms> {
               debugPrint("value "+snapshot.data.toString());
               var result = snapshot.data as Map;
               var value = result["result"] as List;
-              return value.isEmpty?const CircularProgressIndicator(
-              color: kPrimaryColor,
-              semanticsLabel: "Chargement des données"
-            ):
-            Container(
-              height: MediaQuery.of(context).size.height,
-              // width: 300,
-              child: ListView.builder(
-                //padding: const EdgeInsets.only(top: 200),
-                itemCount: value.length,
-                itemBuilder: (context, index)=>GestureDetector(
+              var listePieces =                 List.generate(
+                value.length, (index) =>
+                GestureDetector(
                   onLongPress: (){
                     setState(() {
                       selected = index;
@@ -86,7 +84,7 @@ class _RoomsState extends State<Rooms> {
                                       debugPrint("statut room view "+request["result"].toString());
                                       if(request["statut"]==200){
                                         setState(() {
-                                          // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Vous avez supprimé ${value[index]["name"]}")));
+                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Vous avez supprimé ${value[index]["name"]}")));
                                           Navigator.of(context).pop();
                                         });
                                       }
@@ -182,23 +180,131 @@ class _RoomsState extends State<Rooms> {
                                   
                     });
                   },
-                  child: Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      //borderRadius: BorderRadius.,
-                      color: selected==index?kPrimaryColor:  Colors.white,
-                    ),
-                    child: Text( 
-                      value[index]["name"],
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GestureDetector(
+                      onTap: (){
+                       Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder:(context)=>RoomDetail(value)
+                      )
+                      );
+                      },
+                      child: Container(
+                        height: 255,
+                        width: 150,
+                        // padding: const EdgeInsets.all(20),
+                        
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          //borderRadius: BorderRadius.,
+                          boxShadow: [
+                            BoxShadow(
+                            color:kPrimaryColor.withOpacity(0.2),
+                            spreadRadius: 5,
+                            blurRadius: 7,
+                            offset: const Offset(0, 3)
+                          )],
+                          color: kPrimaryColor,
+                        ),
+                        
+                        child: Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Stack(
+                                alignment: AlignmentDirectional.topStart,
+                                children: [
+                                  Column(
+                                   mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.only(bottom: 5),
+                                        decoration:BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          // borderRadius: BorderRadius.circular(20),
+                                          color: Colors.green,
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:MainAxisAlignment.center,
+                                          children: [
+                                            roomProvider.nbOnDevices.isEmpty?Padding(
+                                              padding: const EdgeInsets.only(left:50.0),
+                                              child: Text("${Provider.of<RoomProvider>(context,listen:true).getNbOnDevices(value[index]["id"])}"),
+                                            ):Padding(
+                                              padding: const EdgeInsets.only(left:50.0),
+                                              child: Text("0"),
+                                            ),
+                                            //  Text("allumés"),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        decoration:BoxDecoration(
+                                          shape: BoxShape.circle,
+                                      //borderRadius: BorderRadius.,
+                                      color: Colors.red,
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:MainAxisAlignment.center,
+                                          children: [
+                                            roomProvider.nbOnDevices.isEmpty?Padding(
+                                              padding: const EdgeInsets.only(left:50.0),
+                                              child: Text("${Provider.of<RoomProvider>(context,listen:true).getOffDevices(value[index]["id"])}"),
+                                            ):
+                                            Padding(
+                                              padding: const EdgeInsets.only(left:50.0),
+                                              child: Text("0"),
+                                            ),
+                                            //  Text("éteints"),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                   
+                                ],
+                              ),
+                              Image.asset(
+                                iconeAsset+value[index]["icone"],
+                                color:textColor,
+                                height: 100,
+                              ),
+                              Text( 
+                                value[index]["name"],
+                                style: const TextStyle(
+                                   fontSize: 25,
+                                  color:Colors.white,
+                                  fontWeight: FontWeight.bold
+                                ),
+                              ),
+                              Text("${Provider.of<RoomProvider>(context,listen:true).getRoomConso(value[index]["id"])}"+' MWh', 
+                              style: TextStyle(
+                                fontSize: 18,
+                                color:textColor,
+                                fontWeight: FontWeight.bold
+                              )
+                            )
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
-                scrollDirection: Axis.vertical,
-                  //separatorBuilder: (_,index)=>SizedBox(width: 20)
-              ),
+              );
+              return value.isEmpty?const CircularProgressIndicator(
+              color: kPrimaryColor,
+              semanticsLabel: "Chargement des données"
+            ):
+            Container(
+              height: MediaQuery.of(context).size.height,
+              // width: 300,
+              child: GridView.count(
+                crossAxisCount: 2,
+                //padding: const EdgeInsets.only(top: 200),
+                // itemCount: value.length,
+                children:listePieces
+            )
             );
             }
           }

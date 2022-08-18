@@ -29,166 +29,165 @@ class _LoginFormState extends State<LoginForm> {
     // String email = "";
     // final bool _isValid = EmailValidator.validate(email);
     final userProvider = Provider.of<UserProvider>(context,listen: false);
-    return  WillPopScope(
-       onWillPop: ()async{
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Impossible de retourner en arrière")));
-        return false;
-      },
-      child: SingleChildScrollView(
-        child: Form(
-        key: _formKey,
-        child:
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children:[
-            const Text(
-              "CONNEXION",
-              style:TextStyle(fontWeight: FontWeight.bold)
+    return  SingleChildScrollView(
+      child: Form(
+      key: _formKey,
+      child:
+      Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children:[
+          const Text(
+            "CONNEXION",
+            style:TextStyle(fontWeight: FontWeight.bold)
+          ),
+          Image.asset(
+                'assets/images/banner.png',
+                scale: 1.2,
             ),
-            Image.asset(
-                  'assets/images/banner.png',
-                  scale: 1.2,
+            TextFieldContainer(
+            child: TextFormField(
+              controller: emailController,
+              keyboardType: TextInputType.text,
+              obscureText: false,
+              decoration:const InputDecoration(
+                hintStyle: TextStyle(
+                  color: kBackground
+                ),
+                hintText: "Email",
+                icon: Icon(
+                  Icons.person,
+                  color: kPrimaryColor,
+                ),
+                border: InputBorder.none
               ),
-              TextFieldContainer(
-              child: TextFormField(
-                controller: emailController,
-                keyboardType: TextInputType.text,
-                obscureText: false,
-                decoration:const InputDecoration(
-                  hintStyle: TextStyle(
-                    color: kBackground
-                  ),
-                  hintText: "Email",
-                  icon: Icon(
-                    Icons.person,
-                    color: kPrimaryColor,
-                  ),
-                  border: InputBorder.none
-                ),
-                validator: (value){
-                  value = emailController.text;
-                  debugPrint("email value"+value.toString());
-                 bool _isValid = EmailValidator.validate(value);
-                  debugPrint("emailvalidator "+_isValid.toString());
-                  if (_isValid==false){
-                    return 'Email invalide';
-                  }
-                  if(value.length<16){
-                    return 'Email invalide';
-                  }
-                  else{
-                    setState(() {
-                     
-                      user.email=value.toString();
-                      debugPrint("email "+user.email.toString());
-                    });
-                  }
-                  return null;
-                },
-              )
-            ),
-             TextFieldContainer(
-              child: TextFormField(
-                controller: pwdController,
-                keyboardType: TextInputType.text,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  hintStyle: TextStyle(
-                    color: kBackground
-                  ),
-                  hintText: "Mot de passe",
-                  icon: Icon(
-                    Icons.lock,
-                    color: kPrimaryColor,
-                  ),
-                  suffixIcon:Icon(
-                    Icons.visibility,
-                    color: kPrimaryColor,
-                  ),
-                  border: InputBorder.none
-                ),
-                validator: (value){
-                 value = pwdController.text;
-                debugPrint("pwd value "+value.toString());
-                if (value.isEmpty) {
-                  return 'Entrez le mot de passe';
+              validator: (value){
+                value = emailController.text;
+                debugPrint("email value"+value.toString());
+               bool _isValid = EmailValidator.validate(value);
+                debugPrint("emailvalidator "+_isValid.toString());
+                if (_isValid==false){
+                  return 'Email invalide';
                 }
-                if(value.length<8){
-                  return 'Mot de passe doit etre minimum 8 caracteres';
+                if(value.length<16){
+                  return 'Email invalide';
                 }
                 else{
                   setState(() {
-                    user.password = value.toString();
-                     debugPrint("pwd "+user.password.toString());
+                   
+                    user.email=value.toString();
+                    debugPrint("email "+user.email.toString());
                   });
-                 
                 }
-                  return null;
-                },
-              )
-            ),
-              Column(
-            children: [
-              ElevatedButton(
-                onPressed: (){
-                  debugPrint("current state 1 "+_formKey.currentState!.validate().toString());
-                  if(_formKey.currentState!.validate()){
-                     debugPrint("current state 2 "+_formKey.currentState!.validate().toString());
-                    debugPrint("ici");
-                    userProvider.login(user);
-                    debugPrint("provider ici "+userProvider.userLogin.toString());
-                    if(userProvider.userLogin==null){
-                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Une erreur s'est produite, reprendre la saisie",style: TextStyle(color: Colors.red),)));
-                    }
-                    else if(userProvider.userLogin["statut"]==200){
-                      if(LocalStorage().getUser()==null){
-                        LocalStorage().setToken(userProvider.userLogin["token"].toString());
-                        LocalStorage().setUser(userProvider.userLogin["user"].toString());
-                        setState(() {
-                        // user.roles!.roleName =="guest";
-                        // debugPrint("user"+LocalStorage().getUser());
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> const Home()));
-                      });
-                      }
-                      else{
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const Home()));
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Vous êtes déjà connecté",style: TextStyle(color: Colors.red),)));
-                      }
-                      debugPrint(userProvider.userLogin["token"].toString());
-                      
-                      // debugPrint(user.roles!.roleName.toString());
+                return null;
+              },
+            )
+          ),
+           TextFieldContainer(
+            child: TextFormField(
+              controller: pwdController,
+              keyboardType: TextInputType.text,
+              obscureText: true,
+              decoration: const InputDecoration(
+                hintStyle: TextStyle(
+                  color: kBackground
+                ),
+                hintText: "Mot de passe",
+                icon: Icon(
+                  Icons.lock,
+                  color: kPrimaryColor,
+                ),
+                suffixIcon:Icon(
+                  Icons.visibility,
+                  color: kPrimaryColor,
+                ),
+                border: InputBorder.none
+              ),
+              validator: (value){
+               value = pwdController.text;
+              debugPrint("pwd value "+value.toString());
+              if (value.isEmpty) {
+                return 'Entrez le mot de passe';
+              }
+              if(value.length<8){
+                return 'Mot de passe doit etre minimum 8 caracteres';
+              }
+              else{
+                setState(() {
+                  user.password = value.toString();
+                   debugPrint("pwd "+user.password.toString());
+                });
+               
+              }
+                return null;
+              },
+            )
+          ),
+            Column(
+          children: [
+            ElevatedButton(
+              onPressed: (){
+                debugPrint("current state 1 "+_formKey.currentState!.validate().toString());
+                if(_formKey.currentState!.validate()){
+                   debugPrint("current state 2 "+_formKey.currentState!.validate().toString());
+                  debugPrint("ici");
+                  userProvider.login(user);
+                  debugPrint("provider ici "+userProvider.userLogin.toString());
+                  if(userProvider.userLogin==null){
+                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Une erreur s'est produite, reprendre la saisie",style: TextStyle(color: Colors.red),)));
+                  }
+                  else if(userProvider.userLogin["statut"]==200){
+                    if(LocalStorage().getUser()==null){
+                      LocalStorage().setToken(userProvider.userLogin["token"].toString());
+                      LocalStorage().setUser(userProvider.userLogin["user"].toString());
+                      setState(() {
+                      // user.roles!.roleName =="guest";
+                      // debugPrint("user"+LocalStorage().getUser());
+                      // Navigator.of(context).push(MaterialPageRoute(builder: (context)=> const Home()));
+                      Navigator.pushAndRemoveUntil<void>(
+                                      context,
+                                      MaterialPageRoute<void>(builder: (BuildContext build)=>Home()),
+                                      ModalRoute.withName('/'),
+                                      );
+                    });
                     }
                     else{
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Verifiez les champs renseignes",style: TextStyle(color: Colors.red),)));
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const Home()));
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Vous êtes déjà connecté",style: TextStyle(color: Colors.red),)));
                     }
+                    debugPrint(userProvider.userLogin["token"].toString());
                     
-                    // Navigator.of(context).push(MaterialPageRoute(builder: (context)=> Home()));
-                  }else{
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Une erreur s'est produite, reprendre la saisie",style: TextStyle(color: Colors.red),)));
+                    // debugPrint(user.roles!.roleName.toString());
                   }
-                },
-                child: const Text(
-                  "CONNEXION",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: kPrimaryColor
-                  ),
+                  else{
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Verifiez les champs renseignes",style: TextStyle(color: Colors.red),)));
+                  }
+                  
+                  // Navigator.of(context).push(MaterialPageRoute(builder: (context)=> Home()));
+                }else{
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Une erreur s'est produite, reprendre la saisie",style: TextStyle(color: Colors.red),)));
+                }
+              },
+              child: const Text(
+                "CONNEXION",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: kPrimaryColor
                 ),
               ),
-            ],
-          ),
-          // Padding(
-          //   padding: const EdgeInsets.all(8.0),
-          //   child: GestureDetector(
-          //     onTap: (){
-          //       Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const Register()));
-          //     },
-          //     child:const Text("Pas de compte ?Inscrivez-vous",style: TextStyle(color: kPrimaryColor),)
-          //   ),
-          // )
+            ),
           ],
-        )),
-      ),
+        ),
+        // Padding(
+        //   padding: const EdgeInsets.all(8.0),
+        //   child: GestureDetector(
+        //     onTap: (){
+        //       Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const Register()));
+        //     },
+        //     child:const Text("Pas de compte ?Inscrivez-vous",style: TextStyle(color: kPrimaryColor),)
+        //   ),
+        // )
+        ],
+      )),
     );
   }
 }

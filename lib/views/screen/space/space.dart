@@ -6,77 +6,71 @@ class Space extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: WillPopScope(
-       onWillPop: ()async{
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Impossible de retourner en arrière")));
-        return false;
-      },
-      child: SafeArea(
-        child: Container(
-          margin: const EdgeInsets.only(top: 18, left: 24, right: 24),
-          child: ListView(
-            physics: const BouncingScrollPhysics(),
-            children: [
-              const SizedBox(height: 32),
-              Center(
-                child: Image.asset(
-                  'assets/images/banner.png',
-                  scale: 1.2,
-                ),
+    return Scaffold(body: SafeArea(
+      child: Container(
+        margin: const EdgeInsets.only(top: 18, left: 24, right: 24),
+        child: ListView(
+          physics: const BouncingScrollPhysics(),
+          children: [
+            const SizedBox(height: 32),
+            Center(
+              child: Image.asset(
+                'assets/images/banner.png',
+                scale: 1.2,
               ),
-              const SizedBox(height: 16),
-              const Center(
-                child: Text(
-                  'AGO AHOME',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 48),
-              const Text(
-                'ESPACES',
-                textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            const Center(
+              child: Text(
+                'AGO AHOME',
                 style: TextStyle(
-                  fontSize: 25,
+                  fontSize: 32,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _cardMenu(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const Home(),
-                        ),
-                      );
-                    },
-                    icon: 'assets/images/energy.png',
-                    title: 'DOMICILE',
-                  ),
-                  _cardMenu(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const Home(),
-                        ),
-                      );
-                    },
-                    icon: 'assets/images/temperature.png',
-                    title: 'BUREAU',
-                    color: Colors.indigoAccent,
-                    fontColor: Colors.white,
-                  ),
-                ],
+            ),
+            const SizedBox(height: 48),
+            const Text(
+              'ESPACES',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
               ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _cardMenu(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Home(),
+                      ),
+                    );
+                  },
+                  icon: 'assets/images/energy.png',
+                  title: 'DOMICILE',
+                ),
+                _cardMenu(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Home(),
+                      ),
+                    );
+                  },
+                  icon: 'assets/images/temperature.png',
+                  title: 'BUREAU',
+                  color: Colors.indigoAccent,
+                  fontColor: Colors.white,
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     ),);

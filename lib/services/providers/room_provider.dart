@@ -5,12 +5,14 @@ import 'package:flutter/cupertino.dart';
 
 class RoomProvider extends ChangeNotifier{
   var room;
-  List<String> rooms=[];
+  List<Room> rooms=[];
   List<dynamic> roomDevices=[];
   List<Device> roomOnDevices =[];
   int roomIndex=0;
   var roomOffDevices;
   var nbOnDevices;
+  var nbOffDevices;
+  double roomConso = 0;
   double consoGlobale = 0;
   int index = 0;
   bool loading = false;
@@ -32,13 +34,13 @@ class RoomProvider extends ChangeNotifier{
   //   return roomDevices;
   // }
 
-  // List<String>getRoomsName(){
-  //   rooms = room["result"][index]["name"].toList();
-  //   debugPrint("liste name "+rooms.toString());
-  //   // rooms.forEach(debugPrint);
-  //   notifyListeners();
-  //   return rooms;
-  // }
+  List<Room>getRooms(){
+    rooms = room["result"].where((element)=>element["appareils"].isNotEmpty).toList();
+    debugPrint("liste rooms "+rooms.toString());
+    // rooms.forEach(debugPrint);
+    notifyListeners();
+    return rooms;
+  }
 
   List<Device>getOnDevices(){
     loading = true;
@@ -47,31 +49,58 @@ class RoomProvider extends ChangeNotifier{
     return roomOnDevices;
   }
 
-  setOnDevices(){
-    roomOnDevices = room["result"]!.where((element) => element.appareils.state[0]==1).toList();
+  // setOnDevices(){
+  //   for(int i=0;i<rooms.length;i++){
+  //     roomOnDevices = rooms[i].appareils.where((element) => element.state[0]==1).toList();
+  //   }
+  //   debugPrint("liste device on "+roomOnDevices.toList().toString());
+  //   debugPrint("liste device taille "+roomOnDevices.length.toString());
+  //   notifyListeners();
+  // }
+
+  int getOffDevices(String id){
+    var result = httpService.getRoomDeviceOff(id).then((value){
+      nbOffDevices=value;
+      debugPrint("off "+nbOffDevices.toString());
+    });
     notifyListeners();
+    return nbOffDevices.length;
   }
 
-  List<Device>getOffDevices(){
-    loading = true;
+  int getNbOnDevices(String id){
+    var result = httpService.getRoomDeviceOn(id).then((value){
+      nbOnDevices=value;
+      debugPrint("on "+nbOnDevices.toString());
+  });
+    debugPrint("nb on "+nbOnDevices.toString());
     notifyListeners();
-    loading = false;
-    return roomOffDevices;
+    return nbOnDevices.length;
+   
   }
 
-  getNbOnDevices(){
-    nbOnDevices = roomDevices.length;
-    notifyListeners();
-  }
+  // setOffDevices(){
+  //   for(int i=0;i<rooms.length;i++){
+  //     roomOffDevices = rooms[i].appareils.where((element) => element.state[0]==0).toList();
+  //   }
+  //   debugPrint("liste device off "+roomOffDevices.toList().toString());
+  //   debugPrint("liste device off taille "+roomOffDevices.length.toString());
+  //   notifyListeners();
+  // }
 
-  getRoomConso(){
-    var valConso;
-    for(int i=0;i<roomOnDevices.length;i++){
-        valConso += roomOnDevices[i].conso;
-        return valConso;
-    }
+
+//  int getNbOffDevices(){
+  
+//     notifyListeners();
+//   }
+
+  getRoomConso(String id){
+    var result = httpService.getRoomConso(id).then((value){
+      roomConso=value.toDouble();
+      debugPrint("valeur conso "+roomConso.toString());
+      });
+    debugPrint("conso result "+result.toString());
     notifyListeners();
-    return valConso;
+    return roomConso;
   }
  
   Future<dynamic> addRoom(Room room) async{
@@ -90,9 +119,12 @@ class RoomProvider extends ChangeNotifier{
     
   }
 
-  double getConsoGlobale(){
-    consoGlobale = 0;
-    // notifyListeners();
+  getConsoGlobale(){
+    var result = httpService.getConso().then((value){
+      consoGlobale=value;
+      debugPrint("valeur conso g "+consoGlobale.toString());
+      });
+    notifyListeners();
     return consoGlobale;
   }
   

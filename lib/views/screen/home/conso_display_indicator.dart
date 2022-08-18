@@ -57,30 +57,35 @@ class _ConsoDisplayState extends State<ConsoDisplay> {
             //     ),
             //   ],
             // ),
+            Image.asset(
+              "assets/lightning.png",
+              color: Colors.black,
+            ),
             Padding(
               padding:const EdgeInsets.only(top: 20,bottom: 0),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    
                   //roomprovider value
-                  roomProvider.room.isEmpty?const Text("0",
+                  roomProvider.room.isEmpty?const Text("1",
                   //textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 40,
                     fontWeight: FontWeight.bold
                     ),
-                  ):Text("${roomProvider.getConsoGlobale()}",
+                  ):Text("${Provider.of<RoomProvider>(context,listen: true).getConsoGlobale().toStringAsPrecision(3)}",
                   //textAlign: TextAlign.center,
                   style: const TextStyle(
-                    fontSize: 40,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold
                     ),
                   ),
-                  const Text("KWh",
+                  const Text("MWh",
                   //textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 15,
                     fontWeight: FontWeight.normal
                     ),
                   ),

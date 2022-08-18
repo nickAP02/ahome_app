@@ -13,8 +13,8 @@ import 'package:ago_ahome_app/services/local_storage.dart';
 class HttpService{
   //initialisation du client http
   static final client = http.Client();
-  // static const url = "http://10.20.1.1:5000/api/v1";
-  static const url = "http://192.168.1.105:5000/api/v1";
+  // static const url = "http://192.168.1.20:5000/api/v1";
+  static const url = "http://192.168.1.103:5000/api/v1";
   Map<String,String> headers = 
   {
     'Content-Type':'application/json',
@@ -164,6 +164,7 @@ class HttpService{
         headers: headers,
         body: json.encode({
           "name": room.nameRoom,
+          "icone":room.icone
         })
       );
        var result=json.decode(response.body) as Map;
@@ -213,7 +214,7 @@ class HttpService{
      // debugPrint("yes "+response.body.toString());
       if(data["statut"]==200){
           data["result"].forEach((element)=>{
-            debugPrint("il se passse qlq chose"),
+            // debugPrint("il se passse qlq chose"),
             devices.add(Device.fromJson(element))
           });
           debugPrint("liste devices " +devices.toString());
@@ -359,7 +360,7 @@ class HttpService{
           throw e.toString();
         }
     }
- 
+  
     Future<Device> updateDevice(Device device) async{
       try{
           var response = await http.put(
@@ -423,23 +424,60 @@ class HttpService{
       }
     }
 
-    Future getRoomDeviceOn() async{
-     List<Room> pieces=[];
+    Future getRoomConso(String id) async{
       try{
         var response = await http.get(
-          fullUri("device/room/on"),
+          fullUri("room/conso/$id"),
           headers: headers
         );
-        var data = json.decode(response.body);
-        data.forEach((element)=>{
-          pieces.add(Room.fromJson(element))
-        });
-        return pieces;
+        var data =json.decode(response.body);
+        return data["conso"];
+        
       }catch(e){
         throw e.toString();
       }
     }
 
+    Future getConso() async{
+      try{
+        var response = await http.get(
+          fullUri("conso"),
+          headers: headers
+        );
+        var data =json.decode(response.body);
+        return data["conso"];
+        
+      }catch(e){
+        throw e.toString();
+      }
+    }
+    Future getRoomDeviceOn(String id) async{
+    //  List<Room> pieces=[];
+      try{
+        var response = await http.get(
+          fullUri("room/device/on/$id"),
+          headers: headers
+        );
+        var data = json.decode(response.body);
+        return data;
+      }catch(e){
+        throw e.toString();
+      }
+    }
+
+  Future getRoomDeviceOff(String id) async{
+    //  List<Room> pieces=[];
+      try{
+        var response = await http.get(
+          fullUri("room/device/off/$id"),
+          headers: headers
+        );
+        var data = json.decode(response.body);
+        return data;
+      }catch(e){
+        throw e.toString();
+      }
+    }
     Future<Planning> addPlanning(Planning planning) async{
       try{
           var response = await http.post(
